@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>wealthplanner.id — Rencanakan kekayaan, capai impian</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="theme.css" />
+
+  <!-- Code-referenced image assets (used as JS string paths in data.jsx) -->
+  <meta name="ext-resource-dependency" content="assets/products/wealth-tracker-ai.png" data-resource-id="prod_wta" />
+  <meta name="ext-resource-dependency" content="assets/products/cashflow.png" data-resource-id="prod_cashflow" />
+  <meta name="ext-resource-dependency" content="assets/products/kpr.png" data-resource-id="prod_kpr" />
+  <meta name="ext-resource-dependency" content="assets/products/edu.png" data-resource-id="prod_edu" />
+  <meta name="ext-resource-dependency" content="assets/products/pension.png" data-resource-id="prod_pension" />
+  <meta name="ext-resource-dependency" content="assets/products/invest.png" data-resource-id="prod_invest" />
+  <meta name="ext-resource-dependency" content="assets/products/insurance.png" data-resource-id="prod_insurance" />
+  <meta name="ext-resource-dependency" content="assets/webinars/cuan-pasti.jpeg" data-resource-id="web_cuan" />
+  <meta name="ext-resource-dependency" content="assets/webinars/dana-pendidikan.jpeg" data-resource-id="web_pendidikan" />
+  <meta name="ext-resource-dependency" content="assets/brand/logo-mark-white.png" data-resource-id="logo_white" />
+
+  <template id="__bundler_thumbnail" data-bg-color="#0E1512">
+    <svg viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="900" fill="#0E1512" />
+      <g fill="none" stroke="#5EE5B0" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="360,600 520,480 680,540 840,360" />
+      </g>
+      <circle cx="840" cy="360" r="26" fill="#5EE5B0" />
+      <text x="600" y="760" font-family="Bricolage Grotesque, sans-serif" font-size="120" font-weight="800" fill="#F4F6F4" text-anchor="middle">WP</text>
+    </svg>
+  </template>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Inline tweak defaults (host rewrites this block) -->
+  <script>
+    window.__TWEAK_DEFAULTS__ = /*EDITMODE-BEGIN*/{
+      "dark": true,
+      "lang": "id",
+      "accent": "#5EE5B0",
+      "heroLayout": "stack"
+    }/*EDITMODE-END*/;
+  </script>
+
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="src/i18n.jsx"></script>
+  <script type="text/babel" src="src/icons.jsx"></script>
+  <script type="text/babel" src="src/ui.jsx"></script>
+  <script type="text/babel" src="src/data.jsx"></script>
+  <script type="text/babel" src="src/nav.jsx"></script>
+  <script type="text/babel" src="src/screens/home.jsx"></script>
+  <script type="text/babel" src="src/screens/hitung.jsx"></script>
+  <script type="text/babel" src="src/screens/calculator.jsx"></script>
+  <script type="text/babel" src="src/screens/products.jsx"></script>
+  <script type="text/babel" src="src/screens/product-detail.jsx"></script>
+  <script type="text/babel" src="src/screens/checkout.jsx"></script>
+  <script type="text/babel" src="src/screens/dashboard.jsx"></script>
+  <script type="text/babel" src="src/screens/booking.jsx"></script>
+  <script type="text/babel" src="src/screens/program.jsx"></script>
+  <script type="text/babel" src="src/screens/webinar.jsx"></script>
+  <script type="text/babel" src="src/screens/stubs.jsx"></script>
+  <script type="text/babel" src="src/app.jsx"></script>
+</body>
+</html>

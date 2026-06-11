@@ -1,0 +1,388 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .hero {
+    padding: 2rem 1.5rem;
+    background: linear-gradient(135deg, #E6F1FB 0%, var(--color-background-primary) 100%);
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 2rem;
+  }
+  .hero h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+  .hero .subheading {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+  .hero-story {
+    background: var(--color-background-primary);
+    border-left: 3px solid #378ADD;
+    padding: 1rem;
+    border-radius: var(--border-radius-md);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 8px;
+  }
+  .btn {
+    padding: 10px 18px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: transparent;
+    border-radius: var(--border-radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--color-text-primary);
+  }
+  .btn:hover {
+    background: var(--color-background-secondary);
+    border-color: var(--color-border-primary);
+  }
+  .btn-primary {
+    background: #378ADD;
+    color: white;
+    border-color: #378ADD;
+  }
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+  
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+  
+  .programs {
+    display: grid;
+    gap: 12px;
+  }
+  .program-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .program-card:hover {
+    border-color: #378ADD;
+    box-shadow: 0 0 0 1px rgba(55, 138, 221, 0.2);
+  }
+  .program-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.75rem;
+  }
+  .program-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+  .program-subtitle {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+  .program-desc {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+  }
+  .program-benefits {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  .program-benefits li {
+    margin-left: 1rem;
+    margin-bottom: 4px;
+  }
+  .program-ideal {
+    font-size: 11px;
+    color: #378ADD;
+    font-weight: 500;
+    padding: 6px 8px;
+    background: rgba(55, 138, 221, 0.08);
+    border-radius: var(--border-radius-md);
+    display: inline-block;
+  }
+  
+  .value-prop {
+    background: linear-gradient(135deg, rgba(55, 138, 221, 0.05) 0%, rgba(85, 179, 237, 0.05) 100%);
+    border: 0.5px solid rgba(55, 138, 221, 0.15);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .value-prop h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+  }
+  .value-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .value-item {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+  .value-check {
+    color: #0F6E56;
+    font-weight: 600;
+    min-width: 20px;
+    flex-shrink: 0;
+  }
+  
+  .cta-section {
+    background: linear-gradient(135deg, #E6F1FB 0%, #D5E5F7 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .cta-section h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #0C447C;
+    margin-bottom: 0.5rem;
+  }
+  .cta-section p {
+    font-size: 13px;
+    color: #185FA5;
+    margin-bottom: 1rem;
+    opacity: 0.95;
+  }
+  .cta-section button {
+    padding: 10px 20px;
+    background: #378ADD;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 13px;
+    transition: opacity 0.2s;
+  }
+  .cta-section button:hover {
+    opacity: 0.9;
+  }
+</style>
+
+<div class="hero">
+  <h1>🎯 Impian Kamu Terlalu Berharga Buat Diambil Kesempatan</h1>
+  <p class="subheading">Jangan Biarkan 1-2 Bulan Membuat Rencana Bertahun-tahun Hancur</p>
+  
+  <div class="hero-story">
+    <strong>Ayo kita realistis sebentar:</strong><br>
+    Kamu udah nabung berkali-kali lipat. Target sudah jelas. Planning sudah matang. Impian udah terasa dalam genggaman...
+    <br><br>
+    Terus tiba-tiba ada 1-2 bulan doang ketika kamu atau keluarga sakit yang ngga diduga, atau ada biaya medical emergency yang gila-gilaan.
+    <br><br>
+    <strong>Boom. Rencana 10 tahun bisa musnah dalam sebulan.</strong>
+    <br><br>
+    Ini bukan paranoia. Ini smart planning. Ini tentang bikin impian kamu bulletproof.
+  </div>
+  
+  <div class="hero-cta">
+    <button class="btn btn-primary">Yuk Ketahuan Solusinya ↗</button>
+    <button class="btn">Tanya Lebih Lanjut</button>
+  </div>
+</div>
+
+<!-- VALUE PROPOSITION -->
+<div class="value-prop">
+  <h3>💡 Protection + Growth: Asuransi yang Bayar Sambil Tidur</h3>
+  <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem; line-height: 1.6;">Gini, asuransi biasa: "Kamu bayar premium, terus berharap ngga perlu dipakai." Manulife beda—kami ngga cuma proteksi kamu dari risiko, tapi juga kasih kamu cara mengembangkan duit yang kamu keluarkan setiap bulan.</p>
+  <div class="value-items">
+    <div class="value-item">
+      <span class="value-check">✓</span>
+      <span><strong>Proteksi Solid</strong> — Risiko yang ngga terduga? Covered. Kamu bisa tidur nyenyak.</span>
+    </div>
+    <div class="value-item">
+      <span class="value-check">✓</span>
+      <span><strong>Uangmu Bekerja</strong> — Setiap premium ngga cuma jadi perlindungan—tapi juga invest dan tumbuh nilainya</span>
+    </div>
+    <div class="value-item">
+      <span class="value-check">✓</span>
+      <span><strong>Fleksibel Banget</strong> — Sesuai kebutuhan kamu di tahap hidup mana pun</span>
+    </div>
+    <div class="value-item">
+      <span class="value-check">✓</span>
+      <span><strong>Transparan 100%</strong> — Tahu persis kemana duit kamu pergi dan berapa yang udah tumbuh</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRAM-PROGRAM -->
+<div class="section">
+  <h2 class="section-title">📋 Program-Program Solusi</h2>
+  <p class="section-subtitle">Setiap umur ada cerita yang beda. Ini program-program buat setiap tahap kehidupan kamu.</p>
+  
+  <div class="programs">
+    <div class="program-card">
+      <div class="program-header">
+        <div>
+          <div class="program-title">💍 Perencanaan Warisan</div>
+          <div class="program-subtitle">Warisan Cinta, Bukan Warisan Hutang</div>
+        </div>
+      </div>
+      <p class="program-desc">Kamu udah susah payah kumpulin aset. Saatnya jamin aset itu beneran jadi milik keluarga kamu, bukan malah jadi beban.</p>
+      <ul class="program-benefits">
+        <li>Asuransi jiwa yang bikin keluarga tetap aman finansial</li>
+        <li>Duit yang kamu sisihkan juga invest & tumbuh</li>
+        <li>Inheritance plan yang jelas, biar ngga ada ribut-ribut</li>
+      </ul>
+      <span class="program-ideal">Cocok buat yang established punya keluarga</span>
+    </div>
+    
+    <div class="program-card">
+      <div class="program-header">
+        <div>
+          <div class="program-title">💰 Pelunasan Utang</div>
+          <div class="program-subtitle">Hutang Jangan Jadi Masalah Keluarga Kamu</div>
+        </div>
+      </div>
+      <p class="program-desc">Cicilan rumah, mobil, atau investasi bisnis—semua bagus. Tapi kalau kamu tiba-tiba ada apa-apa, siapa yang lunasi?</p>
+      <ul class="program-benefits">
+        <li>Cicilan bakal lunas 100% kalau kamu kena apa-apa</li>
+        <li>Proses claim yang cepet dan simple</li>
+        <li>Bisa di-apply ke property, vehicle, business loan</li>
+      </ul>
+      <span class="program-ideal">Cocok buat yang baru beli rumah atau cicilan besar</span>
+    </div>
+    
+    <div class="program-card">
+      <div class="program-header">
+        <div>
+          <div class="program-title">🎓 Pendidikan Anak</div>
+          <div class="program-subtitle">Anak Kamu Bakal Sekolah, Apapun yang Terjadi</div>
+        </div>
+      </div>
+      <p class="program-desc">Punya anak itu ngga murah. Apalagi sekolah dari TK sampe kuliah. Pendidikan anak jangan sampe terhenti.</p>
+      <ul class="program-benefits">
+        <li>Tabungan khusus yang invest & tumbuh</li>
+        <li>Asuransi protection untuk jamin pendidikan anak</li>
+        <li>Ambil dana kapan aja sesuai tahap anak (SD, SMP, SMA, kuliah)</li>
+      </ul>
+      <span class="program-ideal">Cocok buat orang tua muda yang planning matang</span>
+    </div>
+    
+    <div class="program-card">
+      <div class="program-header">
+        <div>
+          <div class="program-title">📈 Program Investasi</div>
+          <div class="program-subtitle">Duit Kamu Tumbuh, Dengan Safety Net Lengkap</div>
+        </div>
+      </div>
+      <p class="program-desc">Nabung aja ngga cukup di jaman ini—duit harus bekerja. Tapi kamu juga butuh peace of mind.</p>
+      <ul class="program-benefits">
+        <li>Akses ke instrumen investasi yang dikelola expert</li>
+        <li>Portfolio yang diversified—ngga semua telur di satu keranjang</li>
+        <li>Asuransi terintegrasi, laporan transparan per bulan</li>
+      </ul>
+      <span class="program-ideal">Cocok buat long-term wealth building</span>
+    </div>
+
+    <div class="program-card">
+      <div class="program-header">
+        <div>
+          <div class="program-title">⛪ Pelunasan Haji</div>
+          <div class="program-subtitle">Ibadah Haji adalah Impian Spiritual—Plan-nya Finansial</div>
+        </div>
+      </div>
+      <p class="program-desc">Haji itu impian besar yang sacred. Kamu pengen pergi dengan tenang pikiran, ngga parno soal duit.</p>
+      <ul class="program-benefits">
+        <li>Tabungan khusus dengan return investasi</li>
+        <li>Asuransi protection—dana tetap aman untuk keluarga</li>
+        <li>Fleksibilitas waktu—kapan ready pergi, kapan berangkat</li>
+      </ul>
+      <span class="program-ideal">Cocok buat yang serius dengan ibadah haji</span>
+    </div>
+
+    <div class="program-card">
+      <div class="program-header">
+        <div>
+          <div class="program-title">👥 Employee Benefit</div>
+          <div class="program-subtitle">Tim yang Sehat = Bisnis yang Jalan</div>
+        </div>
+      </div>
+      <p class="program-desc">Talent adalah aset paling mahal. Program ini bikin team kamu merasa valued, protected, dan fokus kerja tanpa parno.</p>
+      <ul class="program-benefits">
+        <li>Asuransi kesehatan, jiwa, dan program pensiun</li>
+        <li>Retention rate tinggi—ngga perlu constantly hire orang baru</li>
+        <li>Compliance penuh, tax advantages, brand yang bagus</li>
+      </ul>
+      <span class="program-ideal">Cocok buat bisnis yang scale dengan smart</span>
+    </div>
+  </div>
+</div>
+
+<!-- CTA KONSULTASI -->
+<div class="cta-section">
+  <h3>🎤 Bingung Program Mana Cocok?</h3>
+  <p>Chat langsung dengan Jasmine (30 Menit, Gratis, No Strings Attached)</p>
+  <button onclick="sendPrompt('Saya ingin konsultasi gratis dengan Jasmine tentang program asuransi yang tepat')">
+    Daftar Konsultasi Sekarang
+  </button>
+</div>
+
+<!-- WEBINAR -->
+<div class="section">
+  <h2 class="section-title">📅 Webinar & Event</h2>
+  <p class="section-subtitle">Mau belajar langsung? Kami reguler bikin webinar gratis tentang planning finansial yang beneran helpful.</p>
+  
+  <div style="display: grid; gap: 12px;">
+    <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem;">
+      <div style="font-size: 12px; color: #378ADD; font-weight: 500; margin-bottom: 0.5rem;">📅 15 Juni 2026 | 19:00 WIB</div>
+      <div style="font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem;">Dari Gaji ke Kaya: Strategi Investasi Buat Milenial</div>
+      <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">🎤 Pembicara: Jasmine | 📍 Online (Zoom)</div>
+      <button style="padding: 6px 12px; background: #378ADD; color: white; border: none; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 500; cursor: pointer;" onclick="sendPrompt('Saya ingin daftar webinar investasi untuk milenial')">Daftar Sekarang</button>
+    </div>
+
+    <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem;">
+      <div style="font-size: 12px; color: #378ADD; font-weight: 500; margin-bottom: 0.5rem;">📅 22 Juni 2026 | 14:00 WIB</div>
+      <div style="font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem;">Perencanaan Finansial Buat Keluarga Muda</div>
+      <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">🎤 Fasilitator: Jasmine | 📍 Online + Offline (Jakarta)</div>
+      <button style="padding: 6px 12px; background: #378ADD; color: white; border: none; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 500; cursor: pointer;" onclick="sendPrompt('Saya tertarik dengan workshop perencanaan keuangan keluarga')">Daftar Sekarang</button>
+    </div>
+
+    <div style="background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem; opacity: 0.7;">
+      <div style="font-size: 12px; color: var(--color-text-secondary); font-weight: 500; margin-bottom: 0.5rem;">✅ 8 Juni 2026</div>
+      <div style="font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem;">Sukses Finansial: Asuransi Jiwa sebagai Foundation</div>
+      <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">👥 250+ peserta | ⭐ Rating: 4.8/5</div>
+      <button style="padding: 6px 12px; background: var(--color-background-secondary); color: var(--color-text-secondary); border: none; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 500; cursor: default;" disabled>Event Sudah Berlangsung</button>
+    </div>
+  </div>
+</div>

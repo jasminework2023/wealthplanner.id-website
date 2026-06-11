@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>wealthplanner.id — print</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    /* Print layout */
+    @page { size: A4 landscape; margin: 8mm; }
+    html, body { background: var(--bg); }
+    body { font-size: 14px; }
+
+    .print-page {
+      width: 100%;
+      min-height: calc(297mm - 16mm);
+      box-sizing: border-box;
+      page-break-before: always;
+      break-before: page;
+      break-inside: avoid;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .print-page:first-of-type {
+      page-break-before: auto;
+      break-before: auto;
+    }
+    .print-label {
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      z-index: 100;
+    }
+
+    /* Hide interactive chrome in the print view */
+    nav, footer, .twk-panel, .twk-launcher,
+    [class*="tweak"], #__tweaks-root,
+    .marquee-row {
+      display: none !important;
+    }
+    .sect { padding: 32px 0 !important; }
+    .sect-sm { padding: 24px 0 !important; }
+
+    /* Force background colors to render */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Make sticky elements behave as static for print */
+    .calc-grid > div:first-child,
+    .co-grid > div:last-child > div,
+    .book-sticky,
+    .pd-grid > div:last-child > div {
+      position: static !important;
+      top: auto !important;
+    }
+
+    /* Page header */
+    .print-cover {
+      min-height: calc(297mm - 16mm);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 64px;
+      background: var(--bg);
+    }
+
+    @media print {
+      .print-page { break-inside: avoid; }
+    }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    // Use the same tweaks the user saved in index.html
+    window.__TWEAK_DEFAULTS__ = {
+      "dark": false,
+      "lang": "id",
+      "accent": "#5EE5B0",
+      "heroLayout": "stack"
+    };
+  </script>
+
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="src/i18n.jsx"></script>
+  <script type="text/babel" src="src/icons.jsx"></script>
+  <script type="text/babel" src="src/ui.jsx"></script>
+  <script type="text/babel" src="src/data.jsx"></script>
+  <script type="text/babel" src="src/nav.jsx"></script>
+  <script type="text/babel" src="src/screens/home.jsx"></script>
+  <script type="text/babel" src="src/screens/hitung.jsx"></script>
+  <script type="text/babel" src="src/screens/calculator.jsx"></script>
+  <script type="text/babel" src="src/screens/products.jsx"></script>
+  <script type="text/babel" src="src/screens/product-detail.jsx"></script>
+  <script type="text/babel" src="src/screens/checkout.jsx"></script>
+  <script type="text/babel" src="src/screens/dashboard.jsx"></script>
+  <script type="text/babel" src="src/screens/booking.jsx"></script>
+
+  <script type="text/babel">
+    // Apply theme tokens once on mount
+    function applyTheme(t) {
+      document.documentElement.setAttribute("data-theme", t.dark ? "dark" : "light");
+      document.documentElement.style.setProperty("--accent", t.accent);
+      const ink = t.accent === "#FF6B6B" || t.accent === "#7C9CFF" ? "#0a0a0a" :
+                  t.accent === "#5EE5B0" ? "#04261a" :
+                  t.accent === "#C6F24E" ? "#1a2400" :
+                  "#1a1400";
+      document.documentElement.style.setProperty("--accent-ink", ink);
+      document.documentElement.lang = t.lang;
+    }
+    applyTheme(window.__TWEAK_DEFAULTS__);
+
+    const noop = () => {};
+    const i18nValue = { t: I18N[window.__TWEAK_DEFAULTS__.lang], lang: window.__TWEAK_DEFAULTS__.lang };
+
+    function Page({ label, children }) {
+      return (
+        <div className="print-page">
+          <span className="print-label">{label}</span>
+          {children}
+        </div>
+      );
+    }
+
+    function PrintCover() {
+      return (
+        <div className="print-page print-cover">
+          <span className="print-label">WEALTHPLANNER.ID · DESIGN EXPORT · {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</span>
+          <div style={{ maxWidth: 900 }}>
+            <Logo />
+            <h1 style={{ marginTop: 32, fontSize: 96, letterSpacing: "-0.04em", lineHeight: 0.9 }}>
+              wealthplanner<span style={{ color: "var(--accent)" }}>.id</span>
+            </h1>
+            <p style={{ fontSize: 22, color: "var(--ink-2)", marginTop: 32, maxWidth: 640 }}>
+              Platform edukasi & wealth planning untuk individu dan korporat. Design v1 — interactive prototype export.
+            </p>
+            <div style={{ marginTop: 48, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, maxWidth: 820 }}>
+              {[
+                { l: "01", n: "Opening" },
+                { l: "02", n: "Hitung Impian" },
+                { l: "03", n: "Kalkulator" },
+                { l: "04", n: "Produk" },
+                { l: "05", n: "Produk Detail" },
+                { l: "06", n: "Checkout" },
+                { l: "07", n: "Dashboard" },
+                { l: "08", n: "Booking Jasmine" },
+              ].map((s) => (
+                <div key={s.l} className="card" style={{ padding: 16 }}>
+                  <div className="mono muted" style={{ fontSize: 11, letterSpacing: "0.1em" }}>{s.l}</div>
+                  <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontWeight: 700, fontSize: 18, marginTop: 6 }}>{s.n}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function PrintApp() {
+      return (
+        <I18nContext.Provider value={i18nValue}>
+          <PrintCover />
+
+          <Page label="01 · OPENING / HOMEPAGE">
+            <HomeScreen onNavigate={noop} heroLayout={window.__TWEAK_DEFAULTS__.heroLayout} />
+          </Page>
+
+          <Page label="02 · HITUNG IMPIAN — HUB">
+            <HitungHub onNavigate={noop} />
+          </Page>
+
+          <Page label="03 · KALKULATOR — INVESTMENT PLANNER">
+            <CalculatorScreen id="invest" onNavigate={noop} onSaveResult={noop} />
+          </Page>
+
+          <Page label="04 · KALKULATOR — DANA PENDIDIKAN">
+            <CalculatorScreen id="edu" onNavigate={noop} onSaveResult={noop} />
+          </Page>
+
+          <Page label="05 · PRODUK — LISTING">
+            <ProductsScreen onNavigate={noop} cart={[]} onAddToCart={noop} />
+          </Page>
+
+          <Page label="06 · PRODUK — DETAIL (Investment Planner)">
+            <ProductDetailScreen id="invest" onNavigate={noop} onAddToCart={noop} onBuyNow={noop} />
+          </Page>
+
+          <Page label="07 · CHECKOUT & PEMBAYARAN">
+            <CheckoutScreen
+              cart={[PRODUCTS.find(p => p.id === "invest"), PRODUCTS.find(p => p.id === "kpr")]}
+              onNavigate={noop}
+              onCompletePurchase={noop}
+            />
+          </Page>
+
+          <Page label="08 · CUSTOMER DASHBOARD">
+            <DashboardScreen
+              purchases={["cashflow", "invest"]}
+              savedResults={[
+                { id: "invest", title: "Investment Planner", value: "Rp 2.457.113/bln · 10thn" },
+                { id: "edu", title: "Dana Pendidikan", value: "Rp 1.842.000/bln" },
+              ]}
+              bookings={[{ date: "Senin, 2 Juni", time: "10:30 WIB", package: "Sesi 1× (60 menit)", topic: "Review portofolio + rencana dana pendidikan" }]}
+              onNavigate={noop}
+            />
+          </Page>
+
+          <Page label="09 · KONSULTASI BOOKING — JASMINE">
+            <BookingScreen onNavigate={noop} onConfirmBooking={noop} />
+          </Page>
+        </I18nContext.Provider>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<PrintApp />);
+
+    // Auto-print once fonts + Babel + render are settled
+    (async () => {
+      try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+      // wait for React mount + layout
+      await new Promise(r => setTimeout(r, 1500));
+      window.print();
+    })();
+  </script>
+</body>
+</html>
