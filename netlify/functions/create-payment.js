@@ -12,7 +12,8 @@ exports.handler = async (event) => {
       external_id: externalId,
       amount: total,
       payer_email: contact.email,
-      description: items.map((i) => i.name).join(", "),
+      description: items.map((i) => i.name || i.name_id || i.name_en || "Produk Digital").join(", "),
+amount: Number(total),
       success_redirect_url: "https://wealthplannerindonesia.netlify.app",
       failure_redirect_url: "https://wealthplannerindonesia.netlify.app",
     };
