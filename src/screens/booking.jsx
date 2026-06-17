@@ -50,7 +50,7 @@ function BookingScreen({ onNavigate }) {
       {/* Calendly inline embed */}
       <div
         className="calendly-inline-widget"
-        data-url="https://calendly.com/jannatuljasmine/30min"
+        data-url="https://calendly.com/jannatuljasmine/30min?background_color=0a0a0a&text_color=ffffff&primary_color=FFB800"
         style={{ minWidth: "320px", height: "700px" }}
       />
 
