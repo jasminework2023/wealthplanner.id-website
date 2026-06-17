@@ -50,7 +50,7 @@ function BookingScreen({ onNavigate }) {
       <div style={{ maxWidth: 640, marginBottom: 40 }}>
         <div className="row" style={{ gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
           <Tag variant="accent">★ Konsultasi Gratis</Tag>
-          <Tag variant="outline">30–60 Menit · Via Zoom</Tag>
+          <Tag variant="outline">10 Menit · Via Zoom</Tag>
         </div>
         <h1 style={{ marginBottom: 16 }}>
           {lang === "id"
@@ -59,8 +59,8 @@ function BookingScreen({ onNavigate }) {
         </h1>
         <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.65 }}>
           {lang === "id"
-            ? "Pilih jadwal yang cocok. Jasmine akan bantu kamu lihat kondisi keuangan sekarang dan solusi proteksi yang paling sesuai — gratis, tanpa komitmen apapun."
-            : "Pick a time that works for you. Jasmine will help you understand your current financial situation and the right protection solution — free, no commitment."}
+            ? "Pilih jadwal yang cocok. Kami akan bantu kamu lihat kondisi keuangan sekarang dan solusi proteksi yang paling sesuai — gratis, tanpa komitmen apapun."
+            : "Pick a time that works for you. We'll help you understand your current financial situation and the right protection solution — free, no commitment."}
         </p>
       </div>
 
