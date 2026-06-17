@@ -5,6 +5,7 @@ exports.handler = async (event) => {
 
   try {
     const { contact, items, total } = JSON.parse(event.body);
+    console.log("Data diterima:", JSON.stringify({ contact, items, total }));
     const externalId = "WP-" + Date.now();
 
     const invoicePayload = {
