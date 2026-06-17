@@ -13,15 +13,110 @@ function ProductsScreen({ onNavigate, cart, onAddToCart }) {
       </Section>
 
       <Section style={{ paddingTop: 16 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20 }}>
-          {PRODUCTS.map((p, i) => (
+        {/* Featured top products */}
+        <WealthTrackerSection onNavigate={onNavigate} lang={lang} />
+        <BundleSection onAddToCart={onAddToCart} lang={lang} />
+
+        {/* Individual products grid — exclude bundle & wealth-tracker-ai (shown above) */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20, marginTop: 48 }}>
+          {PRODUCTS.filter(p => p.id !== "bundle" && p.id !== "wealth-tracker-ai").map((p, i) => (
             <ProductGridCard key={p.id} product={p} onClick={() => onNavigate({ name: "product", id: p.id })} variant={i % 3} />
           ))}
         </div>
-
-        {/* Bundle section */}
-        <BundleSection onAddToCart={onAddToCart} lang={lang} />
       </Section>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────
+// WEALTH TRACKER AI — featured wide card
+// ──────────────────────────────────────────────────────────────
+function WealthTrackerSection({ onNavigate, lang }) {
+  const product = PRODUCTS.find(p => p.id === "wealth-tracker-ai");
+  if (!product) return null;
+
+  const features = lang === "id" ? product.features_id : product.features_en;
+
+  return (
+    <div style={{
+      background: "#0d1117",
+      color: "#ffffff",
+      borderRadius: 28,
+      overflow: "hidden",
+      display: "grid",
+      gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+      gap: 0,
+      marginBottom: 20,
+    }} className="bundle-grid">
+
+      {/* Left — product image */}
+      <div style={{ position: "relative", background: "#161b22", minHeight: 420 }}>
+        <img
+          src={`/${product.image}`}
+          alt={product[`name_${lang}`]}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", minHeight: 420 }}
+        />
+      </div>
+
+      {/* Right — copy + CTA */}
+      <div style={{ padding: "40px 40px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 20 }}>
+        <div>
+          <Tag variant="accent">✦ {lang === "id" ? "BARU · AI POWERED · TERLARIS" : "NEW · AI POWERED · BEST SELLER"}</Tag>
+          <h2 style={{ color: "#ffffff", marginTop: 16, fontSize: "clamp(22px, 3vw, 32px)", lineHeight: 1.15 }}>
+            {lang === "id"
+              ? <>Wealth Tracker<br /><span style={{ color: "var(--accent)" }}>AI Template</span></>
+              : <>Wealth Tracker<br /><span style={{ color: "var(--accent)" }}>AI Template</span></>}
+          </h2>
+          <p style={{ marginTop: 10, color: "rgba(255,255,255,0.65)", fontSize: 14, lineHeight: 1.6 }}>
+            {lang === "id"
+              ? "Catat keuangan cukup lewat chat Telegram. AI otomatis membacanya dan mencatat ke Google Sheets-mu."
+              : "Track your finances just by chatting on Telegram. AI reads and logs it to your Google Sheets automatically."}
+          </p>
+        </div>
+
+        {/* Features */}
+        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+          {features.map((f, i) => (
+            <li key={i} className="row" style={{ gap: 10, fontSize: 13, color: "rgba(255,255,255,0.75)", alignItems: "flex-start" }}>
+              <span style={{
+                width: 18, height: 18, minWidth: 18, borderRadius: "50%",
+                background: "var(--accent)", color: "var(--accent-ink)",
+                display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1,
+              }}>
+                <Check size={11} stroke={3} />
+              </span>
+              <span style={{ lineHeight: 1.5 }}>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* Note */}
+        {product[`note_${lang}`] && (
+          <div style={{ background: "rgba(255,184,0,0.12)", border: "1px solid rgba(255,184,0,0.3)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "var(--accent)" }}>
+            ✦ {product[`note_${lang}`]}
+          </div>
+        )}
+
+        {/* Price + CTA */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 20 }}>
+          <div className="mono" style={{ fontSize: 11, opacity: 0.5, marginBottom: 4, letterSpacing: "0.1em" }}>SEKALI BAYAR · AKSES SELAMANYA</div>
+          <div className="row" style={{ gap: 10, alignItems: "baseline", marginBottom: 16 }}>
+            <span className="mono" style={{ fontSize: 30, fontWeight: 700, color: "var(--accent)" }}>Rp 99.000</span>
+            <span className="mono" style={{ fontSize: 15, fontWeight: 600, textDecoration: "line-through", opacity: 0.4, color: "#fff" }}>Rp 149.000</span>
+          </div>
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => onNavigate({ name: "product", id: "wealth-tracker-ai" })}
+            iconRight={<ArrowRight size={18} />}
+            style={{ width: "100%" }}
+          >
+            {lang === "id" ? "Lihat & Beli Sekarang" : "View & Buy Now"}
+          </Button>
+        </div>
+      </div>
+
+      <style>{`@media (max-width: 820px) { .bundle-grid { grid-template-columns: 1fr !important; } }`}</style>
     </div>
   );
 }
@@ -58,9 +153,8 @@ function BundleSection({ onAddToCart, lang }) {
 
   return (
     <div style={{
-      marginTop: 48,
-      background: "var(--ink)",
-      color: "var(--bg)",
+      background: "#111111",
+      color: "#ffffff",
       borderRadius: 28,
       overflow: "hidden",
       display: "grid",
@@ -153,7 +247,7 @@ function BundleSection({ onAddToCart, lang }) {
           <div className="mono muted" style={{ fontSize: 11, opacity: 0.5, marginBottom: 4 }}>SEKALI BAYAR</div>
           <div className="row" style={{ gap: 10, alignItems: "baseline", marginBottom: 16 }}>
             <span className="mono" style={{ fontSize: 30, fontWeight: 700, color: "var(--accent)" }}>Rp 149.000</span>
-            <span className="mono" style={{ fontSize: 15, fontWeight: 600, textDecoration: "line-through", opacity: 0.4 }}>Rp 254.000</span>
+            <span className="mono" style={{ fontSize: 15, fontWeight: 600, textDecoration: "line-through", opacity: 0.4, color: "#fff" }}>Rp 254.000</span>
           </div>
           <Button
             variant="primary"
@@ -166,8 +260,6 @@ function BundleSection({ onAddToCart, lang }) {
           </Button>
         </div>
       </div>
-
-      <style>{`@media (max-width: 820px) { .bundle-grid { grid-template-columns: 1fr !important; } }`}</style>
     </div>
   );
 }
