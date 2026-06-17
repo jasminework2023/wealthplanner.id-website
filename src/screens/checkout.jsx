@@ -27,7 +27,7 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
   setLoading(true);
   setPayError("");
   try {
-    const res = await fetch("/.netlify/functions/create-payment", {
+    const res = await fetch("/api/create-payment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contact, items, total }),
