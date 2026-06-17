@@ -16,8 +16,8 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
   const subtotal = items.reduce((s, i) => s + i.price, 0);
   const discount = promoApplied ? Math.round(subtotal * 0.15) : 0;
   const taxBase = subtotal - discount;
-  const tax = Math.round(taxBase * 0.11);
-  const total = taxBase + tax;
+  const tax = 0;
+  const total = taxBase;
 
   async function handlePay() {
   if (!contact.name || !contact.email || !contact.phone) {
