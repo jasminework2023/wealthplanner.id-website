@@ -62,7 +62,8 @@ function AboutScreen({ onNavigate }) {
         <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)", gap: 32, alignItems: "flex-start" }} className="about-grid">
           <div className="card" style={{ padding: 32 }}>
             <Eyebrow>{lang === "id" ? "FOUNDER" : "FOUNDER"}</Eyebrow>
-            <h2 style={{ marginTop: 14, fontSize: 36 }}>Jasmine</h2>
+            <h2 style={{ marginTop: 14, fontSize: 36 }}>Jannatul Jasmine</h2>
+
             <div className="mono muted" style={{ fontSize: 12, marginTop: 6, letterSpacing: "0.08em" }}>SHARIA LIFE PLANNER · FINANCIAL EDUCATOR</div>
             <p className="ink-2" style={{ fontSize: 15, lineHeight: 1.6, marginTop: 20 }}>
               {lang === "id"
@@ -139,12 +140,13 @@ function PartnershipScreen({ onNavigate }) {
 
 function ContactScreen({ onNavigate }) {
   const { lang } = useT();
+
   const contacts = [
     { label: "Email", value: "wealthplanner234@gmail.com", icon: "Wallet" },
-    { label: "WhatsApp", value: "+62 858-9006-5850", icon: "User" },
     { label: "Instagram", value: "@wealthplanner.id", icon: "Sparkle" },
     { label: "TikTok", value: "@wealthplanner.id", icon: "Video" },
   ];
+
   return (
     <div>
       <Section style={{ paddingTop: 56, paddingBottom: 24 }}>
@@ -187,8 +189,8 @@ function ContactScreen({ onNavigate }) {
               <h4 style={{ fontSize: 16 }}>{lang === "id" ? "Jam operasional" : "Operating hours"}</h4>
               <p className="ink-2" style={{ fontSize: 14, marginTop: 8, lineHeight: 1.6 }}>
                 {lang === "id"
-                  ? "Senin–Jumat · 09.00–18.00 WIB · Respon WhatsApp dalam 4 jam kerja."
-                  : "Mon–Fri · 09.00–18.00 WIB · WhatsApp response within 4 working hours."}
+                  ? "Senin–Jumat · 09.00–18.00 WIB · Respon email dalam 1 hari kerja."
+                  : "Mon–Fri · 09.00–18.00 WIB · Email response within 1 working day."}
               </p>
             </div>
           </div>
