@@ -80,24 +80,15 @@ function DashboardHero({ onNavigate }) {
         )}
       </h2>
 
-      {/* CTA buttons — stacked, centered */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginBottom: 64, maxWidth: 420 }}>
+      {/* CTA button */}
+      <div style={{ marginBottom: 64 }}>
         <Button
           variant="primary"
           size="lg"
           onClick={() => onNavigate({ name: "book" })}
           iconRight={<ArrowRight size={18} />}
-          style={{ width: "100%", justifyContent: "center" }}
         >
           {lang === "id" ? "Free Konsultasi 1-on-1 · 10 Menit" : "Free 1-on-1 Consultation · 10 Minutes"}
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={scrollToFeatures}
-          style={{ width: "100%", justifyContent: "center" }}
-        >
-          {lang === "id" ? "Pelajari Lebih Lanjut" : "Learn More"}
         </Button>
       </div>
 
@@ -919,53 +910,58 @@ function WebinarSlider({ past, lang }) {
   };
 
   const allItems = [starEnergy, ...past.map((w) => ({ id: w.id, image: w.image, title: w[`title_${lang}`] || w.title, org: "", date: w.date || "", location: "" }))];
-  const [idx, setIdx] = React.useState(0);
 
-  const prev = () => setIdx((i) => (i - 1 + allItems.length) % allItems.length);
-  const next = () => setIdx((i) => (i + 1) % allItems.length);
+  const PER_PAGE = 3;
+  const totalPages = Math.ceil(allItems.length / PER_PAGE);
+  const [page, setPage] = React.useState(0);
 
-  const item = allItems[idx];
+  const prev = () => setPage((p) => (p - 1 + totalPages) % totalPages);
+  const next = () => setPage((p) => (p + 1) % totalPages);
+
+  const visible = allItems.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
 
   return (
     <div style={{ position: "relative" }}>
-      <div className="card" style={{ padding: 0, overflow: "hidden", display: "grid", gridTemplateColumns: "minmax(0, 0.8fr) minmax(0, 1.4fr)", gap: 0, minHeight: 320 }} className="webinar-slide">
-        <img
-          src={item.image}
-          alt={item.title}
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
-        />
-        <div style={{ padding: 28, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <div>
-            {item.org && <span className="mono" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "var(--muted)" }}>{item.org}</span>}
-            <h3 style={{ marginTop: 10, fontSize: 20, lineHeight: 1.3 }}>{item.title}</h3>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {item.date && <span className="muted mono" style={{ fontSize: 12 }}>📅 {item.date}</span>}
-            {item.location && <span className="muted mono" style={{ fontSize: 12 }}>📍 {item.location}</span>}
-            {/* Pagination dots */}
-            <div className="row" style={{ gap: 6, marginTop: 12 }}>
-              {allItems.map((_, i) => (
-                <button key={i} onClick={() => setIdx(i)} style={{
-                  width: i === idx ? 20 : 8, height: 8, borderRadius: 999, border: 0, cursor: "pointer",
-                  background: i === idx ? "var(--accent)" : "var(--border)", padding: 0, transition: "all .2s",
-                }} />
-              ))}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }} className="webinar-grid">
+        {visible.map((item) => (
+          <div key={item.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            <div style={{ height: 200, overflow: "hidden", flexShrink: 0 }}>
+              <img
+                src={item.image}
+                alt={item.title}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+              />
+            </div>
+            <div style={{ padding: "16px 18px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+              {item.org && <span className="mono" style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: "var(--muted)" }}>{item.org}</span>}
+              <p style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.4, margin: 0, color: "var(--ink)" }}>{item.title}</p>
+              {item.date && <span className="muted mono" style={{ fontSize: 11, marginTop: 4 }}>📅 {item.date}</span>}
+              {item.location && <span className="muted mono" style={{ fontSize: 11 }}>📍 {item.location}</span>}
             </div>
           </div>
-        </div>
+        ))}
       </div>
-      {/* Arrow buttons */}
-      {allItems.length > 1 && (
-        <>
-          <button onClick={prev} style={{ position: "absolute", left: -16, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, borderRadius: "50%", background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}>
+
+      {/* Arrows + dots — only show if more than 1 page */}
+      {totalPages > 1 && (
+        <div className="row" style={{ justifyContent: "center", gap: 12, marginTop: 24, alignItems: "center" }}>
+          <button onClick={prev} style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <ArrowRight size={16} style={{ transform: "rotate(180deg)" }} />
           </button>
-          <button onClick={next} style={{ position: "absolute", right: -16, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, borderRadius: "50%", background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}>
+          <div className="row" style={{ gap: 6 }}>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button key={i} onClick={() => setPage(i)} style={{
+                width: i === page ? 20 : 8, height: 8, borderRadius: 999, border: 0, cursor: "pointer",
+                background: i === page ? "var(--accent)" : "var(--border)", padding: 0, transition: "all .2s",
+              }} />
+            ))}
+          </div>
+          <button onClick={next} style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <ArrowRight size={16} />
           </button>
-        </>
+        </div>
       )}
-      <style>{`@media (max-width: 680px) { .webinar-slide { grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`@media (max-width: 800px) { .webinar-grid { grid-template-columns: repeat(2, 1fr) !important; } } @media (max-width: 500px) { .webinar-grid { grid-template-columns: 1fr !important; } }`}</style>
     </div>
   );
 }
