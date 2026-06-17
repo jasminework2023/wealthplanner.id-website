@@ -66,7 +66,9 @@ function DashboardHero({ onNavigate }) {
         {lang === "id" ? (
           <>
             <span style={{ color: "var(--accent)" }}>Wealthplanner.id</span>
-            {" — platform yang bantu kamu mendapatkan produk asuransi, akumulasi kekayaan, dan investasi yang sesuai kebutuhan"}
+            {" —"}
+            <br />
+            {"platform yang bantu kamu mendapatkan produk asuransi, akumulasi kekayaan, dan investasi yang sesuai kebutuhan"}
             <br />
             <span style={{ fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 400, color: "var(--ink-2)" }}>
               {"dengan profesional agent bersertifikat dan tools keuangan akurat."}
@@ -925,11 +927,11 @@ function WebinarSlider({ past, lang }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }} className="webinar-grid">
         {visible.map((item) => (
           <div key={item.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            <div style={{ height: 200, overflow: "hidden", flexShrink: 0 }}>
+            <div style={{ background: "var(--surface-2)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <img
                 src={item.image}
                 alt={item.title}
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+                style={{ width: "100%", aspectRatio: "3/4", objectFit: "contain", display: "block" }}
               />
             </div>
             <div style={{ padding: "16px 18px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
