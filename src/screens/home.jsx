@@ -66,7 +66,11 @@ function DashboardHero({ onNavigate }) {
         {lang === "id" ? (
           <>
             <span style={{ color: "var(--accent)" }}>Wealthplanner.id</span>
-            {" — platform yang bantu kamu mendapatkan produk asuransi, akumulasi kekayaan, dan investasi yang sesuai kebutuhan dengan profesional agent bersertifikat dan tools keuangan akurat."}
+            {" — platform yang bantu kamu mendapatkan produk asuransi, akumulasi kekayaan, dan investasi yang sesuai kebutuhan"}
+            <br />
+            <span style={{ fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 400, color: "var(--ink-2)" }}>
+              {"dengan profesional agent bersertifikat dan tools keuangan akurat."}
+            </span>
           </>
         ) : (
           <>
