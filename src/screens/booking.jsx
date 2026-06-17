@@ -12,7 +12,24 @@ function BookingScreen({ onNavigate }) {
       script.async = true;
       document.body.appendChild(script);
     }
+    // Load Calendly CSS for popup
+    const existingCss = document.querySelector('link[href*="calendly"]');
+    if (!existingCss) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://assets.calendly.com/assets/external/widget.css";
+      document.head.appendChild(link);
+    }
   }, []);
+
+  const openCalendly = (e) => {
+    e.preventDefault();
+    if (window.Calendly) {
+      window.Calendly.initPopupWidget({
+        url: "https://calendly.com/jannatuljasmine/30min?background_color=0a0a0a&text_color=ffffff&primary_color=FFB800&hide_gdpr_banner=1",
+      });
+    }
+  };
 
   return (
     <Section style={{ paddingTop: 40, paddingBottom: 56 }}>
@@ -47,12 +64,22 @@ function BookingScreen({ onNavigate }) {
         </p>
       </div>
 
-      {/* Calendly inline embed */}
-      <div
-        className="calendly-inline-widget"
-        data-url="https://calendly.com/jannatuljasmine/30min?background_color=0a0a0a&text_color=ffffff&primary_color=FFB800"
-        style={{ minWidth: "320px", height: "700px" }}
-      />
+      {/* Calendly popup button */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 16 }}>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={openCalendly}
+          iconRight={<ArrowRight size={18} />}
+        >
+          {lang === "id" ? "Pilih Jadwal Konsultasi →" : "Choose Consultation Schedule →"}
+        </Button>
+        <p className="muted" style={{ fontSize: 13 }}>
+          {lang === "id"
+            ? "Kamu akan memilih tanggal & waktu yang cocok. Konfirmasi dikirim ke email."
+            : "You'll pick a date & time that works. Confirmation sent to your email."}
+        </p>
+      </div>
 
       {/* Trust signals */}
       <div
