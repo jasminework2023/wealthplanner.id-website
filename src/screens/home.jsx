@@ -6,13 +6,11 @@ function HomeScreen({ onNavigate, heroLayout }) {
     <div>
       <DashboardHero onNavigate={onNavigate} />
       <SocialProofMarquee />
-      <ProblemSection />
       <CalculatorsTeaser onNavigate={onNavigate} />
       <ProductsTeaser onNavigate={onNavigate} />
       <ProgramTeaser onNavigate={onNavigate} />
       <WebinarTeaser onNavigate={onNavigate} />
       <JasmineSection onNavigate={onNavigate} />
-      <WhySection />
       <BigCTA onNavigate={onNavigate} />
     </div>
   );
@@ -24,8 +22,8 @@ function DashboardHero({ onNavigate }) {
     {
       id: "calc",
       tag: "01 / GRATIS",
-      title: "Hitung Impianmu disini",
-      desc: "8 kalkulator otomatis untuk semua tujuan finansialmu — dari cek kondisi sampai dana haji.",
+      title: "Hitung Impian Keuangan Gratis",
+      desc: "Dengan menghitung impianmu dengan angka yang realistis, lebih mudah dan memotivasi kamu untuk mencapainya. 8 kalkulator otomatis siap bantu.",
       cta: "Mulai hitung",
       route: "calc",
       icon: "Sparkle",
@@ -34,8 +32,8 @@ function DashboardHero({ onNavigate }) {
     {
       id: "products",
       tag: "02 / PREMIUM",
-      title: "Digital Finance Product",
-      desc: "Spreadsheet planner yang sudah teruji. Sekali beli, akses selamanya. Update gratis.",
+      title: "Produk Keuangan Digital Premium",
+      desc: "Template spreadsheet dan AI premium yang bantu kamu manage cashflow, rencanakan impian lebih matang, dan pantau kondisi keuangan secara real-time.",
       cta: "Lihat produk",
       route: "products",
       icon: "Wallet",
@@ -44,91 +42,71 @@ function DashboardHero({ onNavigate }) {
     {
       id: "program",
       tag: "03 / PROTEKSI",
-      title: "Asuransi Syariah",
-      desc: "6 program perlindungan syariah bersama Manulife Indonesia. Konsultasi gratis, tanpa tekanan.",
+      title: "Produk Asuransi dan Investasi",
+      desc: "Bantu kamu menemukan strategi mencapai impian — menumbuhkan jalur investasi dan menjaganya dengan proteksi asuransi syariah yang tepat.",
       cta: "Lihat program",
       route: "program",
       icon: "ShieldCheck",
       color: "#7C9CFF",
     },
-    {
-      id: "collab",
-      tag: "04 / KOLABORASI",
-      title: "Open for collaboration!",
-      desc: "Brand partnership, affiliate, financial educator network. Yuk ngobrol.",
-      cta: "Lihat peluang",
-      route: "partnership",
-      icon: "Heart",
-      color: "#FF9A6B",
-    },
   ] : [
-    { id: "calc", tag: "01 / FREE", title: "Calculate your dreams", desc: "8 automated calculators for every financial goal — from a health check to hajj funding.", cta: "Start calculating", route: "calc", icon: "Sparkle", color: "var(--accent)" },
-    { id: "products", tag: "02 / PREMIUM", title: "Digital Finance Product", desc: "Battle-tested spreadsheet planners. Buy once, lifetime access. Free updates.", cta: "See products", route: "products", icon: "Wallet", color: "#C6F24E" },
-    { id: "program", tag: "03 / PROTECTION", title: "Sharia Insurance", desc: "6 sharia-compliant protection programs with Manulife Indonesia. Free consultation, no pressure.", cta: "See programs", route: "program", icon: "ShieldCheck", color: "#7C9CFF" },
-    { id: "collab", tag: "04 / COLLABORATION", title: "Open for collaboration!", desc: "Brand partnership, affiliates, financial educator network. Let's talk.", cta: "Explore opportunities", route: "partnership", icon: "Heart", color: "#FF9A6B" },
+    { id: "calc", tag: "01 / FREE", title: "Calculate Your Financial Goals", desc: "Calculating your goals with realistic numbers makes them easier and more motivating to achieve. 8 automated calculators ready to help.", cta: "Start calculating", route: "calc", icon: "Sparkle", color: "var(--accent)" },
+    { id: "products", tag: "02 / PREMIUM", title: "Premium Digital Finance Products", desc: "Premium spreadsheet templates and AI tools to help you manage cashflow, plan your goals more maturely, and track your finances in real-time.", cta: "See products", route: "products", icon: "Wallet", color: "#C6F24E" },
+    { id: "program", tag: "03 / PROTECTION", title: "Insurance & Investment Products", desc: "Help you find the right strategy to achieve your goals — growing investment channels and protecting them with the right sharia insurance.", cta: "See programs", route: "program", icon: "ShieldCheck", color: "#7C9CFF" },
   ];
+
+  const scrollToFeatures = () => {
+    document.getElementById("features-section")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <Section style={{ paddingTop: 56, paddingBottom: 16 }}>
-      {/* Badge row */}
-      <div className="row" style={{ gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
-        <Tag variant="accent">★ Konsultan Asuransi Syariah</Tag>
-        <Tag variant="outline">Manulife Indonesia</Tag>
-        <Tag variant="outline">OJK Licensed</Tag>
-      </div>
-
       {/* Headline */}
-      <h1 style={{ maxWidth: 900, marginBottom: 24 }}>
+      <h1 style={{ maxWidth: 860, marginBottom: 20 }}>
         {lang === "id" ? (
           <>
-            Kamu kerja keras buat keluarga.{" "}
-            <span style={{ color: "var(--accent)" }}>Siapa yang lindungi mereka</span>{" "}
-            kalau kamu tidak bisa?
+            Wealthplanner.id —{" "}
+            <span style={{ color: "var(--accent)" }}>Platform</span>{" "}
+            yang bantu kamu mendapatkan produk asuransi, akumulasi kekayaan dan investasi yang sesuai kebutuhan
           </>
         ) : (
           <>
-            You work hard for your family.{" "}
-            <span style={{ color: "var(--accent)" }}>Who protects them</span>{" "}
-            if you can't?
+            Wealthplanner.id —{" "}
+            <span style={{ color: "var(--accent)" }}>Platform</span>{" "}
+            that helps you find the right insurance, wealth accumulation, and investment products for your needs
           </>
         )}
       </h1>
+      <p className="ink-2" style={{ fontSize: 17, lineHeight: 1.65, maxWidth: 640, marginBottom: 36 }}>
+        {lang === "id"
+          ? "Dengan profesional agent bersertifikat dan tools keuangan akurat."
+          : "With certified professional agents and accurate financial tools."}
+      </p>
 
-      {/* Subheadline + value props */}
-      <div style={{ maxWidth: 640, marginBottom: 40 }}>
-        <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.65, marginBottom: 24 }}>
-          {lang === "id"
-            ? "Bersama Jasmine — Sharia Life Planner berpengalaman — kamu bisa tahu persis perlindungan apa yang kamu butuhkan, berapa preminya, dan kenapa syariah lebih sesuai untuk keluargamu."
-            : "Together with Jasmine — an experienced Sharia Life Planner — you'll know exactly what protection you need, how much the premium is, and why sharia is better suited for your family."}
-        </p>
-        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-          {(lang === "id"
-            ? ["Syariah-compliant · tanpa riba & gharar", "Konsultasi gratis, tanpa tekanan beli", "Ilustrasi lengkap sesuai kondisimu"]
-            : ["Sharia-compliant · no riba & gharar", "Free consultation, no pressure to buy", "Complete illustration tailored to you"]
-          ).map((item, i) => (
-            <li key={i} className="row" style={{ gap: 12, fontSize: 16, fontWeight: 500, color: "var(--ink)" }}>
-              <span style={{ width: 24, height: 24, borderRadius: 999, background: "var(--accent)", color: "var(--accent-ink)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Check size={13} stroke={3} />
-              </span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* CTA buttons */}
-      <div className="row" style={{ gap: 12, marginBottom: 56, flexWrap: "wrap" }}>
-        <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "book" })} iconRight={<ArrowRight size={18} />}>
-          {lang === "id" ? "Booking Konsultasi Gratis" : "Book Free Consultation"}
+      {/* CTA buttons — stacked, centered */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginBottom: 64, maxWidth: 420 }}>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={() => onNavigate({ name: "book" })}
+          iconRight={<ArrowRight size={18} />}
+          style={{ width: "100%", justifyContent: "center" }}
+        >
+          {lang === "id" ? "Free Konsultasi 1-on-1 · 10 Menit" : "Free 1-on-1 Consultation · 10 Minutes"}
         </Button>
-        <Button variant="outline" size="lg" onClick={() => onNavigate({ name: "calc" })}>
-          {lang === "id" ? "Coba Kalkulator Gratis" : "Try Free Calculator"}
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={scrollToFeatures}
+          style={{ width: "100%", justifyContent: "center" }}
+        >
+          {lang === "id" ? "Pelajari Lebih Lanjut" : "Learn More"}
         </Button>
       </div>
 
       {/* Section cards */}
-      <div style={{ marginBottom: 24 }}>
-        <Eyebrow>{lang === "id" ? "APA YANG BISA KAMU LAKUKAN DI SINI?" : "WHAT CAN YOU DO HERE?"}</Eyebrow>
+      <div id="features-section" style={{ marginBottom: 24 }}>
+        <Eyebrow>{lang === "id" ? "MULAI BENAHI KEUANGANMU DARI SINI!" : "START FIXING YOUR FINANCES HERE!"}</Eyebrow>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
@@ -669,21 +647,15 @@ function JasmineSection({ onNavigate }) {
             borderRadius: 24,
             overflow: "hidden",
             position: "relative",
-            backgroundImage: "radial-gradient(at 70% 30%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 60%), repeating-linear-gradient(135deg, transparent 0 12px, var(--chip) 12px 13px)",
           }}>
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}>
-              <div style={{
-                width: 120, height: 120, borderRadius: "50%",
-                background: "linear-gradient(135deg, var(--accent), color-mix(in oklab, var(--accent) 50%, var(--bg)))",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "Bricolage Grotesque, sans-serif",
-                fontSize: 56, fontWeight: 800, color: "var(--accent-ink)",
-              }}>J</div>
-              <div className="mono muted" style={{ fontSize: 10, letterSpacing: "0.15em" }}>FOTO JASMINE</div>
-            </div>
+            <img
+              src="/assets/jasmine-profile.jpg.jpeg"
+              alt="Jasmine — Sharia Life Planner Manulife Indonesia"
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+            />
             <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, padding: 14, background: "color-mix(in oklab, var(--bg) 85%, transparent)", backdropFilter: "blur(20px)", borderRadius: 14, border: "1px solid var(--border)" }}>
               <div className="mono" style={{ fontSize: 10, color: "var(--muted)", fontWeight: 600, letterSpacing: "0.1em" }}>SHARIA LIFE PLANNER · MANULIFE</div>
-              <div style={{ fontWeight: 700, fontSize: 18, marginTop: 4, fontFamily: "Bricolage Grotesque, sans-serif", letterSpacing: "-0.01em" }}>Jasmine</div>
+              <div style={{ fontWeight: 700, fontSize: 18, marginTop: 4, fontFamily: "Bricolage Grotesque, sans-serif", letterSpacing: "-0.01em" }}>Jannatul Jasmine, SE, WPPE</div>
             </div>
           </div>
           <div style={{ position: "absolute", top: 24, right: -16, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "12px 16px", fontSize: 12, transform: "rotate(4deg)" }}>
@@ -694,28 +666,26 @@ function JasmineSection({ onNavigate }) {
           </div>
         </div>
         <div>
-          <Eyebrow>{lang === "id" ? "KENALAN DULU" : "MEET JASMINE"}</Eyebrow>
+          <Eyebrow>{lang === "id" ? "PROFIL KONSULTAN" : "CONSULTANT PROFILE"}</Eyebrow>
           <h2 style={{ marginTop: 16 }}>
             {lang === "id"
-              ? <>Ngobrol langsung sama ahlinya —<br /><span style={{ color: "var(--accent)" }}>bukan bot, bukan call center.</span></>
-              : <>Talk directly to the expert —<br /><span style={{ color: "var(--accent)" }}>not a bot, not a call center.</span></>}
+              ? <>Quick Call 10 Menit —<br /><span style={{ color: "var(--accent)" }}>Konsultasi Asuransi & Investasi</span></>
+              : <>10-Minute Quick Call —<br /><span style={{ color: "var(--accent)" }}>Insurance & Investment Consultation</span></>}
           </h2>
           <p className="ink-2" style={{ fontSize: 17, marginTop: 20 }}>
             {lang === "id"
-              ? "Jasmine adalah Sharia Life Planner & Financial Educator yang sudah aktif di industri asuransi sejak 2021. Dia bicara dari angka dan data — bukan script penjualan."
-              : "Jasmine is a Sharia Life Planner & Financial Educator who has been active in the insurance industry since 2021. She speaks from numbers and data — not a sales script."}
+              ? "Sharia Life Planner Manulife Indonesia yang menggunakan pendekatan financial planning untuk menemukan produk asuransi dan investasi yang sesuai kebutuhanmu."
+              : "Manulife Indonesia Sharia Life Planner who uses a financial planning approach to find insurance and investment products that fit your needs."}
           </p>
-          <ul style={{ listStyle: "none", padding: 0, margin: "32px 0 0", display: "flex", flexDirection: "column", gap: 14 }}>
+
+          {/* Credentials */}
+          <ul style={{ listStyle: "none", padding: 0, margin: "24px 0 0", display: "flex", flexDirection: "column", gap: 12 }}>
             {(lang === "id" ? [
-              "Lulusan Ekonomi Syariah",
-              "Life Planner · Manulife Indonesia (sejak 2021)",
-              "Researcher · Equity Analyst · Corporate Secretary",
-              "150+ keluarga sudah konsultasi bersamanya",
+              "Profesional agent sejak 2021",
+              "Lisensi AAJI, AASI, WPPE",
             ] : [
-              "Graduate of Islamic Economics",
-              "Life Planner · Manulife Indonesia (since 2021)",
-              "Researcher · Equity Analyst · Corporate Secretary",
-              "150+ families have consulted with her",
+              "Professional agent since 2021",
+              "Licensed AAJI, AASI, WPPE",
             ]).map((it) => (
               <li key={it} className="row" style={{ gap: 12 }}>
                 <span style={{ width: 24, height: 24, borderRadius: 999, background: "var(--accent)", color: "var(--accent-ink)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -725,12 +695,32 @@ function JasmineSection({ onNavigate }) {
               </li>
             ))}
           </ul>
-          <div className="row" style={{ marginTop: 36, gap: 12, flexWrap: "wrap" }}>
+
+          {/* Cakupan Konsultasi */}
+          <div style={{ marginTop: 28, padding: 20, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16 }}>
+            <div className="mono" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "var(--muted)", marginBottom: 14 }}>
+              {lang === "id" ? "CAKUPAN KONSULTASI" : "CONSULTATION COVERAGE"}
+            </div>
+            <ol style={{ padding: "0 0 0 18px", margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {(lang === "id" ? [
+                "Review polis asuransi",
+                "Konsultasi kebutuhan asuransi & investasi",
+                "Hitung kebutuhan asuransi & investasi: premi, uang pertanggungan",
+                "Lainnya",
+              ] : [
+                "Insurance policy review",
+                "Insurance & investment needs consultation",
+                "Calculate insurance & investment needs: premium, sum insured",
+                "Others",
+              ]).map((it) => (
+                <li key={it} style={{ fontSize: 14, color: "var(--ink-2)", lineHeight: 1.5 }}>{it}</li>
+              ))}
+            </ol>
+          </div>
+
+          <div style={{ marginTop: 28 }}>
             <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "book" })} iconRight={<ArrowRight size={18} />}>
-              {lang === "id" ? "Booking Konsultasi Gratis" : "Book Free Consultation"}
-            </Button>
-            <Button variant="outline" size="lg" onClick={() => onNavigate({ name: "book" })}>
-              {lang === "id" ? "Lihat jadwal" : "See schedule"}
+              {lang === "id" ? "Free Konsultasi 1-on-1 · 10 Menit" : "Free 1-on-1 Consultation · 10 Minutes"}
             </Button>
           </div>
         </div>
@@ -747,21 +737,12 @@ function ProgramTeaser({ onNavigate }) {
     <Section>
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1.4fr)", gap: 48, alignItems: "center" }} className="pgt-grid">
         <div>
-          <Eyebrow>{lang === "id" ? "ASURANSI & PROGRAM" : "INSURANCE & PROGRAMS"}</Eyebrow>
+          <Eyebrow>{lang === "id" ? "PROGRAM ASURANSI DAN INVESTASI" : "INSURANCE & INVESTMENT PROGRAMS"}</Eyebrow>
           <h2 style={{ marginTop: 16 }}>
             {lang === "id"
-              ? <>Lindungi impianmu.<br /><span style={{ color: "var(--accent)" }}>Tumbuhkan</span> nilainya.</>
-              : <>Protect your dreams.<br /><span style={{ color: "var(--accent)" }}>Grow</span> their value.</>}
+              ? <>Temukan produk asuransi dan investasi yang <span style={{ color: "var(--accent)" }}>sesuai kebutuhanmu</span> disini.</>
+              : <>Find the insurance and investment products that <span style={{ color: "var(--accent)" }}>fit your needs</span> here.</>}
           </h2>
-          <p className="ink-2" style={{ fontSize: 17, marginTop: 20, maxWidth: 460 }}>
-            {lang === "id"
-              ? "6 program asuransi + investasi terintegrasi. Bersama Manulife Indonesia. Syariah-compliant. OJK Licensed."
-              : "6 integrated insurance + investment programs. With Manulife Indonesia. Sharia-compliant. OJK Licensed."}
-          </p>
-          <div className="row" style={{ marginTop: 16, gap: 16, color: "var(--muted)", fontSize: 13 }}>
-            <span className="row" style={{ gap: 6 }}><ShieldCheck size={14} /> OJK Licensed</span>
-            <span className="row" style={{ gap: 6 }}><Sparkle size={14} /> Syariah</span>
-          </div>
           <div className="row" style={{ marginTop: 28, gap: 12, flexWrap: "wrap" }}>
             <Button variant="primary" onClick={() => onNavigate({ name: "program" })} iconRight={<ArrowRight size={16} />}>
               {lang === "id" ? "Lihat semua program" : "See all programs"}
@@ -818,12 +799,11 @@ function WebinarTeaser({ onNavigate }) {
       <div className="row-between" style={{ marginBottom: 40, alignItems: "flex-end", flexWrap: "wrap", gap: 24 }}>
         <div style={{ maxWidth: 600 }}>
           <Eyebrow>{lang === "id" ? "EVENT WEBINAR" : "WEBINAR EVENTS"}</Eyebrow>
-          <h2 style={{ marginTop: 16 }}>{lang === "id" ? "Belajar bareng sebelum memutuskan." : "Learn together before deciding."}</h2>
-          <p className="ink-2" style={{ fontSize: 17, marginTop: 16 }}>
+          <h2 style={{ marginTop: 16 }}>
             {lang === "id"
-              ? "Workshop & webinar online yang bantu kamu paham keuangan syariah tanpa bingung — sebelum konsultasi."
-              : "Online workshops & webinars that help you understand sharia finance without confusion — before consultation."}
-          </p>
+              ? "Edukasi literasi keuangan dengan topik yang beragam sesuai kebutuhan."
+              : "Financial literacy education with diverse topics tailored to your needs."}
+          </h2>
         </div>
         <Button variant="outline" onClick={() => onNavigate({ name: "webinar" })} iconRight={<ArrowRight size={16} />}>
           {lang === "id" ? "Semua webinar" : "All webinars"}
@@ -853,10 +833,30 @@ function WebinarTeaser({ onNavigate }) {
         </div>
       )}
 
+      {/* Featured past event — Star Energy */}
+      <div className="card" style={{ marginBottom: 24, padding: 0, overflow: "hidden", display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1.6fr)", gap: 0 }} className="webinar-featured">
+        <img
+          src="/assets/webinars/poster seminar pt star energy.jpeg"
+          alt="Sharing Session PT. Star Energy — Membangun Masa Depan Anak, Menjaga Masa Depan Diri"
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", minHeight: 280 }}
+        />
+        <div style={{ padding: 28, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "JetBrains Mono, monospace", letterSpacing: "0.1em", color: "var(--muted)" }}>SHARING SESSION · PT. STAR ENERGY GEOTHERMAL</span>
+            <h3 style={{ marginTop: 12, fontSize: 22, lineHeight: 1.2 }}>Membangun Masa Depan Anak, Menjaga Masa Depan Diri</h3>
+            <p className="ink-2" style={{ fontSize: 14, marginTop: 12, lineHeight: 1.6 }}>Live class praktik hitung dana pensiun & free financial check up. Jasmine sebagai Financial Educator bersama PT. Star Energy Geothermal Pengalengan.</p>
+          </div>
+          <div className="row" style={{ gap: 16, marginTop: 20, flexWrap: "wrap" }}>
+            <span className="muted mono" style={{ fontSize: 12 }}>📍 Power Station</span>
+            <span className="muted mono" style={{ fontSize: 12 }}>📅 12 Juni 2026</span>
+          </div>
+        </div>
+      </div>
       <h3 style={{ fontSize: 20, marginBottom: 20 }}>{lang === "id" ? "Webinar sebelumnya" : "Past webinars"}</h3>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
         {past.map((w) => <WebinarCard key={w.id} webinar={w} />)}
       </div>
+      <style>{`@media (max-width: 760px) { .webinar-featured { grid-template-columns: 1fr !important; } }`}</style>
     </Section>
   );
 }
@@ -917,12 +917,12 @@ function BigCTA({ onNavigate }) {
         </h2>
         <p style={{ fontSize: 17, marginTop: 16, opacity: 0.75, maxWidth: 520, marginInline: "auto" }}>
           {lang === "id"
-            ? "Konsultasi gratis. Tanpa tekanan. Jasmine akan bantu kamu lihat gambaran lengkapnya."
-            : "Free consultation. No pressure. Jasmine will help you see the full picture."}
+            ? "Konsultasi gratis 10 menit, akan dapat free ilustrasi kebutuhan proteksi dan investasi."
+            : "Free 10-minute consultation, get a free illustration of your protection and investment needs."}
         </p>
         <div className="row" style={{ gap: 12, marginTop: 36, justifyContent: "center", flexWrap: "wrap" }}>
           <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "book" })} iconRight={<ArrowRight size={18} />}>
-            {lang === "id" ? "Booking Konsultasi Gratis Sekarang" : "Book Free Consultation Now"}
+            {lang === "id" ? "Free Konsultasi 1-on-1 · 10 Menit" : "Free 1-on-1 Consultation · 10 Minutes"}
           </Button>
           <button onClick={() => onNavigate({ name: "calc" })} className="btn btn-lg" style={{ background: "transparent", border: "1.5px solid currentColor", color: "inherit" }}>
             {lang === "id" ? "Atau coba kalkulator dulu" : "Or try the calculator first"}
