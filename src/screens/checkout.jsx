@@ -8,6 +8,8 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
   const [wallet, setWallet] = React.useState("GoPay");
   const [contact, setContact] = React.useState({ name: "", email: "", phone: "" });
   const [promo, setPromo] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [payError, setPayError] = React.useState("");
   const [promoApplied, setPromoApplied] = React.useState(false);
 
   const items = cart.length ? cart : [PRODUCTS[1]]; // fallback for direct nav
@@ -17,6 +19,31 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
   const tax = Math.round(taxBase * 0.11);
   const total = taxBase + tax;
 
+  async function handlePay() {
+  if (!contact.name || !contact.email || !contact.phone) {
+    setPayError("Lengkapi nama, email, dan nomor WhatsApp dulu ya.");
+    return;
+  }
+  setLoading(true);
+  setPayError("");
+  try {
+    const res = await fetch("/.netlify/functions/create-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact, items, total }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setPayError(data.error || "Gagal membuat pembayaran. Coba lagi.");
+      setLoading(false);
+      return;
+    }
+    window.location.href = data.invoice_url;
+  } catch (err) {
+    setPayError("Koneksi bermasalah. Periksa internet kamu.");
+    setLoading(false);
+  }
+}
   if (step === "success") {
     return <PaymentSuccess onNavigate={onNavigate} items={items} method={method} total={total} />;
   }
@@ -127,7 +154,7 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
               <span style={{ fontWeight: 700 }}>{t.co_total}</span>
               <span className="mono" style={{ fontSize: 22, fontWeight: 800 }}>{formatIDR(total)}</span>
             </div>
-            <Button variant="primary" size="lg" onClick={() => setStep("paying")} className="" iconRight={<ArrowRight size={18} />} style={{ marginTop: 20, width: "100%", justifyContent: "center" }}>
+            <Button variant="primary" size="lg" onClick={handlePay} disabled={loading} className="" iconRight={<ArrowRight size={18} />} style={{ marginTop: 20, width: "100%", justifyContent: "center" }}>
               {t.co_pay} {formatIDR(total)}
             </Button>
             <p className="muted" style={{ fontSize: 11, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>{t.co_terms}</p>
