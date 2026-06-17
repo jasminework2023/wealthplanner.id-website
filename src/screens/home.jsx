@@ -21,7 +21,7 @@ function DashboardHero({ onNavigate }) {
   const cards = lang === "id" ? [
     {
       id: "calc",
-      tag: "01 / GRATIS",
+      tag: "Step 1 / HITUNG",
       title: "Hitung Impian Keuangan Gratis",
       desc: "Dengan menghitung impianmu dengan angka yang realistis, lebih mudah dan memotivasi kamu untuk mencapainya. 8 kalkulator otomatis siap bantu.",
       cta: "Mulai hitung",
@@ -31,7 +31,7 @@ function DashboardHero({ onNavigate }) {
     },
     {
       id: "products",
-      tag: "02 / PREMIUM",
+      tag: "Step 2 / PRAKTIK",
       title: "Produk Keuangan Digital Premium",
       desc: "Template spreadsheet dan AI premium yang bantu kamu manage cashflow, rencanakan impian lebih matang, dan pantau kondisi keuangan secara real-time.",
       cta: "Lihat produk",
@@ -41,7 +41,7 @@ function DashboardHero({ onNavigate }) {
     },
     {
       id: "program",
-      tag: "03 / PROTEKSI",
+      tag: "Step 3 / KONSULTASI",
       title: "Produk Asuransi dan Investasi",
       desc: "Bantu kamu menemukan strategi mencapai impian — menumbuhkan jalur investasi dan menjaganya dengan proteksi asuransi syariah yang tepat.",
       cta: "Lihat program",
@@ -50,9 +50,9 @@ function DashboardHero({ onNavigate }) {
       color: "#7C9CFF",
     },
   ] : [
-    { id: "calc", tag: "01 / FREE", title: "Calculate Your Financial Goals", desc: "Calculating your goals with realistic numbers makes them easier and more motivating to achieve. 8 automated calculators ready to help.", cta: "Start calculating", route: "calc", icon: "Sparkle", color: "var(--accent)" },
-    { id: "products", tag: "02 / PREMIUM", title: "Premium Digital Finance Products", desc: "Premium spreadsheet templates and AI tools to help you manage cashflow, plan your goals more maturely, and track your finances in real-time.", cta: "See products", route: "products", icon: "Wallet", color: "#C6F24E" },
-    { id: "program", tag: "03 / PROTECTION", title: "Insurance & Investment Products", desc: "Help you find the right strategy to achieve your goals — growing investment channels and protecting them with the right sharia insurance.", cta: "See programs", route: "program", icon: "ShieldCheck", color: "#7C9CFF" },
+    { id: "calc", tag: "Step 1 / CALCULATE", title: "Calculate Your Financial Goals", desc: "Calculating your goals with realistic numbers makes them easier and more motivating to achieve. 8 automated calculators ready to help.", cta: "Start calculating", route: "calc", icon: "Sparkle", color: "var(--accent)" },
+    { id: "products", tag: "Step 2 / PRACTICE", title: "Premium Digital Finance Products", desc: "Premium spreadsheet templates and AI tools to help you manage cashflow, plan your goals more maturely, and track your finances in real-time.", cta: "See products", route: "products", icon: "Wallet", color: "#C6F24E" },
+    { id: "program", tag: "Step 3 / CONSULT", title: "Insurance & Investment Products", desc: "Help you find the right strategy to achieve your goals — growing investment channels and protecting them with the right sharia insurance.", cta: "See programs", route: "program", icon: "ShieldCheck", color: "#7C9CFF" },
   ];
 
   const scrollToFeatures = () => {
@@ -62,26 +62,19 @@ function DashboardHero({ onNavigate }) {
   return (
     <Section style={{ paddingTop: 56, paddingBottom: 16 }}>
       {/* Headline */}
-      <h1 style={{ maxWidth: 860, marginBottom: 20 }}>
+      <h2 style={{ maxWidth: 780, marginBottom: 32, fontSize: "clamp(28px, 4vw, 44px)", lineHeight: 1.2, fontWeight: 700 }}>
         {lang === "id" ? (
           <>
-            Wealthplanner.id —{" "}
-            <span style={{ color: "var(--accent)" }}>Platform</span>{" "}
-            yang bantu kamu mendapatkan produk asuransi, akumulasi kekayaan dan investasi yang sesuai kebutuhan
+            <span style={{ color: "var(--accent)" }}>Wealthplanner.id</span>
+            {" — platform yang bantu kamu mendapatkan produk asuransi, akumulasi kekayaan, dan investasi yang sesuai kebutuhan dengan profesional agent bersertifikat dan tools keuangan akurat."}
           </>
         ) : (
           <>
-            Wealthplanner.id —{" "}
-            <span style={{ color: "var(--accent)" }}>Platform</span>{" "}
-            that helps you find the right insurance, wealth accumulation, and investment products for your needs
+            <span style={{ color: "var(--accent)" }}>Wealthplanner.id</span>
+            {" — a platform that helps you find the right insurance, wealth accumulation, and investment products with certified professional agents and accurate financial tools."}
           </>
         )}
-      </h1>
-      <p className="ink-2" style={{ fontSize: 17, lineHeight: 1.65, maxWidth: 640, marginBottom: 36 }}>
-        {lang === "id"
-          ? "Dengan profesional agent bersertifikat dan tools keuangan akurat."
-          : "With certified professional agents and accurate financial tools."}
-      </p>
+      </h2>
 
       {/* CTA buttons — stacked, centered */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginBottom: 64, maxWidth: 420 }}>
@@ -106,7 +99,9 @@ function DashboardHero({ onNavigate }) {
 
       {/* Section cards */}
       <div id="features-section" style={{ marginBottom: 24 }}>
-        <Eyebrow>{lang === "id" ? "MULAI BENAHI KEUANGANMU DARI SINI!" : "START FIXING YOUR FINANCES HERE!"}</Eyebrow>
+        <h3 style={{ fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--ink)" }}>
+          {lang === "id" ? "Mulai Benahi Keuanganmu Dari Sini!" : "Start Fixing Your Finances Here!"}
+        </h3>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
@@ -658,12 +653,6 @@ function JasmineSection({ onNavigate }) {
               <div style={{ fontWeight: 700, fontSize: 18, marginTop: 4, fontFamily: "Bricolage Grotesque, sans-serif", letterSpacing: "-0.01em" }}>Jannatul Jasmine, SE, WPPE</div>
             </div>
           </div>
-          <div style={{ position: "absolute", top: 24, right: -16, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "12px 16px", fontSize: 12, transform: "rotate(4deg)" }}>
-            <div className="mono" style={{ fontWeight: 600, fontSize: 11, color: "var(--muted)" }}>RATING</div>
-            <div className="row" style={{ gap: 4, fontFamily: "Bricolage Grotesque, sans-serif", fontWeight: 700, fontSize: 20 }}>
-              4.9 <span style={{ color: "var(--accent)" }}>★</span>
-            </div>
-          </div>
         </div>
         <div>
           <Eyebrow>{lang === "id" ? "PROFIL KONSULTAN" : "CONSULTANT PROFILE"}</Eyebrow>
@@ -737,7 +726,7 @@ function ProgramTeaser({ onNavigate }) {
     <Section>
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1.4fr)", gap: 48, alignItems: "center" }} className="pgt-grid">
         <div>
-          <Eyebrow>{lang === "id" ? "PROGRAM ASURANSI DAN INVESTASI" : "INSURANCE & INVESTMENT PROGRAMS"}</Eyebrow>
+          <Eyebrow>{lang === "id" ? "03 — PROGRAM ASURANSI DAN INVESTASI" : "03 — INSURANCE & INVESTMENT PROGRAMS"}</Eyebrow>
           <h2 style={{ marginTop: 16 }}>
             {lang === "id"
               ? <>Temukan produk asuransi dan investasi yang <span style={{ color: "var(--accent)" }}>sesuai kebutuhanmu</span> disini.</>
@@ -833,30 +822,7 @@ function WebinarTeaser({ onNavigate }) {
         </div>
       )}
 
-      {/* Featured past event — Star Energy */}
-      <div className="card" style={{ marginBottom: 24, padding: 0, overflow: "hidden", display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1.6fr)", gap: 0 }} className="webinar-featured">
-        <img
-          src="/assets/webinars/poster seminar pt star energy.jpeg"
-          alt="Sharing Session PT. Star Energy — Membangun Masa Depan Anak, Menjaga Masa Depan Diri"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", minHeight: 280 }}
-        />
-        <div style={{ padding: 28, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <div>
-            <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "JetBrains Mono, monospace", letterSpacing: "0.1em", color: "var(--muted)" }}>SHARING SESSION · PT. STAR ENERGY GEOTHERMAL</span>
-            <h3 style={{ marginTop: 12, fontSize: 22, lineHeight: 1.2 }}>Membangun Masa Depan Anak, Menjaga Masa Depan Diri</h3>
-            <p className="ink-2" style={{ fontSize: 14, marginTop: 12, lineHeight: 1.6 }}>Live class praktik hitung dana pensiun & free financial check up. Jasmine sebagai Financial Educator bersama PT. Star Energy Geothermal Pengalengan.</p>
-          </div>
-          <div className="row" style={{ gap: 16, marginTop: 20, flexWrap: "wrap" }}>
-            <span className="muted mono" style={{ fontSize: 12 }}>📍 Power Station</span>
-            <span className="muted mono" style={{ fontSize: 12 }}>📅 12 Juni 2026</span>
-          </div>
-        </div>
-      </div>
-      <h3 style={{ fontSize: 20, marginBottom: 20 }}>{lang === "id" ? "Webinar sebelumnya" : "Past webinars"}</h3>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
-        {past.map((w) => <WebinarCard key={w.id} webinar={w} />)}
-      </div>
-      <style>{`@media (max-width: 760px) { .webinar-featured { grid-template-columns: 1fr !important; } }`}</style>
+      <WebinarSlider past={past} lang={lang} />
     </Section>
   );
 }
@@ -935,6 +901,68 @@ function BigCTA({ onNavigate }) {
         </p>
       </div>
     </Section>
+  );
+}
+
+function WebinarSlider({ past, lang }) {
+  const starEnergy = {
+    id: "star-energy",
+    image: "/assets/webinars/poster seminar pt star energy.jpeg",
+    title: "Membangun Masa Depan Anak, Menjaga Masa Depan Diri",
+    org: "PT. Star Energy Geothermal",
+    date: "12 Juni 2026",
+    location: "Power Station, Pengalengan",
+  };
+
+  const allItems = [starEnergy, ...past.map((w) => ({ id: w.id, image: w.image, title: w[`title_${lang}`] || w.title, org: "", date: w.date || "", location: "" }))];
+  const [idx, setIdx] = React.useState(0);
+
+  const prev = () => setIdx((i) => (i - 1 + allItems.length) % allItems.length);
+  const next = () => setIdx((i) => (i + 1) % allItems.length);
+
+  const item = allItems[idx];
+
+  return (
+    <div style={{ position: "relative" }}>
+      <div className="card" style={{ padding: 0, overflow: "hidden", display: "grid", gridTemplateColumns: "minmax(0, 0.8fr) minmax(0, 1.4fr)", gap: 0, minHeight: 320 }} className="webinar-slide">
+        <img
+          src={item.image}
+          alt={item.title}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+        />
+        <div style={{ padding: 28, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            {item.org && <span className="mono" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "var(--muted)" }}>{item.org}</span>}
+            <h3 style={{ marginTop: 10, fontSize: 20, lineHeight: 1.3 }}>{item.title}</h3>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {item.date && <span className="muted mono" style={{ fontSize: 12 }}>📅 {item.date}</span>}
+            {item.location && <span className="muted mono" style={{ fontSize: 12 }}>📍 {item.location}</span>}
+            {/* Pagination dots */}
+            <div className="row" style={{ gap: 6, marginTop: 12 }}>
+              {allItems.map((_, i) => (
+                <button key={i} onClick={() => setIdx(i)} style={{
+                  width: i === idx ? 20 : 8, height: 8, borderRadius: 999, border: 0, cursor: "pointer",
+                  background: i === idx ? "var(--accent)" : "var(--border)", padding: 0, transition: "all .2s",
+                }} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Arrow buttons */}
+      {allItems.length > 1 && (
+        <>
+          <button onClick={prev} style={{ position: "absolute", left: -16, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, borderRadius: "50%", background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}>
+            <ArrowRight size={16} style={{ transform: "rotate(180deg)" }} />
+          </button>
+          <button onClick={next} style={{ position: "absolute", right: -16, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, borderRadius: "50%", background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}>
+            <ArrowRight size={16} />
+          </button>
+        </>
+      )}
+      <style>{`@media (max-width: 680px) { .webinar-slide { grid-template-columns: 1fr !important; } }`}</style>
+    </div>
   );
 }
 
