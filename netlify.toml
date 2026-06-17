@@ -1,0 +1,17 @@
+# netlify.toml — taruh di ROOT folder repo kamu
+
+[build]
+  publish = "."        # folder yang di-deploy (root karena index.html ada di sini)
+  functions = "netlify/functions"   # folder serverless functions
+
+# Redirect semua route ke index.html (supaya React Router berfungsi)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Kecualikan folder functions dari redirect
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
