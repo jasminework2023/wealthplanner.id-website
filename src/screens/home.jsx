@@ -1,10 +1,12 @@
-// home.jsx — landing page
+// home.jsx — landing page (v2 — copy update Juni 2026)
 
 function HomeScreen({ onNavigate, heroLayout }) {
   const { t, lang } = useT();
   return (
     <div>
       <DashboardHero onNavigate={onNavigate} />
+      <SocialProofMarquee />
+      <ProblemSection />
       <CalculatorsTeaser onNavigate={onNavigate} />
       <ProductsTeaser onNavigate={onNavigate} />
       <ProgramTeaser onNavigate={onNavigate} />
@@ -41,9 +43,9 @@ function DashboardHero({ onNavigate }) {
     },
     {
       id: "program",
-      tag: "03 / SYARIAH",
-      title: "Insurance Product",
-      desc: "Asuransi & investasi terintegrasi. Hifdzun mal — ikhtiar penjagaan harta.",
+      tag: "03 / PROTEKSI",
+      title: "Asuransi Syariah",
+      desc: "6 program perlindungan syariah bersama Manulife Indonesia. Konsultasi gratis, tanpa tekanan.",
       cta: "Lihat program",
       route: "program",
       icon: "ShieldCheck",
@@ -62,49 +64,51 @@ function DashboardHero({ onNavigate }) {
   ] : [
     { id: "calc", tag: "01 / FREE", title: "Calculate your dreams", desc: "8 automated calculators for every financial goal — from a health check to hajj funding.", cta: "Start calculating", route: "calc", icon: "Sparkle", color: "var(--accent)" },
     { id: "products", tag: "02 / PREMIUM", title: "Digital Finance Product", desc: "Battle-tested spreadsheet planners. Buy once, lifetime access. Free updates.", cta: "See products", route: "products", icon: "Wallet", color: "#C6F24E" },
-    { id: "program", tag: "03 / SHARIA", title: "Insurance Product", desc: "Integrated insurance & investment. Hifdzun mal — sharia-aligned wealth protection.", cta: "See programs", route: "program", icon: "ShieldCheck", color: "#7C9CFF" },
+    { id: "program", tag: "03 / PROTECTION", title: "Sharia Insurance", desc: "6 sharia-compliant protection programs with Manulife Indonesia. Free consultation, no pressure.", cta: "See programs", route: "program", icon: "ShieldCheck", color: "#7C9CFF" },
     { id: "collab", tag: "04 / COLLABORATION", title: "Open for collaboration!", desc: "Brand partnership, affiliates, financial educator network. Let's talk.", cta: "Explore opportunities", route: "partnership", icon: "Heart", color: "#FF9A6B" },
   ];
 
   return (
     <Section style={{ paddingTop: 56, paddingBottom: 16 }}>
-      <div className="row" style={{ gap: 8, marginBottom: 24 }}>
-        <Tag variant="accent">★ WealthPlanner ID</Tag>
-        <Tag variant="outline">{lang === "id" ? "Syariah-compliant" : "Sharia-compliant"}</Tag>
+      {/* Badge row */}
+      <div className="row" style={{ gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+        <Tag variant="accent">★ Konsultan Asuransi Syariah</Tag>
+        <Tag variant="outline">Manulife Indonesia</Tag>
+        <Tag variant="outline">OJK Licensed</Tag>
       </div>
 
-      <h1 style={{ maxWidth: 1100, marginBottom: 24 }}>
+      {/* Headline */}
+      <h1 style={{ maxWidth: 900, marginBottom: 24 }}>
         {lang === "id" ? (
           <>
-            Mulai perjalanan keuanganmu{" "}
-            <span style={{ color: "var(--accent)" }}>seumur hidup</span>{" "}
-            bersama wealthplanner.id
+            Kamu kerja keras buat keluarga.{" "}
+            <span style={{ color: "var(--accent)" }}>Siapa yang lindungi mereka</span>{" "}
+            kalau kamu tidak bisa?
           </>
         ) : (
           <>
-            Start your <span style={{ color: "var(--accent)" }}>lifelong</span> financial journey with wealthplanner.id
+            You work hard for your family.{" "}
+            <span style={{ color: "var(--accent)" }}>Who protects them</span>{" "}
+            if you can't?
           </>
         )}
       </h1>
-      <div style={{ maxWidth: 640, marginBottom: 56 }}>
-        <p className="ink-2" style={{ fontSize: 19, fontWeight: 600, color: "var(--ink)", marginBottom: 16 }}>
+
+      {/* Subheadline + value props */}
+      <div style={{ maxWidth: 640, marginBottom: 40 }}>
+        <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.65, marginBottom: 24 }}>
           {lang === "id"
-            ? "WealthPlanner.ID — Platform yang membantu kamu mencapai tujuan finansial."
-            : "WealthPlanner.ID — The platform that helps you reach your financial goals."}
+            ? "Bersama Jasmine — Sharia Life Planner berpengalaman — kamu bisa tahu persis perlindungan apa yang kamu butuhkan, berapa preminya, dan kenapa syariah lebih sesuai untuk keluargamu."
+            : "Together with Jasmine — an experienced Sharia Life Planner — you'll know exactly what protection you need, how much the premium is, and why sharia is better suited for your family."}
         </p>
-        <p className="ink-2" style={{ fontSize: 17, lineHeight: 1.6 }}>
-          {lang === "id"
-            ? "Kami percaya bahwa financial planning bukan hanya tentang memahami teori — tetapi juga tentang memiliki strategi dan solusi yang tepat untuk mencapainya. Karena itu, kami hadir membantu kamu secara end-to-end:"
-            : "We believe financial planning isn't just about understanding theory — it's about having the right strategy and solutions to get there. That's why we help you end-to-end:"}
-        </p>
-        <ul style={{ listStyle: "none", padding: 0, margin: "20px 0 0", display: "flex", flexDirection: "column", gap: 12 }}>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
           {(lang === "id"
-            ? ["Edukasi Literasi Keuangan", "Merumuskan Tujuan Keuangan", "Mencapai Tujuan Keuangan"]
-            : ["Financial Literacy Education", "Defining Your Financial Goals", "Achieving Your Financial Goals"]
+            ? ["Syariah-compliant · tanpa riba & gharar", "Konsultasi gratis, tanpa tekanan beli", "Ilustrasi lengkap sesuai kondisimu"]
+            : ["Sharia-compliant · no riba & gharar", "Free consultation, no pressure to buy", "Complete illustration tailored to you"]
           ).map((item, i) => (
-            <li key={i} className="row" style={{ gap: 12, fontSize: 17, fontWeight: 500, color: "var(--ink)" }}>
-              <span style={{ width: 26, height: 26, borderRadius: 999, background: "var(--accent)", color: "var(--accent-ink)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Check size={15} stroke={3} />
+            <li key={i} className="row" style={{ gap: 12, fontSize: 16, fontWeight: 500, color: "var(--ink)" }}>
+              <span style={{ width: 24, height: 24, borderRadius: 999, background: "var(--accent)", color: "var(--accent-ink)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Check size={13} stroke={3} />
               </span>
               <span>{item}</span>
             </li>
@@ -112,8 +116,19 @@ function DashboardHero({ onNavigate }) {
         </ul>
       </div>
 
+      {/* CTA buttons */}
+      <div className="row" style={{ gap: 12, marginBottom: 56, flexWrap: "wrap" }}>
+        <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "book" })} iconRight={<ArrowRight size={18} />}>
+          {lang === "id" ? "Booking Konsultasi Gratis" : "Book Free Consultation"}
+        </Button>
+        <Button variant="outline" size="lg" onClick={() => onNavigate({ name: "calc" })}>
+          {lang === "id" ? "Coba Kalkulator Gratis" : "Try Free Calculator"}
+        </Button>
+      </div>
+
+      {/* Section cards */}
       <div style={{ marginBottom: 24 }}>
-        <Eyebrow>{lang === "id" ? "GIMANA CARA KITA MEMBANTU KAMU?" : "HOW CAN WE HELP YOU?"}</Eyebrow>
+        <Eyebrow>{lang === "id" ? "APA YANG BISA KAMU LAKUKAN DI SINI?" : "WHAT CAN YOU DO HERE?"}</Eyebrow>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
@@ -150,6 +165,101 @@ function DashboardHero({ onNavigate }) {
             </button>
           );
         })}
+      </div>
+    </Section>
+  );
+}
+
+function SocialProofMarquee() {
+  const items = ["150+ keluarga terlindungi", "4.9★ rating konsultasi", "Manulife trusted partner", "Sejak 2021", "Syariah-compliant", "OJK Licensed", "Konsultasi gratis"];
+  return (
+    <div className="marquee-row" style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", margin: "32px 0" }}>
+      <div className="marquee">
+        {[...items, ...items].map((it, i) => (
+          <div key={i} className="row" style={{ gap: 16, fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 22, fontWeight: 600 }}>
+            <span style={{ color: "var(--accent)", fontSize: 16 }}>✦</span>
+            <span style={{ whiteSpace: "nowrap" }}>{it}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProblemSection() {
+  const { lang } = useT();
+  const problems = lang === "id" ? [
+    {
+      icon: "❌",
+      title: "Tidak ada proteksi penghasilan",
+      desc: "Kalau kamu sakit parah atau meninggal, siapa yang bayar cicilan rumah, biaya sekolah anak, dan kebutuhan bulanan keluarga?",
+      color: "#FF6B6B",
+    },
+    {
+      icon: "❌",
+      title: "Nabung tapi tidak terproteksi",
+      desc: "Investasi dan tabungan bisa habis karena satu musibah besar. Tanpa asuransi, semua yang sudah dikumpulkan bisa lenyap dalam hitungan bulan.",
+      color: "#FFB347",
+    },
+    {
+      icon: "❌",
+      title: "Pakai produk yang tidak sesuai prinsip",
+      desc: "Banyak yang belum tahu bahwa asuransi konvensional mengandung unsur yang tidak sesuai syariah. Ada alternatif yang lebih tenang secara agama.",
+      color: "#7C9CFF",
+    },
+  ] : [
+    {
+      icon: "❌",
+      title: "No income protection",
+      desc: "If you get seriously ill or pass away, who pays the mortgage, school fees, and monthly family expenses?",
+      color: "#FF6B6B",
+    },
+    {
+      icon: "❌",
+      title: "Saving without protection",
+      desc: "Investments and savings can be wiped out by one major disaster. Without insurance, everything you've built could vanish in months.",
+      color: "#FFB347",
+    },
+    {
+      icon: "❌",
+      title: "Using non-compliant products",
+      desc: "Many people don't realize conventional insurance contains elements that don't comply with Islamic principles. There's a more peaceful alternative.",
+      color: "#7C9CFF",
+    },
+  ];
+
+  return (
+    <Section style={{ background: "var(--bg-2)" }}>
+      <div style={{ maxWidth: 680, marginBottom: 48 }}>
+        <Eyebrow>{lang === "id" ? "KENAPA INI PENTING?" : "WHY THIS MATTERS"}</Eyebrow>
+        <h2 style={{ marginTop: 16 }}>
+          {lang === "id"
+            ? "Jujur — kebanyakan keluarga muda punya 3 gap ini tanpa sadar."
+            : "Honestly — most young families have these 3 gaps without realizing it."}
+        </h2>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+        {problems.map((p, i) => (
+          <div key={i} className="card" style={{ borderLeft: `4px solid ${p.color}`, display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: p.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
+              {p.icon}
+            </div>
+            <div>
+              <h4 style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>{p.title}</h4>
+              <p className="ink-2" style={{ fontSize: 14, lineHeight: 1.6, marginTop: 10 }}>{p.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 36, textAlign: "center" }}>
+        <p className="ink-2" style={{ fontSize: 16, marginBottom: 20 }}>
+          {lang === "id" ? "Mau tahu kondisi finansialmu sekarang?" : "Want to know your current financial condition?"}
+        </p>
+        <div className="row" style={{ gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <Button variant="primary" onClick={() => document.getElementById("book-section")?.scrollIntoView({ behavior: "smooth" }) } iconRight={<ArrowRight size={16} />}>
+            {lang === "id" ? "Konsultasi Gratis Sekarang" : "Free Consultation Now"}
+          </Button>
+        </div>
       </div>
     </Section>
   );
@@ -276,15 +386,11 @@ function UnderlineSquiggle() {
 
 function HeroVisual() {
   const { t } = useT();
-  // A "result card" mock — visually shows what the tools spit out
   return (
     <div className="hero-visual" style={{ position: "relative", aspectRatio: "1 / 1", maxWidth: 520, marginLeft: "auto" }}>
-      {/* sticker */}
       <div className="sticker" style={{ position: "absolute", top: -8, left: -8, transform: "rotate(-6deg)", zIndex: 3 }}>
         gratis • instant
       </div>
-
-      {/* Big result card */}
       <div style={{
         position: "absolute",
         top: 30,
@@ -317,8 +423,6 @@ function HeroVisual() {
           ))}
         </div>
       </div>
-
-      {/* Smaller side card */}
       <div style={{
         position: "absolute",
         bottom: 20,
@@ -343,8 +447,6 @@ function HeroVisual() {
         </div>
         <MiniChart />
       </div>
-
-      {/* Floating tag */}
       <div style={{
         position: "absolute",
         bottom: -8,
@@ -391,9 +493,9 @@ function HeroStatsRow() {
   const { t } = useT();
   return (
     <div className="row" style={{ gap: 32, marginTop: 56, flexWrap: "wrap", justifyContent: "center" }}>
-      <Stat value="100" label={t.hero_stat_1} />
-      <Stat value="5" label={t.hero_stat_2} />
-      <Stat value="300" label={t.hero_stat_3} />
+      <Stat value="150+" label="keluarga terlindungi" />
+      <Stat value="4.9★" label="rating konsultasi" />
+      <Stat value="2021" label="mulai beroperasi" />
     </div>
   );
 }
@@ -405,22 +507,6 @@ function BgPattern() {
       <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" strokeWidth="2" />
       <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="2" />
     </svg>
-  );
-}
-
-function SocialProofMarquee() {
-  const items = ["100+ klien individu", "5+ klien korporat", "300+ peserta event", "Manulife trusted partner", "Sharia-compliant", "Built by certified planner"];
-  return (
-    <div className="marquee-row" style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", margin: "32px 0" }}>
-      <div className="marquee">
-        {[...items, ...items].map((it, i) => (
-          <div key={i} className="row" style={{ gap: 16, fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 22, fontWeight: 600 }}>
-            <span style={{ color: "var(--accent)", fontSize: 16 }}>✦</span>
-            <span style={{ whiteSpace: "nowrap" }}>{it}</span>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -566,7 +652,7 @@ function ProductCardLg({ product, onClick }) {
 }
 
 function JasmineSection({ onNavigate }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   return (
     <Section>
       <div style={{
@@ -596,7 +682,7 @@ function JasmineSection({ onNavigate }) {
               <div className="mono muted" style={{ fontSize: 10, letterSpacing: "0.15em" }}>FOTO JASMINE</div>
             </div>
             <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, padding: 14, background: "color-mix(in oklab, var(--bg) 85%, transparent)", backdropFilter: "blur(20px)", borderRadius: 14, border: "1px solid var(--border)" }}>
-              <div className="mono" style={{ fontSize: 10, color: "var(--muted)", fontWeight: 600, letterSpacing: "0.1em" }}>FOUNDER · PLANNER</div>
+              <div className="mono" style={{ fontSize: 10, color: "var(--muted)", fontWeight: 600, letterSpacing: "0.1em" }}>SHARIA LIFE PLANNER · MANULIFE</div>
               <div style={{ fontWeight: 700, fontSize: 18, marginTop: 4, fontFamily: "Bricolage Grotesque, sans-serif", letterSpacing: "-0.01em" }}>Jasmine</div>
             </div>
           </div>
@@ -608,15 +694,29 @@ function JasmineSection({ onNavigate }) {
           </div>
         </div>
         <div>
-          <Eyebrow>{t.section_jasmine_eyebrow}</Eyebrow>
-          <h2 style={{ marginTop: 16 }}>{t.section_jasmine_title}</h2>
-          <p className="ink-2" style={{ fontSize: 18, marginTop: 20 }}>{t.section_jasmine_sub}</p>
+          <Eyebrow>{lang === "id" ? "KENALAN DULU" : "MEET JASMINE"}</Eyebrow>
+          <h2 style={{ marginTop: 16 }}>
+            {lang === "id"
+              ? <>Ngobrol langsung sama ahlinya —<br /><span style={{ color: "var(--accent)" }}>bukan bot, bukan call center.</span></>
+              : <>Talk directly to the expert —<br /><span style={{ color: "var(--accent)" }}>not a bot, not a call center.</span></>}
+          </h2>
+          <p className="ink-2" style={{ fontSize: 17, marginTop: 20 }}>
+            {lang === "id"
+              ? "Jasmine adalah Sharia Life Planner & Financial Educator yang sudah aktif di industri asuransi sejak 2021. Dia bicara dari angka dan data — bukan script penjualan."
+              : "Jasmine is a Sharia Life Planner & Financial Educator who has been active in the insurance industry since 2021. She speaks from numbers and data — not a sales script."}
+          </p>
           <ul style={{ listStyle: "none", padding: 0, margin: "32px 0 0", display: "flex", flexDirection: "column", gap: 14 }}>
-            {[
+            {(lang === "id" ? [
               "Lulusan Ekonomi Syariah",
-              "Life Planner di industri asuransi (sejak 2021)",
+              "Life Planner · Manulife Indonesia (sejak 2021)",
               "Researcher · Equity Analyst · Corporate Secretary",
-            ].map((it) => (
+              "150+ keluarga sudah konsultasi bersamanya",
+            ] : [
+              "Graduate of Islamic Economics",
+              "Life Planner · Manulife Indonesia (since 2021)",
+              "Researcher · Equity Analyst · Corporate Secretary",
+              "150+ families have consulted with her",
+            ]).map((it) => (
               <li key={it} className="row" style={{ gap: 12 }}>
                 <span style={{ width: 24, height: 24, borderRadius: 999, background: "var(--accent)", color: "var(--accent-ink)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Check size={14} stroke={3} />
@@ -627,10 +727,10 @@ function JasmineSection({ onNavigate }) {
           </ul>
           <div className="row" style={{ marginTop: 36, gap: 12, flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "book" })} iconRight={<ArrowRight size={18} />}>
-              {t.book_cta}
+              {lang === "id" ? "Booking Konsultasi Gratis" : "Book Free Consultation"}
             </Button>
             <Button variant="outline" size="lg" onClick={() => onNavigate({ name: "book" })}>
-              Lihat jadwal
+              {lang === "id" ? "Lihat jadwal" : "See schedule"}
             </Button>
           </div>
         </div>
@@ -642,13 +742,12 @@ function JasmineSection({ onNavigate }) {
 
 function ProgramTeaser({ onNavigate }) {
   const { t, lang } = useT();
-  // Highlight 3 most distinct programs on homepage
   const featured = PROGRAMS.filter((p) => ["warisan", "haji", "pendidikan"].includes(p.id));
   return (
     <Section>
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1.4fr)", gap: 48, alignItems: "center" }} className="pgt-grid">
         <div>
-          <Eyebrow>{lang === "id" ? "04 — ASURANSI & PROGRAM" : "04 — INSURANCE & PROGRAMS"}</Eyebrow>
+          <Eyebrow>{lang === "id" ? "ASURANSI & PROGRAM" : "INSURANCE & PROGRAMS"}</Eyebrow>
           <h2 style={{ marginTop: 16 }}>
             {lang === "id"
               ? <>Lindungi impianmu.<br /><span style={{ color: "var(--accent)" }}>Tumbuhkan</span> nilainya.</>
@@ -656,8 +755,8 @@ function ProgramTeaser({ onNavigate }) {
           </h2>
           <p className="ink-2" style={{ fontSize: 17, marginTop: 20, maxWidth: 460 }}>
             {lang === "id"
-              ? "6 program asuransi + investasi terintegrasi. Bekerja sama dengan Manulife Indonesia. Syariah-compliant."
-              : "6 integrated insurance + investment programs. In partnership with Manulife Indonesia. Sharia-compliant."}
+              ? "6 program asuransi + investasi terintegrasi. Bersama Manulife Indonesia. Syariah-compliant. OJK Licensed."
+              : "6 integrated insurance + investment programs. With Manulife Indonesia. Sharia-compliant. OJK Licensed."}
           </p>
           <div className="row" style={{ marginTop: 16, gap: 16, color: "var(--muted)", fontSize: 13 }}>
             <span className="row" style={{ gap: 6 }}><ShieldCheck size={14} /> OJK Licensed</span>
@@ -718,12 +817,12 @@ function WebinarTeaser({ onNavigate }) {
     <Section style={{ background: "var(--bg-2)" }}>
       <div className="row-between" style={{ marginBottom: 40, alignItems: "flex-end", flexWrap: "wrap", gap: 24 }}>
         <div style={{ maxWidth: 600 }}>
-          <Eyebrow>{lang === "id" ? "04 — EVENT WEBINAR" : "04 — WEBINAR EVENTS"}</Eyebrow>
-          <h2 style={{ marginTop: 16 }}>{lang === "id" ? "Lihat jadwal terdekat, jangan sampai tertinggal" : "Check the schedule — don't miss out"}</h2>
+          <Eyebrow>{lang === "id" ? "EVENT WEBINAR" : "WEBINAR EVENTS"}</Eyebrow>
+          <h2 style={{ marginTop: 16 }}>{lang === "id" ? "Belajar bareng sebelum memutuskan." : "Learn together before deciding."}</h2>
           <p className="ink-2" style={{ fontSize: 17, marginTop: 16 }}>
             {lang === "id"
-              ? "Seminar & workshop yang bantu kamu menyiapkan tujuan keuangan sesuai kebutuhan."
-              : "Seminars & workshops that help you prepare your financial goals based on your needs."}
+              ? "Workshop & webinar online yang bantu kamu paham keuangan syariah tanpa bingung — sebelum konsultasi."
+              : "Online workshops & webinars that help you understand sharia finance without confusion — before consultation."}
           </p>
         </div>
         <Button variant="outline" onClick={() => onNavigate({ name: "webinar" })} iconRight={<ArrowRight size={16} />}>
@@ -731,7 +830,6 @@ function WebinarTeaser({ onNavigate }) {
         </Button>
       </div>
 
-      {/* Coming soon */}
       {upcoming.length === 0 && (
         <div className="card" style={{
           background: "var(--ink)", color: "var(--bg)", border: 0,
@@ -755,7 +853,6 @@ function WebinarTeaser({ onNavigate }) {
         </div>
       )}
 
-      {/* Past webinars */}
       <h3 style={{ fontSize: 20, marginBottom: 20 }}>{lang === "id" ? "Webinar sebelumnya" : "Past webinars"}</h3>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
         {past.map((w) => <WebinarCard key={w.id} webinar={w} />)}
@@ -800,7 +897,7 @@ function WhySection() {
 }
 
 function BigCTA({ onNavigate }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   return (
     <Section>
       <div style={{
@@ -812,19 +909,30 @@ function BigCTA({ onNavigate }) {
         position: "relative",
         overflow: "hidden",
       }}>
-        <Tag variant="accent">★ {t.hero_tag}</Tag>
+        <Tag variant="accent">★ {lang === "id" ? "Konsultasi Gratis" : "Free Consultation"}</Tag>
         <h2 style={{ marginTop: 24, color: "inherit", maxWidth: 720, marginInline: "auto" }}>
-          Mulai dari satu kalkulator gratis.<br />
-          Lihat sendiri impianmu jadi nyata.
+          {lang === "id"
+            ? <>Satu langkah kecil hari ini bisa melindungi<br />keluargamu bertahun-tahun ke depan.</>
+            : <>One small step today can protect<br />your family for years to come.</>}
         </h2>
+        <p style={{ fontSize: 17, marginTop: 16, opacity: 0.75, maxWidth: 520, marginInline: "auto" }}>
+          {lang === "id"
+            ? "Konsultasi gratis. Tanpa tekanan. Jasmine akan bantu kamu lihat gambaran lengkapnya."
+            : "Free consultation. No pressure. Jasmine will help you see the full picture."}
+        </p>
         <div className="row" style={{ gap: 12, marginTop: 36, justifyContent: "center", flexWrap: "wrap" }}>
-          <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "calc" })} iconRight={<ArrowRight size={18} />}>
-            {t.hero_cta}
+          <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "book" })} iconRight={<ArrowRight size={18} />}>
+            {lang === "id" ? "Booking Konsultasi Gratis Sekarang" : "Book Free Consultation Now"}
           </Button>
-          <button onClick={() => onNavigate({ name: "book" })} className="btn btn-lg" style={{ background: "transparent", border: "1.5px solid currentColor", color: "inherit" }}>
-            {t.book_cta}
+          <button onClick={() => onNavigate({ name: "calc" })} className="btn btn-lg" style={{ background: "transparent", border: "1.5px solid currentColor", color: "inherit" }}>
+            {lang === "id" ? "Atau coba kalkulator dulu" : "Or try the calculator first"}
           </button>
         </div>
+        <p style={{ fontSize: 12, marginTop: 24, opacity: 0.5 }}>
+          {lang === "id"
+            ? "🔒 OJK Licensed · Manulife Indonesia · Syariah-compliant · 150+ keluarga terlindungi"
+            : "🔒 OJK Licensed · Manulife Indonesia · Sharia-compliant · 150+ families protected"}
+        </p>
       </div>
     </Section>
   );
