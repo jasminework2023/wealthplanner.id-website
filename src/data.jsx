@@ -5,7 +5,7 @@ const PRODUCTS = [
     id: "wealth-tracker-ai",
     name_id: "Wealth Tracker AI",
     name_en: "Wealth Tracker AI",
-    price: 99000,
+    price: 139000,
     priceOld: 149000,
     tag_id: "Baru · AI",
     tag_en: "New · AI",
