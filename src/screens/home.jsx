@@ -8,6 +8,7 @@ function HomeScreen({ onNavigate, heroLayout }) {
       <SocialProofMarquee />
       <CalculatorsTeaser onNavigate={onNavigate} />
       <ProductsTeaser onNavigate={onNavigate} />
+      <WealthTrackerLandingTeaser onNavigate={onNavigate} />
       <ProgramTeaser onNavigate={onNavigate} />
       <WebinarTeaser onNavigate={onNavigate} />
       <JasmineSection onNavigate={onNavigate} />
@@ -618,6 +619,87 @@ function ProductCardLg({ product, onClick }) {
         </div>
       </div>
     </button>
+  );
+}
+
+function WealthTrackerLandingTeaser({ onNavigate }) {
+  const { lang } = useT();
+  return (
+    <Section>
+      <div className="card" style={{
+        padding: 0, overflow: "hidden",
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
+        gap: 0,
+        alignItems: "center",
+        border: "1px solid rgba(94,229,176,0.25)",
+        background: "linear-gradient(135deg, rgba(94,229,176,0.06), transparent 60%)",
+      }} className="wta-teaser-grid">
+
+        <div style={{ padding: "40px 40px" }}>
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            background: "rgba(94,229,176,0.12)", border: "1px solid rgba(94,229,176,0.25)",
+            color: "var(--accent)", fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
+            padding: "5px 14px", borderRadius: 999, marginBottom: 20,
+          }}>
+            🤖 {lang === "id" ? "PRODUK UNGGULAN" : "FEATURED PRODUCT"}
+          </span>
+
+          <h2 style={{ fontSize: "clamp(26px, 3vw, 36px)", marginBottom: 14, lineHeight: 1.15 }}>
+            {lang === "id" ? (
+              <>Wealth Tracker AI —<br /><span style={{ color: "var(--accent)" }}>Catat Uang Otomatis</span></>
+            ) : (
+              <>Wealth Tracker AI —<br /><span style={{ color: "var(--accent)" }}>Auto Money Tracking</span></>
+            )}
+          </h2>
+
+          <p className="ink-2" style={{ fontSize: 15, lineHeight: 1.65, marginBottom: 24, maxWidth: 440 }}>
+            {lang === "id"
+              ? "Kirim pesan atau foto struk lewat Telegram — AI langsung mencatat, mengkategorikan, dan merangkum ke Google Sheets-mu secara otomatis."
+              : "Send a message or receipt photo via Telegram — AI automatically records, categorizes, and summarizes it into your Google Sheets."}
+          </p>
+
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Button
+              variant="primary"
+              onClick={() => window.open("wealth-tracker-ai.html", "_blank")}
+              iconRight={<ArrowRight size={16} />}
+            >
+              {lang === "id" ? "Lihat Landing Page" : "View Landing Page"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => onNavigate({ name: "product", id: "wealth-tracker-ai" })}
+            >
+              {lang === "id" ? "Beli Sekarang" : "Buy Now"}
+            </Button>
+          </div>
+        </div>
+
+        <div style={{ padding: 24 }}>
+          <div style={{
+            background: "#0e1621", borderRadius: 16, overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}>
+            <div style={{ background: "#17212b", padding: "10px 14px", display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>🤖</div>
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>WealthTracker AI</span>
+            </div>
+            <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+              <div style={{ alignSelf: "flex-end", background: "#2b5278", color: "#fff", padding: "8px 12px", borderRadius: "10px 10px 2px 10px", fontSize: 12, maxWidth: "85%" }}>
+                beli bensin 80 ribu
+              </div>
+              <div style={{ alignSelf: "flex-start", background: "#182533", color: "#e8e8e8", padding: "8px 12px", borderRadius: "10px 10px 10px 2px", fontSize: 12, maxWidth: "85%" }}>
+                ✅ Tercatat!<br />📂 Transportasi · Rp 80.000<br />💰 Saldo: Rp 2.854.000
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>{`@media (max-width: 760px) { .wta-teaser-grid { grid-template-columns: 1fr !important; } }`}</style>
+    </Section>
   );
 }
 
