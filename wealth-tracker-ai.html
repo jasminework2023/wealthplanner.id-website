@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wealth Tracker AI — Catat Keuangan Dibuat Simpel</title>
+  <meta name="description" content="Kirim pesan atau foto struk — AI langsung mencatat, mengkategorikan, dan merangkum ke Google Sheets-mu secara otomatis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0f0a;
+      --surface: #111811;
+      --surface-2: #182018;
+      --border: rgba(255,255,255,0.07);
+      --ink: #f0f5f0;
+      --ink-2: #9baa9b;
+      --muted: #5a6a5a;
+      --accent: #5EE5B0;
+      --accent-dim: rgba(94,229,176,0.12);
+      --accent-ink: #042010;
+      --warning: #FFB800;
+      --negative: #ff5a5a;
+      --radius: 16px;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    h1,h2,h3,h4 { font-family: 'Bricolage Grotesque', sans-serif; line-height: 1.1; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(10,15,10,0.88); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; }
+    .nav-brand span { color: var(--accent); }
+    .nav-cta { background: var(--accent); color: var(--accent-ink); border: none; padding: 9px 20px; border-radius: 999px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; transition: opacity .15s; }
+    .nav-cta:hover { opacity: .85; }
+
+    section { padding: 80px 24px; }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .container-sm { max-width: 700px; margin: 0 auto; }
+
+    .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-dim); border: 1px solid rgba(94,229,176,0.25); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .08em; padding: 5px 14px; border-radius: 999px; margin-bottom: 24px; }
+    .eyebrow { font-size: 11px; letter-spacing: .14em; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px,4vw,44px); font-weight: 800; margin-bottom: 16px; }
+    .section-sub { font-size: 17px; color: var(--ink-2); line-height: 1.65; }
+
+    /* BUTTONS */
+    .btn-primary { background: var(--accent); color: var(--accent-ink); border: none; padding: 14px 28px; border-radius: 999px; font-family: 'DM Sans',sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: opacity .15s, transform .15s; }
+    .btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--ink); border: 1px solid rgba(255,255,255,0.2); padding: 14px 28px; border-radius: 999px; font-family: 'DM Sans',sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background .15s; }
+    .btn-outline:hover { background: rgba(255,255,255,0.06); }
+
+    /* HERO */
+    #hero { padding-top: 96px; padding-bottom: 80px; text-align: center; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(94,229,176,0.08) 0%, transparent 70%); }
+    #hero h1 { font-size: clamp(36px,7vw,68px); font-weight: 800; max-width: 800px; margin: 0 auto 16px; }
+    #hero h1 .accent { color: var(--accent); }
+    #hero .sub { font-size: clamp(16px,2.2vw,19px); color: var(--ink-2); max-width: 540px; margin: 0 auto 36px; line-height: 1.65; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+
+    /* CHAT MOCKUP */
+    .phone-frame { max-width: 360px; margin: 0 auto; background: #1a1a2e; border-radius: 32px; overflow: hidden; border: 2px solid rgba(255,255,255,0.1); box-shadow: 0 32px 80px rgba(0,0,0,0.5); }
+    .phone-status { background: #111; padding: 10px 20px 6px; display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.4); }
+    .tg-header { background: #17212b; padding: 12px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .tg-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .tg-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .tg-status { font-size: 11px; color: var(--accent); }
+    .tg-body { padding: 16px; background: #0e1621; display: flex; flex-direction: column; gap: 8px; min-height: 320px; }
+    .bubble { padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.5; max-width: 82%; }
+    .bubble-out { background: #2b5278; color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+    .bubble-in { background: #182533; color: #e8e8e8; align-self: flex-start; border-bottom-left-radius: 3px; }
+    .bubble-time { font-size: 10px; color: rgba(255,255,255,0.35); text-align: right; margin-top: 3px; }
+    .bubble-wrap-out { display: flex; flex-direction: column; align-items: flex-end; }
+    .bubble-wrap-in { display: flex; flex-direction: column; align-items: flex-start; }
+
+    /* STATS */
+    #stats { padding: 40px 24px; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 24px; text-align: center; }
+    .stat-num { font-family: 'Bricolage Grotesque',sans-serif; font-size: 38px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .stat-lbl { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+
+    /* PROBLEM */
+    #problem { background: var(--bg); }
+    .problem-box { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 36px; margin-top: 40px; }
+    .problem-box p { font-size: 18px; line-height: 1.75; color: var(--ink-2); }
+    .problem-box p strong { color: var(--ink); }
+    .warning-box { margin-top: 28px; background: rgba(255,90,90,0.08); border: 1px solid rgba(255,90,90,0.2); border-radius: 14px; padding: 24px 28px; }
+    .warning-title { font-size: 14px; font-weight: 700; color: var(--negative); letter-spacing: .06em; margin-bottom: 14px; }
+    .warning-item { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--ink); margin-bottom: 10px; line-height: 1.5; }
+    .warning-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--negative); flex-shrink: 0; margin-top: 8px; }
+    .solution-box { margin-top: 28px; background: var(--accent-dim); border: 1px solid rgba(94,229,176,0.2); border-radius: 14px; padding: 28px; text-align: center; }
+    .solution-box .sol-label { font-size: 12px; letter-spacing: .12em; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .solution-box h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .solution-box p { font-size: 15px; color: var(--ink-2); line-height: 1.65; }
+
+    /* DEMO CAROUSEL */
+    #demo { background: var(--surface); }
+    .carousel { margin-top: 48px; position: relative; }
+    .carousel-track { overflow: hidden; border-radius: 20px; }
+    .carousel-slides { display: flex; transition: transform .4s cubic-bezier(.4,0,.2,1); }
+    .carousel-slide { min-width: 100%; }
+    .slide-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 40px; background: var(--bg); border-radius: 20px; border: 1px solid var(--border); }
+    .slide-label { font-size: 11px; letter-spacing: .12em; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .slide-title { font-size: clamp(20px,2.5vw,28px); font-weight: 800; margin-bottom: 12px; }
+    .slide-desc { font-size: 15px; color: var(--ink-2); line-height: 1.65; }
+    .carousel-nav { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 24px; }
+    .carousel-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: background .15s; }
+    .carousel-btn:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); }
+    .carousel-dots { display: flex; gap: 8px; }
+    .carousel-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--border); border: none; cursor: pointer; transition: all .2s; padding: 0; }
+    .carousel-dot.active { width: 24px; background: var(--accent); }
+
+    /* SPREADSHEET MOCKUP */
+    .sheet-mock { background: #1e2a1e; border-radius: 12px; overflow: hidden; border: 1px solid rgba(94,229,176,0.15); font-size: 11px; }
+    .sheet-toolbar { background: #162016; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .sheet-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .sheet-header { display: grid; grid-template-columns: 80px 1fr 80px 90px 70px; gap: 1px; background: rgba(255,255,255,0.05); }
+    .sheet-cell { padding: 6px 10px; font-family: monospace; font-size: 11px; background: #1a2a1a; color: var(--ink-2); white-space: nowrap; overflow: hidden; }
+    .sheet-cell.head { background: #162016; color: var(--accent); font-weight: 700; font-size: 10px; letter-spacing: .06em; }
+    .sheet-cell.pos { color: #5EE5B0; }
+    .sheet-cell.neg { color: #ff7a7a; }
+    .sheet-row { display: grid; grid-template-columns: 80px 1fr 80px 90px 70px; gap: 1px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+    /* DASHBOARD MOCKUP */
+    .dash-mock { background: #111811; border-radius: 12px; overflow: hidden; border: 1px solid rgba(94,229,176,0.15); padding: 16px; }
+    .dash-title { font-size: 12px; font-weight: 700; color: var(--ink-2); margin-bottom: 12px; letter-spacing: .06em; }
+    .dash-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .dash-card { background: var(--surface-2); border-radius: 8px; padding: 10px 12px; }
+    .dash-card-label { font-size: 9px; color: var(--muted); letter-spacing: .08em; margin-bottom: 4px; }
+    .dash-card-val { font-size: 16px; font-weight: 700; font-family: monospace; }
+    .dash-card-val.pos { color: var(--accent); }
+    .dash-card-val.neg { color: #ff7a7a; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 0 4px; }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+    .bar { width: 100%; border-radius: 4px 4px 0 0; transition: height .3s; }
+    .bar-lbl { font-size: 9px; color: var(--muted); }
+    .asset-rows { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .asset-row { display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); border-radius: 6px; padding: 8px 10px; }
+    .asset-name { font-size: 11px; color: var(--ink-2); }
+    .asset-val { font-size: 12px; font-weight: 700; font-family: monospace; color: var(--accent); }
+
+    /* FEATURES */
+    #features { background: var(--bg); }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 16px; margin-top: 40px; }
+    .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: border-color .2s; }
+    .feat-card:hover { border-color: rgba(94,229,176,0.3); }
+    .feat-icon { font-size: 24px; margin-bottom: 12px; }
+    .feat-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .feat-card p { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+
+    /* TESTIMONIALS */
+    #testimonials { background: var(--surface); }
+    .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 16px; margin-top: 40px; }
+    .testi-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .stars { color: var(--warning); font-size: 13px; margin-bottom: 10px; }
+    .testi-text { font-size: 14px; line-height: 1.7; color: var(--ink); margin-bottom: 16px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+    .testi-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(94,229,176,0.2); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--accent); flex-shrink: 0; }
+    .testi-name { font-weight: 600; font-size: 14px; }
+    .testi-role { font-size: 12px; color: var(--ink-2); }
+
+    /* PRICING */
+    #pricing { background: var(--bg); }
+    .price-card { background: var(--surface); border: 1px solid rgba(94,229,176,0.3); border-radius: 24px; padding: 40px; max-width: 540px; margin: 40px auto 0; }
+    .price-tag { display: inline-block; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 999px; margin-bottom: 20px; }
+    .price-main { font-family: 'Bricolage Grotesque',sans-serif; font-size: 52px; font-weight: 800; line-height: 1; }
+    .price-old { font-size: 18px; color: var(--muted); text-decoration: line-through; margin-left: 8px; vertical-align: middle; }
+    .price-note { font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 600; }
+    .price-value { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .feat-list { list-style: none; margin: 24px 0; display: flex; flex-direction: column; gap: 10px; }
+    .feat-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--ink-2); }
+    .check { color: var(--accent); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
+    .scarcity { background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.25); border-radius: 10px; padding: 10px 16px; font-size: 13px; color: var(--warning); font-weight: 600; margin-bottom: 20px; text-align: center; }
+    .trust-bar { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+    .trust-item { font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 4px; }
+
+    /* FAQ */
+    #faq { background: var(--surface); }
+    .faq-list { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; max-width: 700px; }
+    .faq-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .faq-q { padding: 18px 22px; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; user-select: none; }
+    .faq-q:hover { color: var(--accent); }
+    .faq-a { padding: 0 22px 18px; font-size: 14px; color: var(--ink-2); line-height: 1.7; display: none; }
+    .faq-item.open .faq-a { display: block; }
+    .faq-icon { transition: transform .2s; color: var(--muted); font-style: normal; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent); }
+
+    /* FINAL CTA */
+    #final-cta { background: radial-gradient(ellipse 80% 80% at 50% 100%, rgba(94,229,176,0.1) 0%, transparent 70%); text-align: center; padding: 96px 24px; }
+
+    /* FOOTER */
+    footer { padding: 40px 24px; border-top: 1px solid var(--border); text-align: center; }
+    .footer-brand { font-family: 'Bricolage Grotesque',sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    footer p { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 480px; margin: 0 auto; }
+
+    @media (max-width: 700px) {
+      .slide-inner { grid-template-columns: 1fr !important; }
+      .price-card { padding: 28px 20px; }
+      .price-main { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">w<span>ealthplanner</span>.id</a>
+  <a href="#pricing" class="nav-cta">Beli Sekarang</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container-sm">
+    <div class="badge">🤖 AI-Powered · Telegram + Google Sheets</div>
+    <h1>Catat Keuangan<br><span class="accent">Dibuat Simpel.</span></h1>
+    <p class="sub">Kirim pesan "beli bensin 80 ribu" atau foto struk — AI langsung mencatat, mengkategorikan, dan merangkum ke Google Sheets-mu secara otomatis.</p>
+    <div class="hero-cta">
+      <a href="#pricing" class="btn-primary">Beli Sekarang →</a>
+      <a href="#demo" class="btn-outline">Lihat Cara Kerjanya</a>
+    </div>
+
+    <!-- Phone mockup -->
+    <div class="phone-frame">
+      <div class="phone-status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="tg-header">
+        <div class="tg-avatar">🤖</div>
+        <div>
+          <div class="tg-name">WealthTracker AI</div>
+          <div class="tg-status">● Online</div>
+        </div>
+      </div>
+      <div class="tg-body">
+        <div class="bubble-wrap-out">
+          <div class="bubble bubble-out">beli bensin 80 ribu</div>
+          <div class="bubble-time">10:32</div>
+        </div>
+        <div class="bubble-wrap-in">
+          <div class="bubble bubble-in">✅ <strong>Tercatat!</strong><br><br>📂 Transportasi<br>💸 Rp 80.000<br>📅 Hari ini<br>💰 Saldo bulan ini: <strong>Rp 2.854.000</strong></div>
+          <div class="bubble-time">10:32</div>
+        </div>
+        <div class="bubble-wrap-out">
+          <div class="bubble bubble-out">📷 [foto struk minimarket]</div>
+          <div class="bubble-time">13:05</div>
+        </div>
+        <div class="bubble-wrap-in">
+          <div class="bubble bubble-in">🧾 <strong>Struk terbaca!</strong><br><br>📂 Belanja Harian<br>💸 Rp 127.500<br>📅 Hari ini<br>✅ Otomatis dicatat ke sheet</div>
+          <div class="bubble-time">13:05</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div><div class="stat-num">4.9★</div><div class="stat-lbl">Rating rata-rata</div></div>
+      <div><div class="stat-num">&lt;5 dtk</div><div class="stat-lbl">Catat per transaksi</div></div>
+      <div><div class="stat-num">3-in-1</div><div class="stat-lbl">Teks, foto, dokumen</div></div>
+      <div><div class="stat-num">∞</div><div class="stat-lbl">Akses selamanya</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container-sm">
+    <div class="eyebrow">Jujur dulu</div>
+    <h2 class="section-title">Sering ngalamin hal ini?</h2>
+
+    <div class="problem-box">
+      <p>Udah atur uang, tau-tau <strong>udah habis aja</strong>. Mirisnya kita gatau larinya kemana. Mau nyatet manual, <strong>gabisa konsisten</strong>.</p>
+    </div>
+
+    <div class="warning-box">
+      <div class="warning-title">⚠️ HATI-HATI! Kalo kondisinya kayak gini terus...</div>
+      <div class="warning-item"><div class="warning-dot"></div><span>Rencana dan tujuan finansial kamu <strong>gapernah nyampe</strong>.</span></div>
+      <div class="warning-item"><div class="warning-dot"></div><span>Masalah keuangan bukan soal duitnya kurang, tapi <strong>gapunya SISTEM</strong> yang bantu kontrol keuangan setiap harinya.</span></div>
+    </div>
+
+    <div class="solution-box">
+      <div class="sol-label">SOLUSINYA</div>
+      <h3>WealthTracker AI<br><span style="color:var(--accent)">by Jannatul Jasmine</span></h3>
+      <p>Asisten keuangan AI di Telegram. Cukup foto atau chat soal keuangan, AI yang rapihin semuanya.</p>
+      <a href="#demo" class="btn-primary" style="margin-top:20px; display:inline-flex;">Lihat Cara Pakainya →</a>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO CAROUSEL -->
+<section id="demo">
+  <div class="container">
+    <div class="eyebrow">Demo · Cara kerja</div>
+    <h2 class="section-title">Sesimpel ini pakainya.</h2>
+    <p class="section-sub">3 langkah — chat, catat, pantau.</p>
+
+    <div class="carousel">
+      <div class="carousel-track">
+        <div class="carousel-slides" id="carouselSlides">
+
+          <!-- SLIDE 1: Chat Telegram -->
+          <div class="carousel-slide">
+            <div class="slide-inner">
+              <div>
+                <div class="slide-label">LANGKAH 01 · INPUT</div>
+                <h3 class="slide-title">Chat atau foto struk — AI yang baca</h3>
+                <p class="slide-desc">Ketik transaksi dalam bahasa natural atau langsung foto struk. AI memahami konteks, nominal, dan kategorinya secara otomatis — tanpa kamu perlu isi form apapun.</p>
+                <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Teks natural bahasa Indonesia</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Foto struk / receipt</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Upload dokumen</div>
+                </div>
+              </div>
+              <!-- Real screenshot -->
+              <div style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);max-height:480px;">
+                <img src="assets/chat-telegram.jpeg" alt="Chat Telegram WealthTracker AI" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" />
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2: Spreadsheet -->
+          <div class="carousel-slide">
+            <div class="slide-inner">
+              <div>
+                <div class="slide-label">LANGKAH 02 · OTOMATIS TERCATAT</div>
+                <h3 class="slide-title">Langsung masuk Google Sheets-mu</h3>
+                <p class="slide-desc">Setiap pesan atau foto yang kamu kirim langsung tercatat rapi di Google Sheets milikmu. Tanggal, kategori, nominal — semua otomatis. Datamu, di tempat yang kamu kuasai.</p>
+                <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Real-time sync</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Data milikmu sendiri</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Bisa diakses dari HP & laptop</div>
+                </div>
+              </div>
+              <!-- Real screenshot -->
+              <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(94,229,176,0.15);">
+                <img src="assets/transaction-tracker.jpeg" alt="Transaction Tracker Google Sheets" style="width:100%;display:block;" />
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3: Dashboard -->
+          <div class="carousel-slide">
+            <div class="slide-inner">
+              <div>
+                <div class="slide-label">LANGKAH 03 · PANTAU</div>
+                <h3 class="slide-title">Dashboard otomatis & visual</h3>
+                <p class="slide-desc">Lihat kondisi keuanganmu dalam satu layar — total income, budget vs realisasi, dan monthly savings. Semua update otomatis setiap kamu catat transaksi.</p>
+                <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Grafik harian, bulanan, tahunan</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Asset Tracker (investasi & saham)</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Budget vs realisasi</div>
+                </div>
+              </div>
+              <!-- Real screenshot -->
+              <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(94,229,176,0.15);">
+                <img src="assets/dashboard.jpeg" alt="Money Management Dashboard" style="width:100%;display:block;" />
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 4: Asset Tracker -->
+          <div class="carousel-slide">
+            <div class="slide-inner">
+              <div>
+                <div class="slide-label">BONUS · ASSET TRACKER</div>
+                <h3 class="slide-title">Pantau aset & investasi sekaligus</h3>
+                <p class="slide-desc">Bukan cuma transaksi harian — kamu juga bisa tracking total aset, deposito, saham lokal & US, reksadana, sampai emas dalam satu tampilan visual yang jelas.</p>
+                <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Saham Indonesia & US</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Liquid assets & investment assets</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)"><span style="color:var(--accent)">✓</span> Progress tracker ke target kekayaan</div>
+                </div>
+              </div>
+              <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(94,229,176,0.15);">
+                <img src="assets/asset-tracker.jpeg" alt="Asset Tracker" style="width:100%;display:block;" />
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end slides -->
+      </div><!-- end track -->
+
+      <div class="carousel-nav">
+        <button class="carousel-btn" onclick="prevSlide()">&#8592;</button>
+        <div class="carousel-dots" id="carouselDots">
+          <button class="carousel-dot active" onclick="goSlide(0)"></button>
+          <button class="carousel-dot" onclick="goSlide(1)"></button>
+          <button class="carousel-dot" onclick="goSlide(2)"></button>
+          <button class="carousel-dot" onclick="goSlide(3)"></button>
+        </div>
+        <button class="carousel-btn" onclick="nextSlide()">&#8594;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="eyebrow">Fiturnya lengkap</div>
+    <h2 class="section-title">Semua yang kamu butuhkan ada.</h2>
+    <div class="features-grid">
+      <div class="feat-card"><div class="feat-icon">🤖</div><h3>AI Multi Input</h3><p>Teks, foto struk, atau dokumen — AI baca semuanya dan catat otomatis.</p></div>
+      <div class="feat-card"><div class="feat-icon">📂</div><h3>Auto-Categorization</h3><p>AI kelompokkan transaksi sesuai kategori yang kamu set up sendiri.</p></div>
+      <div class="feat-card"><div class="feat-icon">📊</div><h3>Ultimate Sheet</h3><p>Setup, Budgeting Tracker, Transaction Tracker, Asset Tracker — semua dalam satu file.</p></div>
+      <div class="feat-card"><div class="feat-icon">📈</div><h3>Dashboard + Grafik</h3><p>Visualisasi keuangan harian, bulanan, dan tahunan secara otomatis.</p></div>
+      <div class="feat-card"><div class="feat-icon">⚡</div><h3>Quick Report</h3><p>Minta ringkasan keuangan kapanpun langsung via chat Telegram.</p></div>
+      <div class="feat-card"><div class="feat-icon">🔒</div><h3>Privacy 100% Guaranteed</h3><p>Data tersimpan di Google Sheets-mu sendiri. Bukan di server kami.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="eyebrow">Apa kata mereka yang sudah pakai?</div>
+    <h2 class="section-title">Apa kata mereka yang sudah pakai?</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Akhirnya nemu cara catat keuangan yang beneran aku pakai tiap hari. Sebelumnya selalu males buka aplikasi, tapi kalau cuma chat Telegram mah gampang banget."</p>
+        <div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Rina A.</div><div class="testi-role">Freelancer · Jakarta</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Setup-nya cepat banget, 5 menit sudah jalan. Yang aku suka data tersimpan di Google Sheets sendiri jadi bisa aku edit dan customize sesuka hati."</p>
+        <div class="testi-author"><div class="testi-avatar">D</div><div><div class="testi-name">Dimas P.</div><div class="testi-role">Karyawan swasta · Surabaya</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Suami aku yang biasanya skeptis soal tools keuangan, sekarang dia yang lebih rajin catat. Rekomen banget buat pasangan muda yang mau mulai atur keuangan bareng."</p>
+        <div class="testi-author"><div class="testi-avatar">N</div><div><div class="testi-name">Nadia S.</div><div class="testi-role">Ibu rumah tangga · Bandung</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container-sm" style="text-align:center">
+    <div class="eyebrow">Pilih paket</div>
+    <h2 class="section-title">Satu harga, akses selamanya.</h2>
+
+    <div class="price-card">
+      <div class="price-tag">✦ Wealth Tracker AI Pro · Paling Worth It</div>
+      <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px;justify-content:center;">
+        <div class="price-main">Rp 139.000</div>
+      </div>
+      <div class="price-note">Sekali bayar · Akses selamanya</div>
+      <div class="price-value">Total value Rp 1.039.000+</div>
+
+      <ul class="feat-list">
+        <li><span class="check">✓</span> Auto-Categorized (AI)</li>
+        <li><span class="check">✓</span> Input Pesan Teks (AI Catat Otomatis)</li>
+        <li><span class="check">✓</span> Input Foto Struk (AI Catat Otomatis)</li>
+        <li><span class="check">✓</span> Input Dokumen (AI Catat Otomatis)</li>
+        <li><span class="check">✓</span> Summary Finance Chat</li>
+        <li><span class="check">✓</span> Budgeting Sheet</li>
+        <li><span class="check">✓</span> Dashboard + Grafik: Harian, Bulanan, Tahunan</li>
+        <li><span class="check">✓</span> Asset Tracker Sheet (Investasi & Saham)</li>
+        <li><span class="check">✓</span> Financial Planning Calculator</li>
+        <li><span class="check">✓</span> Free Konsultasi Proteksi Finansial</li>
+        <li><span class="check">✓</span> Lifetime Support</li>
+      </ul>
+
+      <div class="scarcity">⏳ Harga spesial — bisa naik sewaktu-waktu</div>
+
+      <a href="https://wealthplannerindonesia.vercel.app" class="btn-primary" style="width:100%;justify-content:center;font-size:17px;padding:16px;">
+        Beli Sekarang! →
+      </a>
+
+      <div class="trust-bar">
+        <span class="trust-item">🔒 Pembayaran aman</span>
+        <span class="trust-item">⚡ Download instan</span>
+        <span class="trust-item">♻️ Lifetime access</span>
+        <span class="trust-item">🆓 Konsultasi gratis</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="eyebrow">Pertanyaan umum</div>
+    <h2 class="section-title">Masih ada yang belum jelas?</h2>
+    <div class="faq-list" style="margin-left:auto;margin-right:auto;">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">Apakah saya perlu skill coding atau teknis? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Tidak sama sekali. Panduan setup ditulis selangkah demi selangkah. Kalau bisa pakai Telegram dan Google Sheets, kamu bisa setup ini dalam 5 menit.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Data saya aman? Siapa yang bisa akses? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Data transaksimu tersimpan di Google Sheets milikmu sendiri — bukan di server kami. Hanya kamu yang punya akses, kecuali kamu sendiri yang membagikannya.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Apakah ini subscription atau bayar sekali? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Bayar sekali, akses selamanya — termasuk semua update di masa depan. Tidak ada biaya bulanan tersembunyi.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Bisa dipakai buat keuangan keluarga / berdua? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Bisa! Google Sheets bisa di-share ke pasangan atau anggota keluarga, dan bot Telegram bisa dipakai dari beberapa perangkat sekaligus.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Bagaimana kalau saya butuh bantuan setup? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Setiap pembelian sudah termasuk lifetime support via Telegram. Tim kami siap bantu kalau ada kendala saat setup maupun penggunaan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="final-cta">
+  <div class="container-sm" style="text-align:center">
+    <h2 class="section-title">Satu langkah kecil hari ini.<br>Keuangan lebih terkontrol selamanya.</h2>
+    <p class="section-sub" style="margin-bottom:36px">Berhenti nebak-nebak ke mana uang kamu pergi. Mulai malam ini.</p>
+    <a href="#pricing" class="btn-primary" style="font-size:17px;padding:16px 36px;">🗓 Beli Sekarang! →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">w<span>ealthplanner</span>.id</div>
+  <p>Platform perencanaan keuangan syariah — edukasi, proteksi, dan tools dalam satu tempat.<br>Oleh <strong>Jannatul Jasmine, SE, WPPE</strong> · Manulife Indonesia · OJK Licensed</p>
+</footer>
+
+<script>
+  let current = 0;
+  const total = 4;
+
+  function updateCarousel() {
+    document.getElementById('carouselSlides').style.transform = `translateX(-${current * 100}%)`;
+    document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+  }
+
+  function nextSlide() { current = (current + 1) % total; updateCarousel(); }
+  function prevSlide() { current = (current - 1 + total) % total; updateCarousel(); }
+  function goSlide(i) { current = i; updateCarousel(); }
+
+  function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
+</script>
+</body>
+</html>
