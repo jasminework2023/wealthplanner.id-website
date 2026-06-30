@@ -95,8 +95,9 @@
     /* DEMO CAROUSEL */
     #demo { background: var(--surface); }
     .carousel { margin-top: 48px; position: relative; }
-    .carousel-track { overflow: hidden; border-radius: 20px; }
-    .carousel-slides { display: flex; transition: transform .4s cubic-bezier(.4,0,.2,1); }
+    .carousel-track { overflow: hidden; border-radius: 20px; touch-action: pan-y; cursor: grab; }
+    .carousel-track:active { cursor: grabbing; }
+    .carousel-slides { display: flex; transition: transform .4s cubic-bezier(.4,0,.2,1); user-select: none; }
     .carousel-slide { min-width: 100%; }
     .slide-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 40px; background: var(--bg); border-radius: 20px; border: 1px solid var(--border); }
     .slide-label { font-size: 11px; letter-spacing: .12em; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
@@ -204,7 +205,7 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-brand">w<span>ealthplanner</span>.id</a>
+  <a href="https://wealthplannerindonesia.vercel.app" class="nav-brand">← w<span>ealthplanner</span>.id</a>
   <a href="#pricing" class="nav-cta">Beli Sekarang</a>
 </nav>
 
@@ -296,7 +297,7 @@
     <p class="section-sub">3 langkah — chat, catat, pantau.</p>
 
     <div class="carousel">
-      <div class="carousel-track">
+      <div class="carousel-track" id="carouselTrack">
         <div class="carousel-slides" id="carouselSlides">
 
           <!-- SLIDE 1: Chat Telegram -->
@@ -539,6 +540,39 @@
   function nextSlide() { current = (current + 1) % total; updateCarousel(); }
   function prevSlide() { current = (current - 1 + total) % total; updateCarousel(); }
   function goSlide(i) { current = i; updateCarousel(); }
+
+  // ── Swipe / drag support ──
+  const track = document.getElementById('carouselTrack');
+  let startX = 0, isDragging = false, dragDelta = 0;
+
+  function dragStart(x) {
+    isDragging = true;
+    startX = x;
+    document.getElementById('carouselSlides').style.transition = 'none';
+  }
+  function dragMove(x) {
+    if (!isDragging) return;
+    dragDelta = x - startX;
+    const percent = (dragDelta / track.offsetWidth) * 100;
+    document.getElementById('carouselSlides').style.transform = `translateX(calc(-${current * 100}% + ${percent}%))`;
+  }
+  function dragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    document.getElementById('carouselSlides').style.transition = 'transform .4s cubic-bezier(.4,0,.2,1)';
+    if (dragDelta < -50 && current < total - 1) current++;
+    else if (dragDelta > 50 && current > 0) current--;
+    dragDelta = 0;
+    updateCarousel();
+  }
+
+  track.addEventListener('touchstart', (e) => dragStart(e.touches[0].clientX), { passive: true });
+  track.addEventListener('touchmove', (e) => dragMove(e.touches[0].clientX), { passive: true });
+  track.addEventListener('touchend', dragEnd);
+
+  track.addEventListener('mousedown', (e) => { e.preventDefault(); dragStart(e.clientX); });
+  window.addEventListener('mousemove', (e) => dragMove(e.clientX));
+  window.addEventListener('mouseup', dragEnd);
 
   function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
 </script>
