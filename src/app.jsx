@@ -57,6 +57,16 @@ function App() {
     navigate({ name: "checkout" });
   };
 
+  // ── Deep-link from external landing pages (?screen=checkout&product=ID) ──
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("screen") === "checkout" && params.get("product")) {
+      const product = (typeof PRODUCTS !== "undefined" ? PRODUCTS : []).find((p) => p.id === params.get("product"));
+      if (product) buyNow(product);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
   const completePurchase = (items) => {
     setPurchases((p) => Array.from(new Set([...p, ...items.map((i) => i.id)])));
     setCart([]);
