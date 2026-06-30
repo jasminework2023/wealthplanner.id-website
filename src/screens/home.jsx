@@ -8,7 +8,6 @@ function HomeScreen({ onNavigate, heroLayout }) {
       <SocialProofMarquee />
       <CalculatorsTeaser onNavigate={onNavigate} />
       <ProductsTeaser onNavigate={onNavigate} />
-      <WealthTrackerLandingTeaser onNavigate={onNavigate} />
       <ProgramTeaser onNavigate={onNavigate} />
       <WebinarTeaser onNavigate={onNavigate} />
       <JasmineSection onNavigate={onNavigate} />
