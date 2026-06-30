@@ -26,7 +26,13 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
       ],
     },
     { k: "partnership", label: t.nav_partnership, route: "partnership" },
-    { k: "wealthtracker", label: "Wealth Tracker AI", external: "wealth-tracker-ai.html" },
+    {
+      k: "landingpage",
+      label: "Landing Page",
+      dropdown: [
+        { k: "wealthtracker", label: "Wealth Tracker AI", external: "wealth-tracker-ai.html", icon: Wallet },
+      ],
+    },
     { k: "about", label: t.nav_about, route: "about" },
     { k: "contact", label: t.nav_contact, route: "contact" },
   ];
@@ -58,26 +64,6 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
             {links.map((l) => (
               l.dropdown ? (
                 <NavDropdown key={l.k} label={l.label} items={l.dropdown} route={route} onNavigate={onNavigate} />
-              ) : l.external ? (
-                <button
-                  key={l.k}
-                  onClick={() => window.open(l.external, "_blank")}
-                  style={{
-                    background: "transparent",
-                    border: 0,
-                    color: "var(--accent)",
-                    padding: "8px 12px",
-                    borderRadius: 999,
-                    font: "inherit",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    transition: "all .15s ease",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {l.label}
-                </button>
               ) : (
                 <button
                   key={l.k}
@@ -179,7 +165,11 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
                   {l.dropdown.map((it) => (
                     <button
                       key={it.k}
-                      onClick={() => { setOpen(false); onNavigate({ name: it.route }); }}
+                      onClick={() => {
+                        setOpen(false);
+                        if (it.external) window.open(it.external, "_blank");
+                        else onNavigate({ name: it.route });
+                      }}
                       style={{
                         background: "transparent",
                         border: 0,
@@ -194,27 +184,6 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
                     >→ {it.label}</button>
                   ))}
                 </React.Fragment>
-              ) : l.external ? (
-                <button
-                  key={l.k}
-                  onClick={() => { setOpen(false); window.open(l.external, "_blank"); }}
-                  style={{
-                    background: "transparent",
-                    border: 0,
-                    color: "var(--accent)",
-                    padding: "16px 0",
-                    font: "inherit",
-                    fontFamily: "Bricolage Grotesque, sans-serif",
-                    fontSize: 28,
-                    fontWeight: 700,
-                    letterSpacing: "-0.02em",
-                    textAlign: "left",
-                    cursor: "pointer",
-                    borderBottom: "1px solid var(--border)",
-                  }}
-                >
-                  {l.label}
-                </button>
               ) : (
                 <button
                   key={l.k}
@@ -315,7 +284,11 @@ function NavDropdown({ label, items, route, onNavigate }) {
             return (
               <button
                 key={it.k}
-                onClick={() => { setOpen(false); onNavigate({ name: it.route }); }}
+                onClick={() => {
+                  setOpen(false);
+                  if (it.external) window.open(it.external, "_blank");
+                  else onNavigate({ name: it.route });
+                }}
                 style={{
                   background: isActive ? "var(--chip)" : "transparent",
                   border: 0,
