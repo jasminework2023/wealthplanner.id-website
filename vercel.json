@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/konsultasiasuransi", "destination": "/konsultasi-asuransi.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
