@@ -31,7 +31,7 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
       label: "Landing Page",
       dropdown: [
         { k: "wealthtracker", label: "Wealth Tracker AI", external: "wealth-tracker-ai.html", icon: Wallet },
-        { k: "konsultasi", label: "Konsultasi Asuransi", external: "konsultasi-asuransi.html", icon: ShieldCheck },
+       { k: "konsultasi", label: "Konsultasi Asuransi", external: "/konsultasiasuransi", icon: ShieldCheck },
       ],
     },
     { k: "about", label: t.nav_about, route: "about" },
