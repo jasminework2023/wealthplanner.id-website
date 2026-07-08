@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Konsultasi Asuransi Syariah Gratis — Jannatul Jasmine</title>
+  <meta name="description" content="Konsultasi gratis 1-on-1 dengan Sharia Life Planner berlisensi. Pahami perlindungan yang tepat untuk penghasilan dan keluargamu." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0f0c;
+      --surface: #131713;
+      --surface-2: #1a201a;
+      --border: rgba(255,255,255,0.07);
+      --ink: #eef2ee;
+      --ink-2: #8fa08f;
+      --muted: #4a5a4a;
+      --accent: #5EE5B0;
+      --accent-dim: rgba(94,229,176,0.1);
+      --gold: #C9A84C;
+      --gold-dim: rgba(201,168,76,0.1);
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.1; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(12,15,12,0.9); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px; color: var(--ink); text-decoration: none; }
+    .nav-brand span { color: var(--accent); }
+    .nav-cta {
+      background: var(--gold); color: #1a1200;
+      border: none; padding: 9px 20px; border-radius: 999px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: opacity .15s;
+    }
+    .nav-cta:hover { opacity: .88; }
+
+    /* LAYOUT */
+    section { padding: 88px 24px; }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .container-sm { max-width: 700px; margin: 0 auto; }
+
+    /* TYPOGRAPHY */
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: .14em; color: var(--gold); text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; margin-bottom: 16px; }
+    .section-sub { font-size: 17px; color: var(--ink-2); line-height: 1.7; max-width: 600px; }
+
+    /* BUTTONS */
+    .btn-primary {
+      background: var(--gold); color: #1a1200;
+      border: none; padding: 16px 32px; border-radius: 999px;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 10px;
+      transition: opacity .15s, transform .15s;
+    }
+    .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent; color: var(--ink);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 16px 32px; border-radius: 999px;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 10px;
+      transition: background .15s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+    /* HERO */
+    #hero {
+      padding-top: 100px; padding-bottom: 80px;
+      background:
+        radial-gradient(ellipse 60% 80% at 100% 50%, rgba(94,229,176,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 60% at 0% 0%, rgba(201,168,76,0.06) 0%, transparent 60%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.25);
+      color: var(--gold); font-size: 12px; font-weight: 600; letter-spacing: .06em;
+      padding: 6px 14px; border-radius: 999px; margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 900;
+      line-height: 1.08;
+      margin-bottom: 24px;
+    }
+
+    .hero-title .accent { color: var(--accent); }
+
+    .hero-sub {
+      font-size: 17px; color: var(--ink-2); line-height: 1.7;
+      margin-bottom: 36px; max-width: 520px;
+    }
+
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+
+    .hero-trust {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+
+    .trust-pill {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--ink-2); font-weight: 500;
+    }
+
+    .trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    /* PROFILE CARD */
+    .profile-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+
+    .profile-img {
+      width: 100%; aspect-ratio: 4/5;
+      background: linear-gradient(135deg, #1a2a1a, #0e1a0e);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px; color: var(--muted);
+      position: relative;
+    }
+
+    .profile-img img {
+      width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;
+    }
+
+    .profile-info {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .profile-mono {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: .12em; color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .profile-name { font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif; }
+
+    .profile-tags {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px;
+    }
+
+    .profile-tag {
+      background: var(--accent-dim); border: 1px solid rgba(94,229,176,0.15);
+      color: var(--accent); font-size: 11px; font-weight: 600; letter-spacing: .06em;
+      padding: 4px 10px; border-radius: 999px;
+    }
+
+    /* STATS BAR */
+    #stats {
+      padding: 40px 24px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 24px; text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 800; color: var(--gold); line-height: 1; }
+    .stat-lbl { font-size: 12px; color: var(--ink-2); margin-top: 6px; letter-spacing: .04em; }
+
+    /* PROBLEM */
+    #problem { background: var(--bg); }
+
+    .problem-intro {
+      font-size: clamp(20px, 3vw, 28px);
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--ink);
+      margin-bottom: 40px;
+      max-width: 680px;
+    }
+
+    .problem-intro em { color: var(--accent); font-style: normal; }
+
+    .risk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .risk-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid rgba(255,90,90,0.4);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color .2s;
+    }
+
+    .risk-card:hover { border-left-color: rgba(255,90,90,0.8); }
+
+    .risk-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; color: var(--muted); letter-spacing: .1em;
+      margin-bottom: 12px;
+    }
+
+    .risk-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; font-family: 'DM Sans', sans-serif; }
+    .risk-card p { font-size: 14px; color: var(--ink-2); line-height: 1.65; }
+
+    /* HOW IT WORKS */
+    #how { background: var(--surface); }
+
+    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 48px; max-width: 640px; }
+
+    .step { display: grid; grid-template-columns: 64px 1fr; gap: 24px; padding-bottom: 40px; position: relative; }
+
+    .step:not(:last-child)::before {
+      content: ''; position: absolute;
+      left: 31px; top: 64px; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+
+    .step-num {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800;
+      color: var(--gold); flex-shrink: 0;
+    }
+
+    .step-content { padding-top: 16px; }
+    .step-content h3 { font-size: 20px; font-family: 'DM Sans', sans-serif; font-weight: 700; margin-bottom: 8px; }
+    .step-content p { font-size: 15px; color: var(--ink-2); line-height: 1.65; }
+
+    /* SCOPE */
+    #scope { background: var(--bg); }
+
+    .scope-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px; margin-top: 40px;
+    }
+
+    .scope-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color .2s;
+    }
+
+    .scope-card:hover { border-color: rgba(94,229,176,0.25); }
+
+    .scope-icon { font-size: 24px; margin-bottom: 12px; }
+    .scope-card h3 { font-size: 16px; font-weight: 700; font-family: 'DM Sans', sans-serif; margin-bottom: 6px; }
+    .scope-card p { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+
+    /* TESTIMONIALS */
+    #testimonials { background: var(--surface); }
+
+    .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 40px; }
+
+    .testi-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .stars { color: var(--gold); font-size: 13px; margin-bottom: 12px; }
+    .testi-text { font-size: 15px; line-height: 1.7; color: var(--ink); margin-bottom: 20px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+    .testi-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; color: var(--gold); flex-shrink: 0;
+    }
+    .testi-name { font-weight: 600; font-size: 14px; }
+    .testi-role { font-size: 12px; color: var(--ink-2); }
+
+    /* FAQ */
+    #faq { background: var(--bg); }
+
+    .faq-list { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; max-width: 700px; margin-inline: auto; }
+
+    .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+
+    .faq-q {
+      padding: 20px 24px; font-weight: 600; font-size: 15px;
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      user-select: none;
+    }
+
+    .faq-q:hover { color: var(--gold); }
+    .faq-a { padding: 0 24px 20px; font-size: 14px; color: var(--ink-2); line-height: 1.7; display: none; }
+    .faq-item.open .faq-a { display: block; }
+    .faq-icon { transition: transform .2s; color: var(--muted); font-style: normal; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--gold); }
+
+    /* FINAL CTA */
+    #final-cta {
+      padding: 100px 24px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 70% 70% at 50% 100%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    }
+
+    .cta-card {
+      background: var(--surface);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 28px;
+      padding: 56px 40px;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .cta-title { font-size: clamp(28px, 4vw, 42px); font-weight: 900; margin-bottom: 16px; }
+    .cta-sub { font-size: 16px; color: var(--ink-2); line-height: 1.7; margin-bottom: 36px; }
+
+    .cta-meta { font-size: 13px; color: var(--muted); margin-top: 16px; }
+
+    .trust-bar-final {
+      display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 24px;
+    }
+
+    .trust-final-item { font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .footer-brand { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    footer p { font-size: 12px; color: var(--muted); line-height: 1.7; max-width: 540px; margin: 0 auto; }
+
+    /* RESPONSIVE */
+    @media (max-width: 760px) {
+      .hero-grid { grid-template-columns: 1fr !important; }
+      .cta-card { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://wealthplannerindonesia.vercel.app" class="nav-brand">← w<span>ealthplanner</span>.id</a>
+  <a href="#final-cta" class="nav-cta">Book Konsultasi Gratis</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+
+      <div>
+        <div class="hero-badge">★ Sharia Life Planner · Manulife Indonesia · AAJI Licensed</div>
+        <h1 class="hero-title">
+          Kalau besok kamu tidak bisa bekerja, siapa yang <span class="accent">melindungi keluargamu?</span>
+        </h1>
+        <p class="hero-sub">
+          Konsultasi gratis dengan Sharia Life Planner berpengalaman — pahami persis perlindungan apa yang kamu butuhkan, sebelum sesuatu yang tidak terduga terjadi.
+        </p>
+        <div class="hero-cta">
+          <a href="#final-cta" class="btn-primary">Book Konsultasi Gratis →</a>
+          <a href="#how" class="btn-outline">Lihat cara kerjanya</a>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-pill"><div class="trust-dot"></div>Syariah-compliant · tanpa riba</div>
+          <div class="trust-pill"><div class="trust-dot"></div>Gratis, tanpa tekanan beli</div>
+          <div class="trust-pill"><div class="trust-dot"></div>Ilustrasi lengkap sesuai kondisimu</div>
+        </div>
+      </div>
+
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-img">
+          <img src="assets/jasmine-profile.jpeg" alt="Jannatul Jasmine" onerror="this.style.display='none'" />
+        </div>
+        <div class="profile-info">
+          <div class="profile-mono">SHARIA LIFE PLANNER · MANULIFE INDONESIA</div>
+          <div class="profile-name">Jannatul Jasmine, SE, WPPE</div>
+          <div class="profile-tags">
+            <span class="profile-tag">AAJI Licensed</span>
+            <span class="profile-tag">AASI Licensed</span>
+            <span class="profile-tag">WPPE</span>
+            <span class="profile-tag">Sejak 2021</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div><div class="stat-num">150+</div><div class="stat-lbl">Keluarga terlindungi</div></div>
+      <div><div class="stat-num">4.9★</div><div class="stat-lbl">Rating konsultasi</div></div>
+      <div><div class="stat-num">4+</div><div class="stat-lbl">Tahun pengalaman</div></div>
+      <div><div class="stat-num">30 mnt</div><div class="stat-lbl">Sesi gratis, tanpa komitmen</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="eyebrow">Jujur dulu</div>
+    <p class="problem-intro">
+      Kebanyakan orang baru sadar pentingnya proteksi — <em>setelah terlambat.</em>
+    </p>
+    <p style="font-size:17px;color:var(--ink-2);line-height:1.7;max-width:640px;">
+      Kamu kerja keras tiap hari untuk keluarga. Tapi pernah kepikiran: kalau tiba-tiba kamu sakit serius atau tidak bisa lagi bekerja — siapa yang akan bayar cicilan, biaya sekolah anak, dan kebutuhan rumah tangga?
+    </p>
+
+    <div class="risk-grid">
+      <div class="risk-card">
+        <div class="risk-num">RISIKO 01</div>
+        <h3>Penghasilan terhenti tiba-tiba</h3>
+        <p>Sakit kritis, kecelakaan, atau hal tak terduga bisa menghentikan sumber pemasukan kapan saja — tanpa peringatan.</p>
+      </div>
+      <div class="risk-card">
+        <div class="risk-num">RISIKO 02</div>
+        <h3>Tabungan terkuras dalam sekejap</h3>
+        <p>Tanpa proteksi, dana yang susah payah dikumpulkan bertahun-tahun bisa habis hanya untuk biaya pengobatan.</p>
+      </div>
+      <div class="risk-card">
+        <div class="risk-num">RISIKO 03</div>
+        <h3>Keluarga tidak siap secara finansial</h3>
+        <p>Kalau kamu tidak ada, apakah keluargamu tetap bisa menjalani hidup seperti biasa? Tanpa proteksi yang tepat, jawabannya seringkali tidak.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="eyebrow">Cara kerja</div>
+    <h2 class="section-title">Dari belum tahu apa-apa,<br />sampai punya perlindungan yang tepat.</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Book konsultasi gratis</h3>
+          <p>Pilih jadwal yang cocok. Sesi 30 menit lewat Zoom bersama Jasmine — gratis, tanpa biaya dan tanpa komitmen apapun.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Analisis kebutuhan bersama</h3>
+          <p>Kita lihat kondisi keuanganmu sekarang — apa yang sudah aman, dan apa yang perlu dilindungi — berdasarkan angka nyata, bukan asumsi.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Dapat rekomendasi yang sesuai</h3>
+          <p>Kamu terima ilustrasi program perlindungan syariah yang pas dengan kondisi dan kemampuanmu — tanpa dipaksa, tanpa bingung.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCOPE -->
+<section id="scope">
+  <div class="container">
+    <div class="eyebrow">Cakupan konsultasi</div>
+    <h2 class="section-title">Apa yang dibahas saat sesi berlangsung?</h2>
+    <p class="section-sub">Tidak ada pertanyaan yang terlalu basic. Sesi ini dirancang untuk memberikan kejelasan, bukan membingungkan.</p>
+
+    <div class="scope-grid">
+      <div class="scope-card">
+        <div class="scope-icon">🔍</div>
+        <h3>Review proteksi yang sudah ada</h3>
+        <p>Kalau kamu sudah punya polis, kita review bersama — apakah manfaatnya sudah optimal atau masih ada celah yang perlu ditutup.</p>
+      </div>
+      <div class="scope-card">
+        <div class="scope-icon">📊</div>
+        <h3>Analisis kebutuhan asuransi</h3>
+        <p>Berapa uang pertanggungan yang ideal? Produk mana yang paling sesuai kondisimu? Semua dihitung berdasarkan data nyata.</p>
+      </div>
+      <div class="scope-card">
+        <div class="scope-icon">💰</div>
+        <h3>Simulasi premi & manfaat</h3>
+        <p>Kamu akan tahu persis berapa yang perlu dibayar per bulan dan manfaat apa yang kamu dapat — transparan dari awal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="eyebrow">Kata mereka</div>
+    <h2 class="section-title">150+ keluarga sudah menemukan kejelasan.</h2>
+
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Sebelumnya aku takut sama asuransi, ngerasa kayak buang uang. Setelah konsultasi sama Jasmine baru ngerti bedanya syariah dan manfaatnya buat keluargaku."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">R</div>
+          <div><div class="testi-name">Rina, 28 th</div><div class="testi-role">Ibu 1 anak · Jakarta</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Jasmine bantu aku lihat dari sisi kebutuhan, bukan langsung jualan. Itu yang bikin aku percaya dan akhirnya memutuskan untuk ambil perlindungan."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">D</div>
+          <div><div class="testi-name">Dimas, 31 th</div><div class="testi-role">Karyawan swasta · Surabaya</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Proses konsultasinya santai tapi informatif. Aku jadi tahu persis apa yang aku butuhkan tanpa merasa dipaksa sedikitpun. Highly recommended."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">S</div>
+          <div><div class="testi-name">Sari, 34 th</div><div class="testi-role">Wiraswasta · Bandung</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="eyebrow" style="display:block;text-align:center;margin-bottom:12px;">Pertanyaan umum</div>
+    <h2 class="section-title" style="text-align:center;">Masih ada yang belum jelas?</h2>
+
+    <div class="faq-list">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">Apakah konsultasi ini mengharuskan saya membeli produk? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Tidak. Konsultasi sepenuhnya gratis dan tanpa kewajiban membeli apapun. Tujuannya adalah memberi kamu gambaran yang jelas tentang kondisi proteksi finansialmu.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Berapa lama sesinya? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Sekitar 30 menit via Zoom. Bisa lebih panjang kalau ada banyak hal yang perlu didiskusikan — Jasmine tidak akan buru-buru memotong sesi.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Apakah produknya benar-benar sesuai syariah? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Ya. Semua program yang direkomendasikan adalah produk asuransi syariah Manulife Indonesia yang telah mendapat pengawasan OJK — bebas dari riba, gharar, dan maisir.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Saya belum tahu kebutuhan saya apa, apakah tetap bisa konsultasi? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Justru itu tujuan konsultasinya. Jasmine akan bantu kamu memetakan kebutuhan dari nol, berdasarkan kondisi dan situasi yang kamu ceritakan.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Apa bedanya asuransi syariah dan konvensional? <i class="faq-icon">✕</i></div>
+        <div class="faq-a">Asuransi syariah menggunakan prinsip tolong-menolong (takaful) — dana peserta dikelola bersama, bukan menjadi milik perusahaan. Ini menghilangkan unsur gharar (ketidakpastian) dan riba yang ada di asuransi konvensional.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="final-cta">
+  <div class="container">
+    <div class="cta-card">
+      <div class="eyebrow" style="display:block;text-align:center;margin-bottom:20px;">Mulai sekarang</div>
+      <h2 class="cta-title">Satu percakapan 30 menit bisa melindungi keluargamu bertahun-tahun ke depan.</h2>
+      <p class="cta-sub">Tidak ada tekanan untuk membeli. Cuma percakapan jujur tentang kondisi finansialmu dan apa yang bisa dilakukan untuk melindunginya.</p>
+      <a href="https://calendly.com/jannatuljasmine/30min" target="_blank" class="btn-primary" style="font-size:17px;padding:18px 40px;">
+        🗓 Book Konsultasi Gratis Sekarang →
+      </a>
+      <p class="cta-meta">Gratis · 30 menit · Via Zoom · Langsung dengan Jasmine</p>
+      <div class="trust-bar-final">
+        <span class="trust-final-item">🔒 AAJI Licensed</span>
+        <span class="trust-final-item">🏦 Manulife Indonesia</span>
+        <span class="trust-final-item">✅ Syariah-compliant</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">w<span>ealthplanner</span>.id</div>
+  <p>
+    Jannatul Jasmine adalah agen berlisensi Manulife Indonesia, terdaftar dan diawasi OJK.<br />
+    Konsultasi tidak mengikat dan tidak memerlukan pembelian produk apapun.
+  </p>
+</footer>
+
+<script>
+  function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
+</script>
+
+</body>
+</html>
