@@ -199,9 +199,9 @@ function CheckupCalc({ onSaveResult, onNavigate }) {
           }}>
             <div className="row-between">
               <div className="mono" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", opacity: 0.75 }}>SKOR KEUANGANMU</div>
-              <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontWeight: 800, fontSize: 64, lineHeight: 1 }}>{grade}</div>
+              <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 800, fontSize: 64, lineHeight: 1 }}>{grade}</div>
             </div>
-            <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontWeight: 700, fontSize: 96, lineHeight: 0.9, marginTop: 16 }}>
+            <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 700, fontSize: 96, lineHeight: 0.9, marginTop: 16 }}>
               {Math.round(score)}<span style={{ fontSize: 28, opacity: 0.5 }}>/100</span>
             </div>
             <p style={{ fontSize: 14, marginTop: 18, opacity: 0.75, maxWidth: 380 }}>
@@ -296,14 +296,14 @@ function RumahCalc({ onSaveResult, onNavigate }) {
           <div className="row" style={{ gap: 16, marginBottom: 16 }}>
             <div className="card" style={{ flex: 1, background: "var(--surface-2)" }}>
               <div className="muted" style={{ fontSize: 12, fontWeight: 600, marginBottom: 8 }}>CICILAN KPR BULANAN</div>
-              <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 32, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
+              <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 32, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
                 {formatIDR(Math.round(monthlyPayment))}
               </div>
               <div className="muted" style={{ fontSize: 12 }}>{tenor} tahun, bunga {interestRate}%</div>
             </div>
             <div className="card" style={{ flex: 1, background: "var(--surface-2)" }}>
               <div className="muted" style={{ fontSize: 12, fontWeight: 600, marginBottom: 8 }}>SEWA RUMAH BULANAN</div>
-              <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 32, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
+              <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 32, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
                 {formatIDR(rentalPrice)}
               </div>
               <div className="muted" style={{ fontSize: 12 }}>Selisih: {monthlyPayment > rentalPrice ? "KPR lebih mahal" : "Sewa lebih mahal"}</div>
@@ -634,14 +634,14 @@ function HajiCalc({ onSaveResult, onNavigate }) {
           <div className="row" style={{ gap: 16, marginBottom: 16 }}>
             <div className="card" style={{ flex: 1, background: "var(--surface-2)" }}>
               <div className="muted" style={{ fontSize: 12, fontWeight: 600, marginBottom: 8 }}>TARGET BERANGKAT</div>
-              <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 32, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
+              <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 32, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
                 {targetBerangkat}
               </div>
               <div className="muted" style={{ fontSize: 12 }}>Dalam {tahunMenuju} tahun</div>
             </div>
             <div className="card" style={{ flex: 1, background: "var(--surface-2)" }}>
               <div className="muted" style={{ fontSize: 12, fontWeight: 600, marginBottom: 8 }}>TOTAL BIAYA (Inflasi {inflasi}%)</div>
-              <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 28, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
+              <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 28, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>
                 {formatIDR(Math.round(totalBiayaDenganInflasi))}
               </div>
               <div className="muted" style={{ fontSize: 12 }}>Dari {formatIDR(totalBiayaMendasar)}</div>
@@ -1012,7 +1012,7 @@ function WarisanCalc({ onSaveResult, onNavigate }) {
             {/* HARTA BERSIH */}
             <div className="card" style={{ marginBottom: 20, padding: 20, background: "color-mix(in oklab, var(--accent) 15%, var(--surface))" }}>
               <div className="muted" style={{ fontSize: 12, fontWeight: 600, marginBottom: 8 }}>TOTAL HARTA BERSIH</div>
-              <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 36, fontWeight: 700, lineHeight: 1 }}>
+              <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 36, fontWeight: 700, lineHeight: 1 }}>
                 {formatIDR(Math.max(0, hartaBersih))}
               </div>
               <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 12, lineHeight: 1.6 }}>
