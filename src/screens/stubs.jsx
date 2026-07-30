@@ -97,15 +97,15 @@ function AboutScreen({ onNavigate }) {
               <h4 style={{ fontSize: 18 }}>{lang === "id" ? "Dampak" : "Impact"}</h4>
               <div className="row" style={{ gap: 24, marginTop: 12, flexWrap: "wrap" }}>
                 <div>
-                  <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 32, fontWeight: 700 }}>100<span style={{ color: "var(--accent)" }}>+</span></div>
+                  <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 32, fontWeight: 700 }}>100<span style={{ color: "var(--accent)" }}>+</span></div>
                   <div className="muted mono" style={{ fontSize: 11, letterSpacing: "0.08em" }}>{lang === "id" ? "KLIEN" : "CLIENTS"}</div>
                 </div>
                 <div>
-                  <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 32, fontWeight: 700 }}>5<span style={{ color: "var(--accent)" }}>+</span></div>
+                  <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 32, fontWeight: 700 }}>5<span style={{ color: "var(--accent)" }}>+</span></div>
                   <div className="muted mono" style={{ fontSize: 11, letterSpacing: "0.08em" }}>{lang === "id" ? "PERUSAHAAN" : "COMPANIES"}</div>
                 </div>
                 <div>
-                  <div style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 32, fontWeight: 700 }}>300<span style={{ color: "var(--accent)" }}>+</span></div>
+                  <div style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 32, fontWeight: 700 }}>300<span style={{ color: "var(--accent)" }}>+</span></div>
                   <div className="muted mono" style={{ fontSize: 11, letterSpacing: "0.08em" }}>{lang === "id" ? "PESERTA EVENT" : "EVENT PARTICIPANTS"}</div>
                 </div>
               </div>
