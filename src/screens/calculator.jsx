@@ -610,6 +610,7 @@ function HajiCalc({ onSaveResult, onNavigate }) {
   const [targetBerangkat, setTargetBerangkat] = React.useState(2028);
   const [dpSetoran, setDpSetoran] = React.useState(10000000);
   const [inflasi, setInflasi] = React.useState(5);
+  const [returnInvestasi, setReturnInvestasi] = React.useState(0);
 
   const tahunSaatIni = new Date().getFullYear();
   const tahunMenuju = targetBerangkat - tahunSaatIni;
@@ -617,7 +618,19 @@ function HajiCalc({ onSaveResult, onNavigate }) {
   const totalBiayaMendasar = daftarHaji;
   const totalBiayaDenganInflasi = totalBiayaMendasar * Math.pow(1 + inflasi / 100, tahunMenuju);
   const sisaDanaDibutuhkan = Math.max(totalBiayaDenganInflasi - dpSetoran, 0);
-  const budiBulanan = tahunMenuju > 0 ? sisaDanaDibutuhkan / (tahunMenuju * 12) : 0;
+  const totalBulan = tahunMenuju > 0 ? tahunMenuju * 12 : 0;
+  const returnBulanan = returnInvestasi / 100 / 12;
+  // Kalau ada estimasi return investasi, setoran bulanan dihitung pakai rumus
+  // future value of annuity (uang yang ditabung ikut "berbunga"), jadi makin
+  // tinggi return-nya, makin kecil setoran bulanan yang dibutuhkan.
+  // Kalau return 0%, hasilnya sama persis kayak perhitungan lama (linear).
+  const budiBulanan = totalBulan <= 0
+    ? 0
+    : returnBulanan === 0
+      ? sisaDanaDibutuhkan / totalBulan
+      : sisaDanaDibutuhkan * returnBulanan / (Math.pow(1 + returnBulanan, totalBulan) - 1);
+  const budiBulananTanpaInvestasi = totalBulan > 0 ? sisaDanaDibutuhkan / totalBulan : 0;
+  const hematDariInvestasi = Math.max(budiBulananTanpaInvestasi - budiBulanan, 0);
 
   return (
     <CalcLayout
@@ -627,6 +640,7 @@ function HajiCalc({ onSaveResult, onNavigate }) {
           <NumberInput label="Target tahun keberangkatan" value={targetBerangkat} onChange={setTargetBerangkat} min={tahunSaatIni} max={tahunSaatIni + 30} step={1} />
           <NumberInput label="DP / Setoran awal" prefix="Rp" value={dpSetoran} onChange={setDpSetoran} step={1000000} />
           <Slider label="Estimasi inflasi biaya haji" value={inflasi} onChange={setInflasi} min={0} max={10} step={0.5} format={(v) => `${v}%`} />
+          <Slider label="Estimasi return investasi tahunan" value={returnInvestasi} onChange={setReturnInvestasi} min={0} max={20} step={0.5} format={(v) => `${v}%`} />
         </>
       }
       results={
@@ -664,6 +678,12 @@ function HajiCalc({ onSaveResult, onNavigate }) {
                 <span style={{ fontWeight: 600 }}>Budget bulanan yang diperlukan</span>
                 <span className="mono" style={{ fontWeight: 700, fontSize: 18, color: "var(--positive)" }}>{formatIDR(Math.round(budiBulanan))}</span>
               </div>
+              {returnInvestasi > 0 && hematDariInvestasi > 0 && (
+                <div className="row-between">
+                  <span className="muted" style={{ fontSize: 12 }}>Lebih hemat berkat investasi {returnInvestasi}%/thn</span>
+                  <span className="mono" style={{ fontSize: 12, color: "var(--accent)" }}>−{formatIDR(Math.round(hematDariInvestasi))}/bln</span>
+                </div>
+              )}
             </div>
           </div>
 
