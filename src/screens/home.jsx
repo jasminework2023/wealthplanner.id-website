@@ -146,7 +146,7 @@ function SocialProofMarquee() {
     <div className="marquee-row" style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", margin: "32px 0" }}>
       <div className="marquee">
         {[...items, ...items].map((it, i) => (
-          <div key={i} className="row" style={{ gap: 16, fontFamily: "Bricolage Grotesque, sans-serif", fontSize: 22, fontWeight: 600 }}>
+          <div key={i} className="row" style={{ gap: 16, fontFamily: "Plus Jakarta Sans, sans-serif", fontSize: 22, fontWeight: 600 }}>
             <span style={{ color: "var(--accent)", fontSize: 16 }}>✦</span>
             <span style={{ whiteSpace: "nowrap" }}>{it}</span>
           </div>
@@ -546,7 +546,7 @@ function CalcTile({ calc, onClick }) {
         {Icon && <Icon size={20} stroke={2} />}
       </div>
       <div>
-        <h4 style={{ fontSize: 19, fontWeight: 700, fontFamily: "Bricolage Grotesque, sans-serif", letterSpacing: "-0.02em" }}>
+        <h4 style={{ fontSize: 19, fontWeight: 700, fontFamily: "Plus Jakarta Sans, sans-serif", letterSpacing: "-0.02em" }}>
           {t[`c_${calc.id}`]}
         </h4>
         <p className="muted" style={{ fontSize: 13, marginTop: 6, lineHeight: 1.45 }}>{t[`c_${calc.id}_sub`]}</p>
@@ -728,7 +728,7 @@ function JasmineSection({ onNavigate }) {
             />
             <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, padding: 14, background: "color-mix(in oklab, var(--bg) 85%, transparent)", backdropFilter: "blur(20px)", borderRadius: 14, border: "1px solid var(--border)" }}>
               <div className="mono" style={{ fontSize: 10, color: "var(--muted)", fontWeight: 600, letterSpacing: "0.1em" }}>SHARIA LIFE PLANNER · MANULIFE</div>
-              <div style={{ fontWeight: 700, fontSize: 18, marginTop: 4, fontFamily: "Bricolage Grotesque, sans-serif", letterSpacing: "-0.01em" }}>Jannatul Jasmine, SE, WPPE</div>
+              <div style={{ fontWeight: 700, fontSize: 18, marginTop: 4, fontFamily: "Plus Jakarta Sans, sans-serif", letterSpacing: "-0.01em" }}>Jannatul Jasmine, SE, WPPE</div>
             </div>
           </div>
         </div>
