@@ -156,7 +156,7 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
                 <React.Fragment key={l.k}>
                   <div style={{
                     padding: "16px 0 8px",
-                    fontFamily: "Bricolage Grotesque, sans-serif",
+                    fontFamily: "Plus Jakarta Sans, sans-serif",
                     fontSize: 28,
                     fontWeight: 700,
                     letterSpacing: "-0.02em",
@@ -195,7 +195,7 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
                     color: "var(--ink)",
                     padding: "16px 0",
                     font: "inherit",
-                    fontFamily: "Bricolage Grotesque, sans-serif",
+                    fontFamily: "Plus Jakarta Sans, sans-serif",
                     fontSize: 28,
                     fontWeight: 700,
                     letterSpacing: "-0.02em",
