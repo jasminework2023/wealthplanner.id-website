@@ -103,7 +103,7 @@ function ManulifeLogo() {
         <rect width="32" height="32" rx="6" fill="#00A758" />
         <path d="M8 22V10l4 6 4-6v12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <span style={{ fontFamily: "Bricolage Grotesque, sans-serif", fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "var(--ink)" }}>
+      <span style={{ fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "var(--ink)" }}>
         Manulife
       </span>
     </div>
