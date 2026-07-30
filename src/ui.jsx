@@ -83,12 +83,31 @@ function Stat({ value, label, suffix }) {
 
 function NumberInput({ label, value, onChange, prefix, suffix, min = 0, step = 1, hint }) {
   const { lang } = useT();
-  // Strip non-digit chars and parse to number
-  const parse = (str) => {
-    const digits = String(str).replace(/[^0-9]/g, "");
-    return digits === "" ? 0 : Number(digits);
+  // raw = teks yang lagi diketik user (mentah, belum di-clamp). null = ga lagi fokus di kolom ini.
+  const [raw, setRaw] = React.useState(null);
+
+  const display = raw !== null
+    ? raw
+    : (typeof value === "number" && !isNaN(value)) ? formatThousands(value, lang) : "";
+
+  const handleChange = (e) => {
+    // Cuma strip karakter non-angka, TANPA maksa ke min di sini.
+    // Ini yang bikin user bisa hapus/ketik ulang bebas dari kosong.
+    const digits = e.target.value.replace(/[^0-9]/g, "");
+    setRaw(digits);
+    if (digits !== "") {
+      onChange(Number(digits));
+    }
   };
-  const display = (typeof value === "number" && !isNaN(value)) ? formatThousands(value, lang) : "";
+
+  const handleBlur = () => {
+    // Baru di-clamp ke min pas user selesai ngetik (klik keluar kolom).
+    const n = raw === "" || raw === null ? min : Number(raw);
+    const clamped = Math.max(min, n);
+    onChange(clamped);
+    setRaw(null);
+  };
+
   return (
     <div>
       <label className="label-sm">{label}</label>
@@ -113,11 +132,8 @@ function NumberInput({ label, value, onChange, prefix, suffix, min = 0, step = 1
           type="text"
           inputMode="numeric"
           value={display}
-          onChange={(e) => {
-            const n = parse(e.target.value);
-            const clamped = Math.max(min, n);
-            onChange(clamped);
-          }}
+          onChange={handleChange}
+          onBlur={handleBlur}
           style={{
             borderRadius: prefix ? (suffix ? 0 : "0 14px 14px 0") : (suffix ? "14px 0 0 14px" : 14),
             fontVariantNumeric: "tabular-nums",
