@@ -687,6 +687,12 @@ function HajiCalc({ onSaveResult, onNavigate }) {
             </div>
           </div>
 
+          <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--surface-2)", borderRadius: 14, fontSize: 13, color: "var(--ink-2)", lineHeight: 1.55 }}>
+            🕋 <span style={{ marginLeft: 8 }}>
+              Tahukah kamu? Biaya haji riil (BPIH) untuk Haji Reguler sebagian ditanggung Nilai Manfaat dana kelolaan BPKH — sekitar 30–40% per tahun (BPIH 2026: ±Rp87,4 juta, sementara yang dibayar jemaah/Bipih hanya ±Rp54,2 juta). Namun besaran subsidi ini ditetapkan ulang tiap tahun lewat Keppres dan cenderung menurun, jadi kalkulator ini sengaja menghitung skenario kamu menabung penuh — biar rencana kamu tetap aman meski subsidi berubah nanti.
+            </span>
+          </div>
+
           <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--surface-2)", borderRadius: 14, fontSize: 13, color: "var(--ink-2)" }}>
             💡 <span style={{ marginLeft: 8 }}>Semakin cepat dapat nomor porsi, semakin cepat antrean berjalan. Sedia surat rujukan dari masjid atau agen haji terpercaya.</span>
           </div>
