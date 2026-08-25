@@ -4,15 +4,287 @@ function HomeScreen({ onNavigate, heroLayout }) {
   const { t, lang } = useT();
   return (
     <div>
-      <DashboardHero onNavigate={onNavigate} />
+      <HomeHero onNavigate={onNavigate} />
       <SocialProofMarquee />
-      <CalculatorsTeaser onNavigate={onNavigate} />
+      <ProtectionOptionsSection onNavigate={onNavigate} />
+      <PriorityCalculatorsSection onNavigate={onNavigate} />
       <ProductsTeaser onNavigate={onNavigate} />
       <ProgramTeaser onNavigate={onNavigate} />
       <WebinarTeaser onNavigate={onNavigate} />
       <JasmineSection onNavigate={onNavigate} />
       <BigCTA onNavigate={onNavigate} />
     </div>
+  );
+}
+
+function HomeHero({ onNavigate }) {
+  const { lang } = useT();
+
+  const copy = lang === "id" ? {
+    title: "Mulai Jaga Perencanaan Keuanganmu dari Sini.",
+    p1: "Rencana keuangan yang baik bukan cuma tentang menabung dan berinvestasi. Perlindungan yang tepat juga penting untuk membantu menjaga rencana yang sudah kamu bangun.",
+    p2: "Temukan perlindungan yang sesuai dengan kebutuhan dan tujuan finansialmu, bersama Life Planner.",
+    cta1: "Hitung Kebutuhan Asuransi",
+    cta2: "Book Konsultasi dengan Life Planner",
+  } : {
+    title: "Start Protecting Your Financial Plan From Here.",
+    p1: "A good financial plan isn't just about saving and investing. The right protection also matters — it helps safeguard the plan you've already built.",
+    p2: "Find the protection that fits your needs and financial goals, together with a Life Planner.",
+    cta1: "Calculate Insurance Needs",
+    cta2: "Book Consultation with a Life Planner",
+  };
+
+  return (
+    <Section style={{ paddingTop: 64, paddingBottom: 24 }}>
+      <div style={{ textAlign: "center", maxWidth: 860, margin: "0 auto" }}>
+        {/* Wordmark headline */}
+        <h1
+          className="display"
+          style={{
+            fontSize: "clamp(32px, 6vw, 64px)",
+            fontWeight: 800,
+            letterSpacing: "-0.02em",
+            color: "var(--accent)",
+            marginBottom: 28,
+          }}
+        >
+          wealthplanner.id
+        </h1>
+
+        {/* Hero headline */}
+        <h2 style={{ fontSize: "clamp(26px, 4vw, 42px)", lineHeight: 1.2, fontWeight: 700, color: "var(--ink)" }}>
+          {copy.title}
+        </h2>
+
+        <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.6, marginTop: 24, maxWidth: 640, marginInline: "auto" }}>
+          {copy.p1}
+        </p>
+        <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.6, marginTop: 12, maxWidth: 640, marginInline: "auto" }}>
+          {copy.p2}
+        </p>
+
+        <div className="row" style={{ justifyContent: "center", gap: 12, marginTop: 36, flexWrap: "wrap" }}>
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => onNavigate({ name: "calculator", id: "insurance" })}
+            iconRight={<ArrowRight size={18} />}
+          >
+            {copy.cta1}
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => onNavigate({ name: "book" })}
+          >
+            {copy.cta2}
+          </Button>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+const PROTECTION_OPTIONS_ID = [
+  {
+    id: "jiwa",
+    icon: "❤️",
+    title: "Asuransi Jiwa",
+    desc: "Jaga kondisi finansial keluarga saat kamu sudah tidak bisa lagi mendampingi mereka.",
+    bullets: [
+      "Premi mulai dari Rp250 ribu/bulan*",
+      "Santunan jiwa yang dapat disesuaikan",
+      "Bisa dikombinasikan dengan investasi syariah",
+    ],
+  },
+  {
+    id: "sakit-kritis",
+    icon: "🩺",
+    title: "Asuransi Sakit Kritis",
+    desc: "Siapkan perlindungan finansial saat kamu harus menghadapi penyakit kritis.",
+    bullets: [
+      "Santunan saat terdiagnosis penyakit kritis",
+      "Membantu menjaga cash flow selama masa pemulihan",
+      "Cakupan untuk puluhan jenis penyakit kritis",
+    ],
+  },
+  {
+    id: "kesehatan",
+    icon: "🏥",
+    title: "Asuransi Kesehatan",
+    desc: "Bantu siapkan biaya kesehatan tanpa harus mengganggu rencana keuangan yang sudah kamu susun.",
+    bullets: [
+      "Perlindungan biaya rumah sakit",
+      "Cashless di jaringan rumah sakit rekanan",
+      "Bisa untuk rawat inap & rawat jalan",
+    ],
+  },
+];
+
+const PROTECTION_OPTIONS_EN = [
+  {
+    id: "jiwa",
+    icon: "❤️",
+    title: "Life Insurance",
+    desc: "Protect your family's finances for the times you can no longer be there for them.",
+    bullets: [
+      "Premiums from Rp250K/month*",
+      "Adjustable life insurance payout",
+      "Can be combined with sharia investment",
+    ],
+  },
+  {
+    id: "sakit-kritis",
+    icon: "🩺",
+    title: "Critical Illness Insurance",
+    desc: "Prepare financial protection for when you have to face a critical illness.",
+    bullets: [
+      "Payout upon critical illness diagnosis",
+      "Helps maintain cash flow during recovery",
+      "Coverage for dozens of critical illnesses",
+    ],
+  },
+  {
+    id: "kesehatan",
+    icon: "🏥",
+    title: "Health Insurance",
+    desc: "Prepare medical costs without disrupting the financial plan you've built.",
+    bullets: [
+      "Hospital cost coverage",
+      "Cashless at partner hospital networks",
+      "Covers inpatient & outpatient care",
+    ],
+  },
+];
+
+function ProtectionOptionsSection({ onNavigate }) {
+  const { lang } = useT();
+  const options = lang === "id" ? PROTECTION_OPTIONS_ID : PROTECTION_OPTIONS_EN;
+
+  return (
+    <Section>
+      <div style={{ maxWidth: 680, marginBottom: 40 }}>
+        <Eyebrow>{lang === "id" ? "PILIHAN PERLINDUNGAN" : "PROTECTION OPTIONS"}</Eyebrow>
+        <h2 style={{ marginTop: 16 }}>
+          {lang === "id" ? "Pilihan Perlindungan untuk Berbagai Kebutuhan" : "Protection Options for Every Need"}
+        </h2>
+        <p className="ink-2" style={{ fontSize: 17, marginTop: 16 }}>
+          {lang === "id"
+            ? "Setiap keluarga punya kebutuhan yang berbeda. Temukan jenis perlindungan yang bisa membantu menjaga rencana keuanganmu tetap berjalan."
+            : "Every family has different needs. Find the type of protection that helps keep your financial plan on track."}
+        </p>
+      </div>
+
+      <div className="protection-scroll" style={{ display: "flex", gap: 16, overflowX: "auto", paddingBottom: 12, scrollSnapType: "x mandatory" }}>
+        {options.map((opt) => (
+          <button
+            key={opt.id}
+            onClick={() => onNavigate({ name: "program" })}
+            className="card card-hover"
+            style={{
+              cursor: "pointer", textAlign: "left", color: "inherit", font: "inherit",
+              flex: "0 0 auto", width: "min(320px, 84vw)", scrollSnapAlign: "start",
+              display: "flex", flexDirection: "column", gap: 16, padding: 28,
+            }}
+          >
+            <div style={{
+              width: 48, height: 48, borderRadius: 14,
+              background: "var(--chip)", display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 22,
+            }}>
+              {opt.icon}
+            </div>
+            <div>
+              <h3 style={{ fontSize: 22, lineHeight: 1.15 }}>{opt.title}</h3>
+              <p className="ink-2" style={{ fontSize: 14, lineHeight: 1.55, marginTop: 10 }}>{opt.desc}</p>
+            </div>
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+              {opt.bullets.map((b, i) => (
+                <li key={i} className="row" style={{ gap: 8, alignItems: "flex-start", fontSize: 13, color: "var(--ink-2)" }}>
+                  <span style={{ color: "var(--accent)", marginTop: 1 }}>✓</span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          </button>
+        ))}
+      </div>
+
+      <p className="muted" style={{ fontSize: 12, marginTop: 16 }}>
+        {lang === "id"
+          ? "*Detail manfaat, premi, dan ketentuan mengikuti program yang dipilih."
+          : "*Benefit details, premiums, and terms follow the selected program."}
+      </p>
+
+      <style>{`
+        .protection-scroll::-webkit-scrollbar { height: 6px; }
+        .protection-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+      `}</style>
+    </Section>
+  );
+}
+
+function PriorityCalculatorsSection({ onNavigate }) {
+  const { t, lang } = useT();
+
+  const priorityIds = ["checkup", "rumah", "edu", "pension", "warisan", "haji", "zakat"];
+  const labels_id = {
+    checkup: "Check-up Finansial",
+    rumah: "Simulasi Rumah",
+    edu: "Dana Pendidikan",
+    pension: "Kalkulator Pensiun",
+    warisan: "Kalkulator Warisan",
+    haji: "Kalkulator Haji/Umroh",
+    zakat: "Kalkulator Zakat",
+  };
+  const labels_en = {
+    checkup: "Financial Check-up",
+    rumah: "House Simulation",
+    edu: "Education Fund",
+    pension: "Retirement Calculator",
+    warisan: "Estate Calculator",
+    haji: "Hajj/Umrah Calculator",
+    zakat: "Zakat Calculator",
+  };
+  const labels = lang === "id" ? labels_id : labels_en;
+
+  return (
+    <Section style={{ background: "var(--bg-2)" }}>
+      <div style={{ maxWidth: 680, marginBottom: 32 }}>
+        <Eyebrow>{lang === "id" ? "MULAI DARI TUJUANMU" : "START WITH YOUR GOAL"}</Eyebrow>
+        <h2 style={{ marginTop: 16 }}>
+          {lang === "id" ? "Apa Prioritas Keuanganmu Saat Ini?" : "What's Your Financial Priority Right Now?"}
+        </h2>
+        <p className="ink-2" style={{ fontSize: 17, marginTop: 16 }}>
+          {lang === "id"
+            ? "Perlindungan finansial sebaiknya bukan sekadar memilih produk asuransi, tapi dimulai dari memahami apa yang ingin kamu jaga. Mulai dari tujuanmu. Lalu, siapkan perlindungannya."
+            : "Financial protection shouldn't just be about picking an insurance product — start by understanding what you want to protect. Begin with your goal. Then, prepare the protection."}
+        </p>
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+        {priorityIds.map((id) => {
+          const calc = CALCULATORS.find((c) => c.id === id);
+          const Icon = calc ? window[calc.icon] : null;
+          return (
+            <button
+              key={id}
+              onClick={() => onNavigate({ name: "calculator", id })}
+              className="card-hover"
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 20px", borderRadius: 999,
+                background: "var(--surface)", border: "1px solid var(--border)",
+                cursor: "pointer", font: "inherit", fontSize: 14, fontWeight: 600, color: "var(--ink)",
+              }}
+            >
+              {Icon && <Icon size={16} stroke={2} style={{ color: "var(--accent)" }} />}
+              {labels[id]}
+            </button>
+          );
+        })}
+      </div>
+    </Section>
   );
 }
 
