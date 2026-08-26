@@ -21,9 +21,8 @@ function HomeHero({ onNavigate }) {
   const { lang } = useT();
 
   const copy = lang === "id" ? {
-    title: "Mulai Jaga Perencanaan Keuanganmu dari Sini.",
-    p1: "Rencana keuangan yang baik bukan cuma tentang menabung dan berinvestasi. Perlindungan yang tepat juga penting untuk membantu menjaga rencana yang sudah kamu bangun.",
-    p2: "Temukan perlindungan yang sesuai dengan kebutuhan dan tujuan finansialmu, bersama Life Planner.",
+    title: "Lindungi Tujuan Keuanganmu dari Sini.",
+    p1: "Bantu kamu menyiapkan proteksi yang cocok sesuai kebutuhan dan tujuan keuanganmu.",
     cta1: "Hitung Kebutuhan Asuransi",
     cta2: "Book Konsultasi dengan Life Planner",
   } : {
@@ -59,15 +58,14 @@ function HomeHero({ onNavigate }) {
         <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.6, marginTop: 24, maxWidth: 640, marginInline: "auto" }}>
           {copy.p1}
         </p>
-        <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.6, marginTop: 12, maxWidth: 640, marginInline: "auto" }}>
-          {copy.p2}
-        </p>
 
         <div className="row" style={{ justifyContent: "center", gap: 12, marginTop: 36, flexWrap: "wrap" }}>
           <Button
             variant="primary"
             size="lg"
-            onClick={() => onNavigate({ name: "calculator", id: "insurance" })}
+            href="https://gri.my.id/f1/GJ5115"
+            target="_blank"
+            rel="noopener noreferrer"
             iconRight={<ArrowRight size={18} />}
           >
             {copy.cta1}
@@ -168,11 +166,6 @@ function ProtectionOptionsSection({ onNavigate }) {
         <h2 style={{ marginTop: 16 }}>
           {lang === "id" ? "Pilihan Perlindungan untuk Berbagai Kebutuhan" : "Protection Options for Every Need"}
         </h2>
-        <p className="ink-2" style={{ fontSize: 17, marginTop: 16 }}>
-          {lang === "id"
-            ? "Setiap keluarga punya kebutuhan yang berbeda. Temukan jenis perlindungan yang bisa membantu menjaga rencana keuanganmu tetap berjalan."
-            : "Every family has different needs. Find the type of protection that helps keep your financial plan on track."}
-        </p>
       </div>
 
       <div className="protection-scroll" style={{ display: "flex", gap: 16, overflowX: "auto", paddingBottom: 12, scrollSnapType: "x mandatory" }}>
@@ -413,7 +406,7 @@ function DashboardHero({ onNavigate }) {
 }
 
 function SocialProofMarquee() {
-  const items = ["150+ keluarga terlindungi", "4.9★ rating konsultasi", "Manulife trusted partner", "Sejak 2021", "Syariah-compliant", "OJK Licensed", "Konsultasi gratis"];
+  const items = ["Asuransi Jiwa", "Asuransi Kesehatan", "Asuransi Sakit Kritis", "Asuransi Korporat", "Asuransi Kebakaran"];
   return (
     <div className="marquee-row" style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", margin: "32px 0" }}>
       <div className="marquee">
