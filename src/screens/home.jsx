@@ -6,10 +6,8 @@ function HomeScreen({ onNavigate, heroLayout }) {
     <div>
       <HomeHero onNavigate={onNavigate} />
       <SocialProofMarquee />
-      <ProtectionOptionsSection onNavigate={onNavigate} />
       <PriorityCalculatorsSection onNavigate={onNavigate} />
-      <ProductsTeaser onNavigate={onNavigate} />
-      <ProgramTeaser onNavigate={onNavigate} />
+      <ProtectionOptionsSection onNavigate={onNavigate} />
       <WebinarTeaser onNavigate={onNavigate} />
       <JasmineSection onNavigate={onNavigate} />
       <BigCTA onNavigate={onNavigate} />
@@ -21,8 +19,8 @@ function HomeHero({ onNavigate }) {
   const { lang } = useT();
 
   const copy = lang === "id" ? {
-    title: "Lindungi Tujuan Keuanganmu dari Sini.",
-    p1: "Bantu kamu menyiapkan proteksi yang cocok sesuai kebutuhan dan tujuan keuanganmu.",
+    title: "Lindungi Tujuan Finansialmu dengan Asuransi Syariah.",
+    p1: "Temukan program asuransi syariah yang sesuai kebutuhan dan tujuan keuanganmu.",
     cta1: "Hitung Kebutuhan Asuransi",
     cta2: "Book Konsultasi dengan Life Planner",
   } : {
@@ -220,24 +218,22 @@ function ProtectionOptionsSection({ onNavigate }) {
 function PriorityCalculatorsSection({ onNavigate }) {
   const { t, lang } = useT();
 
-  const priorityIds = ["checkup", "rumah", "edu", "pension", "warisan", "haji", "zakat"];
+  const priorityIds = ["checkup", "rumah", "edu", "pension", "warisan", "haji"];
   const labels_id = {
-    checkup: "Check-up Finansial",
-    rumah: "Simulasi Rumah",
-    edu: "Dana Pendidikan",
-    pension: "Kalkulator Pensiun",
-    warisan: "Kalkulator Warisan",
-    haji: "Kalkulator Haji/Umroh",
-    zakat: "Kalkulator Zakat",
+    checkup: "Check-Up Finansial",
+    rumah: "Rumah",
+    edu: "Pendidikan Anak",
+    pension: "Dana Pensiun",
+    warisan: "Warisan & Wakaf",
+    haji: "Haji/Umroh",
   };
   const labels_en = {
-    checkup: "Financial Check-up",
-    rumah: "House Simulation",
-    edu: "Education Fund",
-    pension: "Retirement Calculator",
-    warisan: "Estate Calculator",
-    haji: "Hajj/Umrah Calculator",
-    zakat: "Zakat Calculator",
+    checkup: "Financial Check-Up",
+    rumah: "Home",
+    edu: "Children's Education",
+    pension: "Retirement Fund",
+    warisan: "Inheritance & Waqf",
+    haji: "Hajj/Umrah",
   };
   const labels = lang === "id" ? labels_id : labels_en;
 
@@ -246,7 +242,7 @@ function PriorityCalculatorsSection({ onNavigate }) {
       <div style={{ maxWidth: 680, marginBottom: 32 }}>
         <Eyebrow>{lang === "id" ? "MULAI DARI TUJUANMU" : "START WITH YOUR GOAL"}</Eyebrow>
         <h2 style={{ marginTop: 16 }}>
-          {lang === "id" ? "Apa Prioritas Keuanganmu Saat Ini?" : "What's Your Financial Priority Right Now?"}
+          {lang === "id" ? "Prioritas Keuanganmu Saat Ini:" : "Your Financial Priority Right Now:"}
         </h2>
         <p className="ink-2" style={{ fontSize: 17, marginTop: 16 }}>
           {lang === "id"
@@ -255,27 +251,64 @@ function PriorityCalculatorsSection({ onNavigate }) {
         </p>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-        {priorityIds.map((id) => {
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+        {priorityIds.map((id, i) => {
           const calc = CALCULATORS.find((c) => c.id === id);
           const Icon = calc ? window[calc.icon] : null;
           return (
             <button
               key={id}
               onClick={() => onNavigate({ name: "calculator", id })}
-              className="card-hover"
+              className="card card-hover"
               style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                padding: "12px 20px", borderRadius: 999,
-                background: "var(--surface)", border: "1px solid var(--border)",
-                cursor: "pointer", font: "inherit", fontSize: 14, fontWeight: 600, color: "var(--ink)",
+                cursor: "pointer", textAlign: "left", color: "inherit", font: "inherit",
+                display: "flex", flexDirection: "column", justifyContent: "space-between",
+                minHeight: 200, gap: 18, position: "relative", overflow: "hidden",
               }}
             >
-              {Icon && <Icon size={16} stroke={2} style={{ color: "var(--accent)" }} />}
-              {labels[id]}
+              <div className="row-between" style={{ alignItems: "flex-start" }}>
+                <div className="mono muted" style={{ fontSize: 11, letterSpacing: "0.15em" }}>
+                  {String(i + 1).padStart(2, "0")} / {String(priorityIds.length).padStart(2, "0")}
+                </div>
+                <div style={{
+                  width: 48, height: 48, borderRadius: 14,
+                  background: "var(--accent)", color: "var(--accent-ink)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  {Icon && <Icon size={22} stroke={2} />}
+                </div>
+              </div>
+              <div>
+                <h3 style={{ fontSize: 22 }}>{labels[id]}</h3>
+                <p className="ink-2" style={{ marginTop: 10, fontSize: 14, lineHeight: 1.5 }}>{t[`c_${id}_sub`]}</p>
+              </div>
+              <div className="row-between">
+                <span className="tag tag-outline">~ 60 detik</span>
+                <span className="row" style={{ gap: 6, color: "var(--ink)", fontSize: 13, fontWeight: 600 }}>
+                  {lang === "id" ? "Mulai" : "Start"} <ArrowRight size={14} />
+                </span>
+              </div>
             </button>
           );
         })}
+      </div>
+
+      <div className="row" style={{ justifyContent: "center", gap: 12, marginTop: 32, flexWrap: "wrap" }}>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={() => onNavigate({ name: "calculator", id: "insurance" })}
+          iconRight={<ArrowRight size={18} />}
+        >
+          {lang === "id" ? "Hitung Proteksi Keuangan" : "Calculate Financial Protection"}
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => onNavigate({ name: "book" })}
+        >
+          {lang === "id" ? "Book Konsultasi dengan Life Planner" : "Book Consultation with a Life Planner"}
+        </Button>
       </div>
     </Section>
   );
