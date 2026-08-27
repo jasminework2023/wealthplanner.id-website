@@ -34,97 +34,74 @@ function HomeHero({ onNavigate }) {
 
   return (
     <Section style={{ paddingTop: 64, paddingBottom: 24 }}>
-      <div style={{ position: "relative" }}>
-        <HeroJourneyMotion />
-        <div style={{ textAlign: "center", maxWidth: 860, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          {/* Wordmark headline */}
-          <h1
-            className="display"
+      <div style={{ textAlign: "center", maxWidth: 860, margin: "0 auto" }}>
+        {/* Wordmark headline — subtle color-fill animation on load */}
+        <h1
+          className="display"
+          aria-label="wealthplanner.id"
+          style={{
+            position: "relative",
+            display: "inline-block",
+            fontSize: "clamp(32px, 6vw, 64px)",
+            fontWeight: 800,
+            letterSpacing: "-0.02em",
+            marginBottom: 28,
+          }}
+        >
+          <span aria-hidden="true" style={{ color: "color-mix(in oklab, var(--accent) 16%, transparent)" }}>
+            wealthplanner.id
+          </span>
+          <span
+            aria-hidden="true"
+            className="wm-fill"
             style={{
-              fontSize: "clamp(32px, 6vw, 64px)",
-              fontWeight: 800,
-              letterSpacing: "-0.02em",
+              position: "absolute", inset: 0,
               color: "var(--accent)",
-              marginBottom: 28,
+              clipPath: "inset(0 100% 0 0)",
             }}
           >
             wealthplanner.id
-          </h1>
+          </span>
+        </h1>
 
-          {/* Hero headline */}
-          <h2 style={{ fontSize: "clamp(26px, 4vw, 42px)", lineHeight: 1.2, fontWeight: 700, color: "var(--ink)" }}>
-            {copy.title}
-          </h2>
+        {/* Hero headline */}
+        <h2 style={{ fontSize: "clamp(26px, 4vw, 42px)", lineHeight: 1.2, fontWeight: 700, color: "var(--ink)" }}>
+          {copy.title}
+        </h2>
 
-          <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.6, marginTop: 24, maxWidth: 640, marginInline: "auto" }}>
-            {copy.p1}
-          </p>
+        <p className="ink-2" style={{ fontSize: 18, lineHeight: 1.6, marginTop: 24, maxWidth: 640, marginInline: "auto" }}>
+          {copy.p1}
+        </p>
 
-          <div className="row" style={{ justifyContent: "center", gap: 12, marginTop: 36, flexWrap: "wrap" }}>
-            <Button
-              variant="primary"
-              size="lg"
-              href="https://gri.my.id/f1/GJ5115"
-              target="_blank"
-              rel="noopener noreferrer"
-              iconRight={<ArrowRight size={18} />}
-            >
-              {copy.cta1}
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => onNavigate({ name: "book" })}
-            >
-              {copy.cta2}
-            </Button>
-          </div>
+        <div className="row" style={{ justifyContent: "center", gap: 12, marginTop: 36, flexWrap: "wrap" }}>
+          <Button
+            variant="primary"
+            size="lg"
+            href="https://gri.my.id/f1/GJ5115"
+            target="_blank"
+            rel="noopener noreferrer"
+            iconRight={<ArrowRight size={18} />}
+          >
+            {copy.cta1}
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => onNavigate({ name: "book" })}
+          >
+            {copy.cta2}
+          </Button>
         </div>
       </div>
-    </Section>
-  );
-}
 
-// Subtle, meaningful motion behind the hero headline: a soft dashed path
-// rising from "where you are now" to "your goal", with a small dot
-// gliding along it — representing a financial journey toward a protected future.
-function HeroJourneyMotion() {
-  return (
-    <svg
-      viewBox="0 0 1200 260"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-      focusable="false"
-      style={{
-        position: "absolute",
-        inset: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-        zIndex: 0,
-        opacity: 0.4,
-      }}
-    >
-      <path
-        id="journey-path"
-        d="M 40 230 C 220 230, 300 130, 460 120 S 720 70, 880 55 S 1080 25, 1160 18"
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="1.5"
-        strokeDasharray="2 11"
-        strokeLinecap="round"
-      />
-      {/* Starting point — where the journey begins */}
-      <circle cx="40" cy="230" r="4" fill="var(--accent)" opacity="0.55" />
-      {/* Destination — the goal & protection */}
-      <circle cx="1160" cy="18" r="5" fill="var(--accent)" opacity="0.85" />
-      {/* The traveler, gliding slowly along the path */}
-      <circle r="3.5" fill="var(--accent)">
-        <animateMotion dur="10s" repeatCount="indefinite" rotate="auto">
-          <mpath href="#journey-path" />
-        </animateMotion>
-      </circle>
-    </svg>
+      <style>{`
+        @keyframes wmFillIn { to { clip-path: inset(0 0% 0 0); } }
+        .wm-fill { animation: wmFillIn 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.25s forwards; }
+        @media (prefers-reduced-motion: reduce) {
+          .wm-fill { animation: none; clip-path: inset(0 0% 0 0); }
+        }
+      `}</style>
+    </Section>
   );
 }
 
@@ -386,7 +363,7 @@ function WhyWealthPlannerSection({ onNavigate }) {
   return (
     <Section>
       <div style={{ maxWidth: 720, marginBottom: 40 }}>
-        <h2>{lang === "id" ? "Kenapa wealthplanner.id?" : "Why wealthplanner.id?"}</h2>
+        <h2>{lang === "id" ? <>Kenapa <span style={{ color: "var(--accent)" }}>wealthplanner.id</span>?</> : <>Why <span style={{ color: "var(--accent)" }}>wealthplanner.id</span>?</>}</h2>
         <p className="ink-2" style={{ fontSize: 17, marginTop: 16, lineHeight: 1.6 }}>
           {lang === "id"
             ? "Karena perlindungan yang tepat bukan dimulai dari produk, tapi dari memahami apa yang penting bagimu."
@@ -410,7 +387,14 @@ function WhyWealthPlannerSection({ onNavigate }) {
       </div>
 
       <div style={{ marginTop: 36 }}>
-        <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "book" })} iconRight={<ArrowRight size={18} />}>
+        <Button
+          variant="primary"
+          size="lg"
+          href="https://gri.my.id/f1/GJ5115"
+          target="_blank"
+          rel="noopener noreferrer"
+          iconRight={<ArrowRight size={18} />}
+        >
           {lang === "id" ? "Konsultasikan Kebutuhanmu" : "Consult Your Needs"}
         </Button>
       </div>
@@ -507,10 +491,12 @@ function PriorityCalculatorsSection({ onNavigate }) {
         <Button
           variant="primary"
           size="lg"
-          onClick={() => onNavigate({ name: "calculator", id: "insurance" })}
+          href="https://gri.my.id/f1/GJ5115"
+          target="_blank"
+          rel="noopener noreferrer"
           iconRight={<ArrowRight size={18} />}
         >
-          {lang === "id" ? "Hitung Proteksi Keuangan" : "Calculate Financial Protection"}
+          {lang === "id" ? "Hitung Kebutuhan Asuransi" : "Calculate Insurance Needs"}
         </Button>
         <Button
           variant="outline"
@@ -1230,7 +1216,7 @@ function JasmineSection({ onNavigate }) {
             position: "relative",
           }}>
             <img
-              src="/assets/jasmine-profile.jpg.jpeg"
+              src="/assets/jasmine-profile.jpeg"
               alt="Jasmine — Sharia Life Planner Manulife Indonesia"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
             />
