@@ -1,31 +1,7 @@
-// booking.jsx — Halaman booking konsultasi dengan Calendly popup
-
-const CALENDLY_URL = "https://calendly.com/jannatuljasmine/30min?background_color=0a0a0a&text_color=ffffff&primary_color=FFB800&hide_gdpr_banner=1";
+// booking.jsx — Halaman booking konsultasi
 
 function BookingScreen({ onNavigate }) {
   const { lang } = useT();
-
-  React.useEffect(() => {
-    if (!document.querySelector('link[href*="calendly"]')) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://assets.calendly.com/assets/external/widget.css";
-      document.head.appendChild(link);
-    }
-    if (!document.querySelector('script[src*="calendly"]')) {
-      const script = document.createElement("script");
-      script.src = "https://assets.calendly.com/assets/external/widget.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  const openCalendly = (e) => {
-    e.preventDefault();
-    if (window.Calendly) {
-      window.Calendly.initPopupWidget({ url: CALENDLY_URL });
-    }
-  };
 
   const topics = lang === "id" ? [
     "Review polis asuransi",
@@ -159,7 +135,9 @@ function BookingScreen({ onNavigate }) {
           <Button
             variant="primary"
             size="lg"
-            onClick={openCalendly}
+            href="https://calendly.com/jannatuljasmine/30min?back=1&month=2026-08"
+            target="_blank"
+            rel="noopener noreferrer"
             iconRight={<ArrowRight size={18} />}
           >
             {lang === "id" ? "Free Konsultasi 1-on-1 · 10 Menit" : "Free 1-on-1 Consultation · 10 Min"}
