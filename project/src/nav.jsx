@@ -22,10 +22,18 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
         { k: "program", label: t.nav_products_insurance, route: "program", icon: ShieldCheck },
         { k: "products", label: t.nav_products_digital, route: "products", icon: Wallet },
         { k: "webinar", label: t.nav_products_seminar, route: "webinar", icon: Video || Calendar },
-        { k: "book", label: t.nav_products_consult, route: "book", icon: User },
+        { k: "book", label: t.nav_products_consult, external: "https://calendly.com/jannatuljasmine/30min?back=1&month=2026-08", icon: User },
       ],
     },
     { k: "partnership", label: t.nav_partnership, route: "partnership" },
+    {
+      k: "landingpage",
+      label: "Landing Page",
+      dropdown: [
+        { k: "wealthtracker", label: "Wealth Tracker AI", external: "wealth-tracker-ai.html", icon: Wallet },
+       { k: "konsultasi", label: "Konsultasi Asuransi", external: "/konsultasiasuransi", icon: ShieldCheck },
+      ],
+    },
     { k: "about", label: t.nav_about, route: "about" },
     { k: "contact", label: t.nav_contact, route: "contact" },
   ];
@@ -148,7 +156,7 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
                 <React.Fragment key={l.k}>
                   <div style={{
                     padding: "16px 0 8px",
-                    fontFamily: "Bricolage Grotesque, sans-serif",
+                    fontFamily: "Plus Jakarta Sans, sans-serif",
                     fontSize: 28,
                     fontWeight: 700,
                     letterSpacing: "-0.02em",
@@ -158,7 +166,11 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
                   {l.dropdown.map((it) => (
                     <button
                       key={it.k}
-                      onClick={() => { setOpen(false); onNavigate({ name: it.route }); }}
+                      onClick={() => {
+                        setOpen(false);
+                        if (it.external) window.open(it.external, "_blank");
+                        else onNavigate({ name: it.route });
+                      }}
                       style={{
                         background: "transparent",
                         border: 0,
@@ -183,7 +195,7 @@ function Nav({ route, onNavigate, lang, onLangToggle, dark, onThemeToggle, cartC
                     color: "var(--ink)",
                     padding: "16px 0",
                     font: "inherit",
-                    fontFamily: "Bricolage Grotesque, sans-serif",
+                    fontFamily: "Plus Jakarta Sans, sans-serif",
                     fontSize: 28,
                     fontWeight: 700,
                     letterSpacing: "-0.02em",
@@ -273,7 +285,11 @@ function NavDropdown({ label, items, route, onNavigate }) {
             return (
               <button
                 key={it.k}
-                onClick={() => { setOpen(false); onNavigate({ name: it.route }); }}
+                onClick={() => {
+                  setOpen(false);
+                  if (it.external) window.open(it.external, "_blank");
+                  else onNavigate({ name: it.route });
+                }}
                 style={{
                   background: isActive ? "var(--chip)" : "transparent",
                   border: 0,
