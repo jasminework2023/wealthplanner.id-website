@@ -27,7 +27,7 @@ export default async function handler(req, res) {
         email: contact.email,
         mobile_number: contact.phone,
       },
-      success_redirect_url: "https://wealthplanner.id",
+      success_redirect_url: `https://wealthplanner.id/?screen=success&order=${externalId}`,
       failure_redirect_url: "https://wealthplanner.id",
       invoice_duration: 86400,
       metadata: {
