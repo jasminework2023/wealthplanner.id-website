@@ -1,6 +1,9 @@
 {
   "rewrites": [
     { "source": "/konsultasiasuransi", "destination": "/konsultasi-asuransi.html" },
+    { "source": "/dashboard/api/:path*", "destination": "https://personal-wealthplanner.vercel.app/api/:path*" },
+    { "source": "/dashboard", "destination": "https://personal-wealthplanner.vercel.app/dashboard" },
+    { "source": "/dashboard/:path*", "destination": "https://personal-wealthplanner.vercel.app/dashboard/:path*" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
