@@ -24,7 +24,11 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
     setLoading(true);
     setPayError("");
     try {
-      const res = await fetch("/api/create-payment", {
+      const paymentEndpoint = items.some((item) => item.id === "wealth-tracker-ai")
+        ? "/api/create-wealth-tracker-payment"
+        : "/api/create-payment";
+
+      const res = await fetch(paymentEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contact, items, total }),
@@ -102,19 +106,23 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
 
             <div className="divider" style={{ margin: "20px 0" }} />
 
-            <div className="row" style={{ gap: 8 }}>
-              <input
-                className="input"
-                placeholder="Kode promo"
-                value={promo}
-                onChange={(e) => setPromo(e.target.value)}
-                style={{ flex: 1, fontSize: 13, padding: "10px 12px" }}
-              />
-              <Button variant="secondary" size="sm" onClick={() => setPromoApplied(promo.trim().length > 0)}>
-                Apply
-              </Button>
-            </div>
-            {promoApplied && <div className="row" style={{ marginTop: 10, color: "var(--positive)", fontSize: 12, gap: 6 }}><Check size={12} stroke={3} />Promo 15% diterapkan</div>}
+            {!items.some((it) => it.id === "wealth-tracker-ai") && (
+              <>
+                <div className="row" style={{ gap: 8 }}>
+                  <input
+                    className="input"
+                    placeholder="Kode promo"
+                    value={promo}
+                    onChange={(e) => setPromo(e.target.value)}
+                    style={{ flex: 1, fontSize: 13, padding: "10px 12px" }}
+                  />
+                  <Button variant="secondary" size="sm" onClick={() => setPromoApplied(promo.trim().length > 0)}>
+                    Apply
+                  </Button>
+                </div>
+                {promoApplied && <div className="row" style={{ marginTop: 10, color: "var(--positive)", fontSize: 12, gap: 6 }}><Check size={12} stroke={3} />Promo 15% diterapkan</div>}
+              </>
+            )}
 
             <div className="divider" style={{ margin: "20px 0" }} />
 
