@@ -148,8 +148,8 @@ const PRODUCTS = [
     tag_id: "Soft Launch",
     tag_en: "Soft Launch",
     icon: "Sparkle",
-    blurb_id: "Semua 6 spreadsheet planner dalam satu paket — cashflow, KPR, pendidikan, financial freedom, investasi, & asuransi.",
-    blurb_en: "All 6 spreadsheet planners in one package — cashflow, mortgage, education, financial freedom, investment, & insurance.",
+    blurb_id: "Satu tempat untuk memahami, merencanakan, dan mengelola perjalanan keuanganmu.",
+    blurb_en: "One place to understand, plan, and manage your financial journey.",
     features_id: [
       "Cashflow & Budget Tracker",
       "Mortgage Planner",
