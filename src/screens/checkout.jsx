@@ -1,110 +1,343 @@
-<!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Checkout Personal Wealth Planner — wealthplanner.id</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:opsz,wght@8..144,400;8..144,500;8..144,600;8..144,700;8..144,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="theme.css" />
-  <style>
-    :root{--checkout-max:1120px}
-    body{min-height:100vh}
-    .checkout-page{max-width:var(--checkout-max);margin:0 auto;padding:32px 24px 72px}
-    .checkout-back{display:inline-flex;align-items:center;border:0;background:var(--chip);color:var(--ink-2);padding:8px 14px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;margin-bottom:24px;text-decoration:none}
-    .checkout-page h1{margin:0;font-size:clamp(32px,4vw,52px);line-height:1.05}
-    .checkout-muted{color:var(--ink-2)}
-    .checkout-intro{margin-top:10px;max-width:680px;line-height:1.6}
-    .checkout-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.8fr);gap:32px;margin-top:32px}
-    .checkout-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--shadow,0 10px 30px rgba(0,0,0,.08))}
-    .checkout-step{display:flex;align-items:center;gap:10px;font-weight:600}
-    .step-number{width:28px;height:28px;border-radius:999px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700}
-    .checkout-fields{display:grid;gap:14px;margin-top:22px}
-    .checkout-label{display:block;font-size:12px;font-weight:600;margin-bottom:7px;color:var(--ink-2)}
-    .checkout-input{width:100%;box-sizing:border-box;background:var(--input,var(--chip));border:1px solid var(--border);color:var(--ink);border-radius:10px;padding:12px 13px;font:inherit;font-size:14px;outline:none}
-    .checkout-input:focus{border-color:var(--accent)}
-    .checkout-summary{position:sticky;top:88px}
-    .product-row{display:flex;gap:12px;align-items:flex-start}
-    .product-icon{width:48px;height:48px;background:var(--accent);color:var(--accent-ink);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800}
-    .divider{height:1px;background:var(--border);margin:20px 0}
-    .row-between{display:flex;justify-content:space-between;gap:16px;align-items:center}
-    .mono{font-family:"JetBrains Mono",monospace}
-    .pay-button{width:100%;margin-top:20px;border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);padding:14px 18px;font:inherit;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-    .pay-button:disabled{opacity:.65;cursor:wait}
-    .pay-note{font-size:11px;margin-top:12px;text-align:center;line-height:1.5}
-    .error{margin-top:16px;padding:12px;border-radius:12px;background:#fff1f1;color:#a32929;font-size:13px}
-    @media(max-width:880px){.checkout-page{padding-inline:18px}.checkout-grid{grid-template-columns:1fr}.checkout-summary{position:relative;top:0}}
-  </style>
-</head>
-<body>
-  <main class="checkout-page">
-    <a class="checkout-back" href="/">← Kembali</a>
-    <h1>Checkout Personal Wealth Planner</h1>
-    <p class="checkout-muted checkout-intro">Lengkapi data pembeli. Setelah klik bayar, kamu akan diarahkan ke Xendit untuk memilih metode pembayaran yang tersedia.</p>
+// checkout.jsx — Checkout & payment flow
 
-    <div class="checkout-grid">
-      <section class="checkout-card">
-        <div class="checkout-step"><span class="step-number">1</span><span>Data pembeli</span></div>
-        <div class="checkout-fields">
-          <div><label class="checkout-label" for="name">Nama lengkap</label><input id="name" class="checkout-input" placeholder="Nama lengkap" autocomplete="name" /></div>
-          <div><label class="checkout-label" for="email">Email</label><input id="email" class="checkout-input" type="email" placeholder="kamu@email.com" autocomplete="email" /></div>
-          <div><label class="checkout-label" for="phone">Nomor WhatsApp</label><input id="phone" class="checkout-input" placeholder="08xxxxxxxxxx" autocomplete="tel" /></div>
-        </div>
-        <div id="error" class="error" hidden></div>
-      </section>
+function CheckoutScreen({ cart, onNavigate }) {
+  const { t, lang } = useT();
+  const items = cart.length ? cart : [PRODUCTS.find((p) => p.id === "bundle") || PRODUCTS[PRODUCTS.length - 1]];
+  const item = items[0];
+  const total = 149000;
+  const [contact, setContact] = React.useState({ name: "", email: "", phone: "" });
+  const [loading, setLoading] = React.useState(false);
+  const [payError, setPayError] = React.useState("");
 
-      <aside class="checkout-card checkout-summary">
-        <div class="product-row">
-          <div class="product-icon">✦</div>
-          <div style="flex:1"><div style="font-weight:700">Personal Wealth Planner</div><div class="checkout-muted" style="font-size:12px;margin-top:4px">6 financial planning templates</div></div>
+  async function handlePay() {
+    setPayError("");
+    if (!contact.name.trim() || !contact.email.trim() || !contact.phone.trim()) {
+      setPayError("Nama, email, dan nomor WhatsApp wajib diisi.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch("/api/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contact,
+          items: [{ id: "bundle", name_id: "Personal Wealth Planner", name_en: "Personal Wealth Planner", price: total }],
+          total,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Gagal membuat pembayaran.");
+      const paymentUrl = data.invoice_url || data.paymentLink || data.payment_link_url;
+      if (!paymentUrl) throw new Error("Link pembayaran Xendit belum tersedia.");
+      window.location.href = paymentUrl;
+    } catch (err) {
+      setPayError(err.message || "Gagal terhubung ke pembayaran.");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <Section style={{ paddingTop: 32 }}>
+      <button
+        onClick={() => onNavigate({ name: "home" })}
+        style={{ background: "var(--chip)", border: 0, color: "var(--ink-2)", padding: "8px 14px", borderRadius: 999, font: "inherit", fontSize: 13, fontWeight: 500, cursor: "pointer", marginBottom: 24 }}
+      >
+        ← Kembali
+      </button>
+      <h1>Checkout Personal Wealth Planner</h1>
+      <p className="muted" style={{ marginTop: 10, maxWidth: 650 }}>
+        Lengkapi data di bawah. Setelah klik bayar, kamu akan diarahkan ke <b>Xendit Hosted Checkout</b> untuk memilih metode pembayaran yang tersedia.
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(300px, .8fr)", gap: 32, marginTop: 32 }} className="co-grid">
+        <div className="card">
+          <Step number="1" label="Data pembeli" active />
+          <div className="stack" style={{ gap: 14, marginTop: 22 }}>
+            <div>
+              <label className="label-sm">Nama lengkap</label>
+              <input className="input" placeholder="Nama lengkap" value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} />
+            </div>
+            <div>
+              <label className="label-sm">Email</label>
+              <input className="input" type="email" placeholder="kamu@email.com" value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} />
+            </div>
+            <div>
+              <label className="label-sm">Nomor WhatsApp</label>
+              <input className="input" placeholder="08xxxxxxxxxx" value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} />
+            </div>
+          </div>
         </div>
-        <div class="divider"></div>
-        <div class="row-between"><span class="checkout-muted">Harga</span><span class="mono" style="font-weight:700">Rp149.000</span></div>
-        <div class="row-between" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"><span style="font-weight:700">Total</span><span class="mono" style="font-size:22px;font-weight:800">Rp149.000</span></div>
-        <button id="pay" class="pay-button">Bayar Rp149.000 <span>→</span></button>
-        <p class="checkout-muted pay-note">Pembayaran diproses melalui Xendit.</p>
-      </aside>
+
+        <div>
+          <div className="card" style={{ position: "sticky", top: 88 }}>
+            <div className="mono muted" style={{ fontSize: 11, letterSpacing: ".08em" }}>ORDER SUMMARY</div>
+            <div className="row" style={{ gap: 12, marginTop: 16, alignItems: "flex-start" }}>
+              <div style={{ width: 48, height: 48, background: "var(--accent)", color: "var(--accent-ink)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Sparkle size={20} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700 }}>Personal Wealth Planner</div>
+                <div className="muted" style={{ fontSize: 12, marginTop: 3 }}>Lifetime access</div>
+              </div>
+            </div>
+            <div className="divider" style={{ margin: "20px 0" }} />
+            <div className="row-between">
+              <span>Total</span>
+              <span className="mono" style={{ fontSize: 22, fontWeight: 800 }}>{formatIDR(total)}</span>
+            </div>
+            {payError && <p style={{ color: "var(--negative, #e53)", fontSize: 13, marginTop: 14 }}>{payError}</p>}
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handlePay}
+              disabled={loading}
+              iconRight={loading ? null : <ArrowRight size={18} />}
+              style={{ marginTop: 20, width: "100%", justifyContent: "center", opacity: loading ? .7 : 1 }}
+            >
+              {loading ? "Menghubungkan ke Xendit..." : `Bayar ${formatIDR(total)}`}
+            </Button>
+            <p className="muted" style={{ fontSize: 11, marginTop: 12, lineHeight: 1.5, textAlign: "center" }}>
+              Pembayaran diproses melalui Xendit. Metode pembayaran yang muncul mengikuti channel yang aktif di akun merchant.
+            </p>
+          </div>
+        </div>
+      </div>
+      <style>{`@media (max-width: 880px) { .co-grid { grid-template-columns: 1fr !important; } .co-grid > div:last-child > div { position: relative !important; top: 0 !important; } }`}</style>
+    </Section>
+  );
+}
+
+function Step({ number, label, active }) {
+  return (
+    <div className="row" style={{ gap: 10 }}>
+      <span style={{
+        width: 28, height: 28, borderRadius: 999,
+        background: active ? "var(--accent)" : "var(--chip)",
+        color: active ? "var(--accent-ink)" : "var(--ink-2)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontFamily: "JetBrains Mono, monospace",
+        fontSize: 12, fontWeight: 700,
+      }}>{number}</span>
+      <span style={{ fontWeight: 600 }}>{label}</span>
     </div>
-  </main>
+  );
+}
 
-  <script>
-    const errorEl = document.getElementById('error');
-    const payBtn = document.getElementById('pay');
-    const formatError = (message) => { errorEl.textContent = message; errorEl.hidden = false; };
-    payBtn.addEventListener('click', async () => {
-      errorEl.hidden = true;
-      const contact = {
-        name: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim()
-      };
-      if (!contact.name || !contact.email || !contact.phone) {
-        formatError('Nama, email, dan nomor WhatsApp wajib diisi.');
-        return;
+function PaymentOption({ method, active, onClick, selectedBank, onBank, selectedWallet, onWallet }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: active ? "var(--surface-2)" : "transparent",
+        border: active ? "1.5px solid var(--accent)" : "1px solid var(--border)",
+        borderRadius: 18,
+        padding: 18,
+        cursor: "pointer",
+        transition: "all .15s ease",
+      }}
+    >
+      <div className="row-between">
+        <div className="row" style={{ gap: 12 }}>
+          <span style={{
+            width: 20, height: 20, borderRadius: 999,
+            border: `2px solid ${active ? "var(--accent)" : "var(--border-strong)"}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            {active && <span style={{ width: 10, height: 10, borderRadius: 999, background: "var(--accent)" }} />}
+          </span>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 15 }}>{method.name}</div>
+            <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{method.sub}</div>
+          </div>
+        </div>
+        <PaymentBadge name={method.id} />
+      </div>
+
+      {/* Sub options */}
+      {active && method.banks && (
+        <div className="row" style={{ gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+          {method.banks.map((b) => (
+            <button key={b} onClick={(e) => { e.stopPropagation(); onBank(b); }} style={{
+              background: selectedBank === b ? "var(--accent)" : "var(--chip)",
+              color: selectedBank === b ? "var(--accent-ink)" : "var(--ink)",
+              border: 0, padding: "8px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600,
+              cursor: "pointer", fontFamily: "JetBrains Mono, monospace",
+            }}>{b}</button>
+          ))}
+        </div>
+      )}
+      {active && method.wallets && (
+        <div className="row" style={{ gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+          {method.wallets.map((b) => (
+            <button key={b} onClick={(e) => { e.stopPropagation(); onWallet(b); }} style={{
+              background: selectedWallet === b ? "var(--accent)" : "var(--chip)",
+              color: selectedWallet === b ? "var(--accent-ink)" : "var(--ink)",
+              border: 0, padding: "8px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600,
+              cursor: "pointer", fontFamily: "JetBrains Mono, monospace",
+            }}>{b}</button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PaymentBadge({ name }) {
+  const bg = name === "qris" ? "#E5202B" : name === "bank" ? "var(--ink)" : "#5EE5B0";
+  const fg = name === "qris" ? "#fff" : name === "bank" ? "var(--bg)" : "#0a0a0a";
+  const label = name === "qris" ? "QRIS" : name === "bank" ? "BANK" : "E-WALLET";
+  return (
+    <span style={{
+      background: bg, color: fg, padding: "4px 10px", borderRadius: 6,
+      fontSize: 10, fontWeight: 700, fontFamily: "JetBrains Mono, monospace", letterSpacing: "0.1em",
+    }}>{label}</span>
+  );
+}
+
+function SummaryRow({ label, value, color }) {
+  return (
+    <div className="row-between">
+      <span style={{ fontSize: 14, color: "var(--ink-2)" }}>{label}</span>
+      <span className="mono" style={{ fontWeight: 600, color: color || "var(--ink)" }}>{value}</span>
+    </div>
+  );
+}
+
+function PaymentProcessing({ method, bank, wallet, total, onDone, onCancel }) {
+  const [seconds, setSeconds] = React.useState(0);
+  React.useEffect(() => {
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <Section style={{ paddingTop: 64 }}>
+      <div className="card" style={{ maxWidth: 540, marginInline: "auto", textAlign: "center", padding: 40 }}>
+        {method === "qris" ? <QRDisplay total={total} /> : method === "bank" ? <BankInstructions bank={bank} total={total} /> : <WalletInstructions wallet={wallet} total={total} />}
+        <div className="muted mono" style={{ fontSize: 12, marginTop: 24 }}>MENUNGGU PEMBAYARAN · {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</div>
+        <div className="row" style={{ gap: 8, marginTop: 24, justifyContent: "center" }}>
+          <Button variant="primary" onClick={onDone}>Saya sudah bayar</Button>
+          <Button variant="ghost" onClick={onCancel}>Batal</Button>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function QRDisplay({ total }) {
+  return (
+    <>
+      <div className="mono muted" style={{ fontSize: 12, letterSpacing: "0.1em" }}>SCAN QR DENGAN APP E-WALLET</div>
+      <div style={{ margin: "24px auto", width: 220, height: 220, background: "#fff", borderRadius: 16, padding: 16 }}>
+        <FakeQR />
+      </div>
+      <div className="mono" style={{ fontSize: 24, fontWeight: 700 }}>{formatIDR(total)}</div>
+    </>
+  );
+}
+
+function FakeQR() {
+  // Generate a deterministic 25x25 pixel matrix to look like QR
+  const N = 25;
+  const cells = [];
+  let seed = 13;
+  const rng = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const corner = (x < 7 && y < 7) || (x >= N - 7 && y < 7) || (x < 7 && y >= N - 7);
+      const cornerInner = (x >= 2 && x < 5 && y >= 2 && y < 5) || (x >= N - 5 && x < N - 2 && y >= 2 && y < 5) || (x >= 2 && x < 5 && y >= N - 5 && y < N - 2);
+      const cornerBorder = (x < 7 && y < 7) || (x >= N - 7 && y < 7) || (x < 7 && y >= N - 7);
+      let dark = rng() < 0.45;
+      if (cornerBorder) {
+        dark = (x === 0 || y === 0 || x === 6 || y === 6 || x === N - 1 || x === N - 7 || y === N - 1 || y === N - 7);
+        if (cornerInner) dark = true;
       }
-      payBtn.disabled = true;
-      payBtn.firstChild.textContent = 'Membuat pembayaran…';
-      try {
-        const res = await fetch('/api/create-payment', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({
-            contact,
-            items: [{id:'bundle',name_id:'Personal Wealth Planner',name_en:'Personal Wealth Planner',price:149000}],
-            total:149000
-          })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || 'Gagal membuat pembayaran.');
-        if (!data.invoice_url) throw new Error('Link pembayaran Xendit belum tersedia.');
-        window.location.href = data.invoice_url;
-      } catch (err) {
-        formatError(err.message || 'Gagal terhubung ke pembayaran.');
-        payBtn.disabled = false;
-        payBtn.firstChild.textContent = 'Bayar Rp149.000 ';
-      }
-    });
-  </script>
-</body>
-</html>
+      if (dark) cells.push({ x, y });
+    }
+  }
+  const cell = 100 / N;
+  return (
+    <svg viewBox="0 0 100 100" style={{ width: "100%", height: "100%" }}>
+      {cells.map((c, i) => (
+        <rect key={i} x={c.x * cell} y={c.y * cell} width={cell + 0.5} height={cell + 0.5} fill="#0a0a0a" />
+      ))}
+    </svg>
+  );
+}
+
+function BankInstructions({ bank, total }) {
+  const account = bank === "BCA" ? "8810 5523 9988" : bank === "Mandiri" ? "1234 5678 9012 345" : "0123 4567 8910";
+  return (
+    <>
+      <div className="mono muted" style={{ fontSize: 12, letterSpacing: "0.1em" }}>TRANSFER KE</div>
+      <div style={{ fontFamily: "Bricolage Grotesque", fontSize: 36, fontWeight: 700, marginTop: 8 }}>{bank}</div>
+      <div className="mono" style={{ fontSize: 22, fontWeight: 700, letterSpacing: "0.05em", marginTop: 12 }}>{account}</div>
+      <div className="muted" style={{ fontSize: 13, marginTop: 4 }}>a.n. PT Wealth Planner Indonesia</div>
+      <div className="divider" style={{ margin: "20px 0" }} />
+      <div className="mono muted" style={{ fontSize: 12 }}>NOMINAL TRANSFER</div>
+      <div className="mono" style={{ fontSize: 24, fontWeight: 700 }}>{formatIDR(total)}</div>
+      <p className="muted" style={{ fontSize: 12, marginTop: 12, lineHeight: 1.5 }}>Transfer nominal pas. Konfirmasi otomatis setelah dana masuk (max 5 menit).</p>
+    </>
+  );
+}
+
+function WalletInstructions({ wallet, total }) {
+  return (
+    <>
+      <div className="mono muted" style={{ fontSize: 12, letterSpacing: "0.1em" }}>BAYAR DENGAN</div>
+      <div style={{ fontFamily: "Bricolage Grotesque", fontSize: 36, fontWeight: 700, marginTop: 8 }}>{wallet}</div>
+      <p className="muted" style={{ fontSize: 13, marginTop: 12, lineHeight: 1.5 }}>Buka app {wallet} kamu — konfirmasi pembayaran muncul otomatis.</p>
+      <div className="divider" style={{ margin: "20px 0" }} />
+      <div className="mono muted" style={{ fontSize: 12 }}>NOMINAL</div>
+      <div className="mono" style={{ fontSize: 24, fontWeight: 700 }}>{formatIDR(total)}</div>
+    </>
+  );
+}
+
+function PaymentSuccess({ onNavigate, items, total }) {
+  const { t, lang } = useT();
+  return (
+    <Section style={{ paddingTop: 56 }}>
+      <div style={{ maxWidth: 640, marginInline: "auto", textAlign: "center" }}>
+        <div style={{
+          width: 88, height: 88, borderRadius: "50%",
+          background: "var(--positive)", color: "#0a0a0a",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          margin: "0 auto 24px",
+        }}>
+          <Check size={44} stroke={3} />
+        </div>
+        <h1 style={{ fontSize: "clamp(40px,5vw,64px)" }}>{t.pay_success_t}</h1>
+        <p className="ink-2" style={{ fontSize: 18, marginTop: 16 }}>{t.pay_success_s}</p>
+
+        <div className="card" style={{ marginTop: 32, textAlign: "left" }}>
+          <div className="mono muted" style={{ fontSize: 11, letterSpacing: "0.1em" }}>RECEIPT · #WP-{Date.now().toString().slice(-6)}</div>
+          <div className="stack" style={{ gap: 14, marginTop: 16 }}>
+            {items.map((it, i) => (
+              <div key={i} className="row-between">
+                <span style={{ fontSize: 14, fontWeight: 600 }}>{it[`name_${lang}`] || it.name}</span>
+                <span className="mono">{formatIDR(it.price)}</span>
+              </div>
+            ))}
+          </div>
+          <div className="divider" style={{ margin: "16px 0" }} />
+          <div className="row-between">
+            <span style={{ fontWeight: 700 }}>Total dibayar</span>
+            <span className="mono" style={{ fontWeight: 700, fontSize: 18 }}>{formatIDR(total)}</span>
+          </div>
+        </div>
+
+        <div className="row" style={{ marginTop: 32, gap: 12, justifyContent: "center" }}>
+          <Button variant="primary" size="lg" onClick={() => onNavigate({ name: "dashboard" })} iconRight={<ArrowRight size={18} />}>
+            {t.pay_goto_dash}
+          </Button>
+          <Button variant="outline" size="lg" onClick={() => onNavigate({ name: "products" })}>
+            Lihat produk lain
+          </Button>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+Object.assign(window, { CheckoutScreen });
