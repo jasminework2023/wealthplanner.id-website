@@ -17,8 +17,24 @@
       "destination": "https://personal-wealthplanner.vercel.app/dashboard/:path*"
     },
     {
-      "source": "/api/:path*",
-      "destination": "https://personal-wealthplanner.vercel.app/api/:path*"
+      "source": "/api/dashboard",
+      "destination": "https://personal-wealthplanner.vercel.app/api/dashboard"
+    },
+    {
+      "source": "/api/setup",
+      "destination": "https://personal-wealthplanner.vercel.app/api/setup"
+    },
+    {
+      "source": "/api/add-transaction",
+      "destination": "https://personal-wealthplanner.vercel.app/api/add-transaction"
+    },
+    {
+      "source": "/api/update-budget",
+      "destination": "https://personal-wealthplanner.vercel.app/api/update-budget"
+    },
+    {
+      "source": "/api/update-asset-target",
+      "destination": "https://personal-wealthplanner.vercel.app/api/update-asset-target"
     },
     {
       "source": "/((?!api/).*)",
