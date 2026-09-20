@@ -32,8 +32,13 @@ function App() {
   // ── Router state ────────────────────────────────────────────────────
   const [route, setRoute] = React.useState(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("screen") === "checkout" && (params.get("product") === "wealth-tracker-ai" || params.get("product") === "bundle")) {
-      return { name: "checkout", product: "wealth-tracker-ai" };
+    const screen = params.get("screen");
+    const product = params.get("product");
+    if (screen === "checkout" && product) {
+      return { name: "checkout", product };
+    }
+    if (screen === "success") {
+      return { name: "success" };
     }
     return { name: "home" };
   });
@@ -44,7 +49,12 @@ function App() {
   };
 
   // ── App-wide mock state ────────────────────────────────────────────
-  const [cart, setCart] = React.useState([]);
+  const [cart, setCart] = React.useState(() => {
+    if (route.name === "checkout" && route.product) {
+      return PRODUCTS.filter((p) => p.id === route.product);
+    }
+    return [];
+  });
   const [purchases, setPurchases] = React.useState(["cashflow", "invest"]);
   const [savedResults, setSavedResults] = React.useState([]);
   const [bookings, setBookings] = React.useState([]);
@@ -97,7 +107,10 @@ function App() {
       screen = <ProductDetailScreen id={route.id || "invest"} onNavigate={navigate} onAddToCart={addToCart} onBuyNow={buyNow} />;
       break;
     case "checkout":
-      screen = <CheckoutScreen cart={cart} onNavigate={navigate} onCompletePurchase={completePurchase} productId={route.product} />;
+      screen = <CheckoutScreen cart={cart} onNavigate={navigate} onCompletePurchase={completePurchase} product={route.product} />;
+      break;
+    case "success":
+      screen = <PaymentSuccess onNavigate={navigate} items={cart.length ? cart : [PRODUCTS.find((p) => p.id === "bundle")]} total={149000} />;
       break;
     case "dashboard":
       // legacy route — Dashboard is now the home/landing hub (no login)
