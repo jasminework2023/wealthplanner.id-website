@@ -1,166 +1,75 @@
-// checkout.jsx — Checkout & payment flow
+// checkout.jsx — Personal Wealth Planner checkout
 
-function CheckoutScreen({ cart, productId, onNavigate, onCompletePurchase }) {
-  const { t, lang } = useT();
-  const [step, setStep] = React.useState("checkout"); // checkout | success
+function CheckoutScreen({ cart, onNavigate, product }) {
+  const items = cart.length ? cart : [PRODUCTS.find((p) => p.id === product) || PRODUCTS.find((p) => p.id === "bundle")];
+  const item = items[0];
+  const total = 149000;
   const [contact, setContact] = React.useState({ name: "", email: "", phone: "" });
-  const [promo, setPromo] = React.useState("");
-  const [promoApplied, setPromoApplied] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [payError, setPayError] = React.useState("");
 
-  const directProduct = productId ? PRODUCTS.find((p) => p.id === productId) : null;
-  const bundleProduct = PRODUCTS.find((p) => p.id === "bundle");
-  const items = cart.length ? cart : [directProduct || bundleProduct || PRODUCTS[1]]; // fallback for direct nav
-  const subtotal = items.reduce((s, i) => s + i.price, 0);
-  const discount = (items.length === 1 && items[0]?.id === "bundle") ? 0 : (promoApplied ? Math.round(subtotal * 0.15) : 0);
-  const taxBase = subtotal - discount;
-  const tax = 0;
-  const total = taxBase;
-  const isWealthTracker = items.length === 1 && items[0]?.id === "wealth-tracker-ai";
-
   async function handlePay() {
-    if (!contact.name || !contact.email || !contact.phone) {
-      setPayError("Lengkapi nama, email, dan nomor WhatsApp dulu ya.");
+    setPayError("");
+    if (!contact.name.trim() || !contact.email.trim() || !contact.phone.trim()) {
+      setPayError("Nama, email, dan nomor WhatsApp wajib diisi.");
       return;
     }
     setLoading(true);
-    setPayError("");
     try {
-      const endpoint = isWealthTracker ? "/api/wealth-tracker-payment" : "/api/create-payment";
-      const body = isWealthTracker
-        ? { name: contact.name, email: contact.email, phone: contact.phone }
-        : { contact, items, total };
-
-      const res = await fetch(endpoint, {
+      const res = await fetch("/api/create-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          contact,
+          items: [{ id: "bundle", name_id: "Personal Wealth Planner", name_en: "Personal Wealth Planner", price: total }],
+          total,
+        }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setPayError(data.error || "Gagal membuat pembayaran. Coba lagi.");
-        setLoading(false);
-        return;
-      }
-      const paymentUrl = isWealthTracker ? data.paymentLink : data.invoice_url;
-      if (!paymentUrl) {
-        setPayError("Link pembayaran belum tersedia. Coba lagi.");
-        setLoading(false);
-        return;
-      }
-      window.location.href = paymentUrl;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Gagal membuat pembayaran.");
+      if (!data.invoice_url) throw new Error("Link pembayaran Xendit belum tersedia.");
+      window.location.href = data.invoice_url;
     } catch (err) {
-      setPayError("Koneksi bermasalah. Periksa internet kamu.");
+      setPayError(err.message || "Gagal terhubung ke pembayaran.");
       setLoading(false);
     }
   }
 
-  if (step === "success") {
-    return <PaymentSuccess onNavigate={onNavigate} items={items} total={total} />;
-  }
-
   return (
     <Section style={{ paddingTop: 32 }}>
-      <button
-        onClick={() => onNavigate({ name: "products" })}
-        style={{ background: "var(--chip)", border: 0, color: "var(--ink-2)", padding: "8px 14px", borderRadius: 999, font: "inherit", fontSize: 13, fontWeight: 500, cursor: "pointer", marginBottom: 24, display: "inline-flex", alignItems: "center", gap: 6 }}
-      >
-        ← Lanjut belanja
+      <button onClick={() => onNavigate({ name: "home" })}
+        style={{ background: "var(--chip)", border: 0, color: "var(--ink-2)", padding: "8px 14px", borderRadius: 999, font: "inherit", fontSize: 13, cursor: "pointer", marginBottom: 24 }}>
+        ← Kembali
       </button>
-      <h1>{t.co_title}</h1>
+      <h1>Checkout Personal Wealth Planner</h1>
+      <p className="muted" style={{ marginTop: 10, maxWidth: 680 }}>
+        Lengkapi data pembeli. Setelah klik bayar, kamu akan diarahkan ke Xendit untuk memilih metode pembayaran yang tersedia.
+      </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(0, 1fr)", gap: 32, marginTop: 32 }} className="co-grid">
-        {/* LEFT */}
-        <div className="stack" style={{ gap: 20 }}>
-          {/* Contact */}
-          <div className="card">
-            <div className="row" style={{ gap: 10, marginBottom: 20 }}>
-              <Step number="1" label={t.co_contact} active />
-            </div>
-            <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div style={{ gridColumn: "1 / -1" }}>
-                <label className="label-sm">{t.co_name}</label>
-                <input className="input" placeholder="Nama lengkap" value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} />
-              </div>
-              <div>
-                <label className="label-sm">{t.co_email}</label>
-                <input className="input" type="email" placeholder="kamu@email.com" value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} />
-              </div>
-              <div>
-                <label className="label-sm">{t.co_phone}</label>
-                <input className="input" placeholder="08xxxxxxx" value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} />
-              </div>
-            </div>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(280px, .8fr)", gap: 32, marginTop: 32 }} className="co-grid">
+        <div className="card">
+          <Step number="1" label="Data pembeli" active />
+          <div className="stack" style={{ gap: 14, marginTop: 22 }}>
+            <div><label className="label-sm">Nama lengkap</label><input className="input" placeholder="Nama lengkap" value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} /></div>
+            <div><label className="label-sm">Email</label><input className="input" type="email" placeholder="kamu@email.com" value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} /></div>
+            <div><label className="label-sm">Nomor WhatsApp</label><input className="input" placeholder="08xxxxxxxxxx" value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} /></div>
           </div>
+          {payError && <div style={{ marginTop: 16, padding: 12, borderRadius: 12, background: "#fff1f1", color: "#a32929", fontSize: 13 }}>{payError}</div>}
         </div>
 
-        {/* RIGHT — order summary */}
         <div>
           <div className="card" style={{ position: "sticky", top: 88 }}>
-            <h3 style={{ fontSize: 20, marginBottom: 20 }}>{t.co_summary}</h3>
-            <div className="stack" style={{ gap: 14 }}>
-              {items.map((it) => (
-                <div key={it.id} className="row" style={{ gap: 12, alignItems: "flex-start" }}>
-                  <div style={{ width: 48, height: 48, background: "var(--accent)", color: "var(--accent-ink)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    {window[it.icon] ? React.createElement(window[it.icon], { size: 20 }) : <Sparkle size={20} />}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600 }}>{it[`name_${lang}`] || it.name}</div>
-                    <div className="muted mono" style={{ fontSize: 11, marginTop: 2 }}>EXCEL · GSHEETS</div>
-                  </div>
-                  <div className="mono" style={{ fontSize: 14, fontWeight: 600 }}>{formatIDR(it.price)}</div>
-                </div>
-              ))}
+            <div className="row" style={{ gap: 12, alignItems: "flex-start" }}>
+              <div style={{ width: 48, height: 48, background: "var(--accent)", color: "var(--accent-ink)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}><Sparkle size={20} /></div>
+              <div style={{ flex: 1 }}><div style={{ fontWeight: 700 }}>{item?.name_id || "Personal Wealth Planner"}</div><div className="muted" style={{ fontSize: 12, marginTop: 4 }}>6 financial planning templates</div></div>
             </div>
-
             <div className="divider" style={{ margin: "20px 0" }} />
-
-            <div className="row" style={{ gap: 8 }}>
-              <input
-                className="input"
-                placeholder="Kode promo"
-                value={promo}
-                onChange={(e) => setPromo(e.target.value)}
-                style={{ flex: 1, fontSize: 13, padding: "10px 12px" }}
-              />
-              <Button variant="secondary" size="sm" onClick={() => setPromoApplied(promo.trim().length > 0)}>
-                Apply
-              </Button>
-            </div>
-            {promoApplied && <div className="row" style={{ marginTop: 10, color: "var(--positive)", fontSize: 12, gap: 6 }}><Check size={12} stroke={3} />Promo 15% diterapkan</div>}
-
-            <div className="divider" style={{ margin: "20px 0" }} />
-
-            <div className="stack" style={{ gap: 10 }}>
-              <SummaryRow label={t.co_subtotal} value={formatIDR(subtotal)} />
-              {discount > 0 && <SummaryRow label={t.co_discount} value={`-${formatIDR(discount)}`} color="var(--positive)" />}
-            </div>
-            <div className="row-between" style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
-              <span style={{ fontWeight: 700 }}>{t.co_total}</span>
-              <span className="mono" style={{ fontSize: 22, fontWeight: 800 }}>{formatIDR(total)}</span>
-            </div>
-            {payError && (
-              <p style={{ color: "var(--negative, #e53)", fontSize: 13, marginTop: 12, textAlign: "center" }}>
-                {payError}
-              </p>
-            )}
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={handlePay}
-              disabled={loading}
-              className=""
-              iconRight={loading ? null : <ArrowRight size={18} />}
-              style={{ marginTop: 20, width: "100%", justifyContent: "center", opacity: loading ? 0.7 : 1 }}
-            >
-              {loading ? "Memproses..." : `${t.co_pay} ${formatIDR(total)}`}
+            <div className="row-between"><span className="muted">Harga</span><span className="mono" style={{ fontWeight: 700 }}>{formatIDR(total)}</span></div>
+            <div className="row-between" style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border)" }}><span style={{ fontWeight: 700 }}>Total</span><span className="mono" style={{ fontSize: 22, fontWeight: 800 }}>{formatIDR(total)}</span></div>
+            <Button variant="primary" size="lg" onClick={handlePay} disabled={loading} iconRight={!loading ? <ArrowRight size={18} /> : null} style={{ marginTop: 20, width: "100%", justifyContent: "center" }}>
+              {loading ? "Membuat pembayaran…" : `Bayar ${formatIDR(total)}`}
             </Button>
-            <p className="muted" style={{ fontSize: 11, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
-              {isWealthTracker
-                ? "Setelah klik bayar, kamu akan diarahkan ke halaman pembayaran Xendit untuk memilih metode pembayaran yang tersedia."
-                : t.co_terms}
-            </p>
+            <p className="muted" style={{ fontSize: 11, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>Pembayaran diproses melalui Xendit.</p>
           </div>
         </div>
       </div>
@@ -168,6 +77,7 @@ function CheckoutScreen({ cart, productId, onNavigate, onCompletePurchase }) {
     </Section>
   );
 }
+
 
 function Step({ number, label, active }) {
   return (
