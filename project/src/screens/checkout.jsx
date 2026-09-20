@@ -1,136 +1,105 @@
 // checkout.jsx — Checkout & payment flow
 
-function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
+function CheckoutScreen({ cart, onNavigate }) {
   const { t, lang } = useT();
-  const [step, setStep] = React.useState("checkout"); // checkout | paying | success
-  const [method, setMethod] = React.useState("qris");
-  const [bank, setBank] = React.useState("BCA");
-  const [wallet, setWallet] = React.useState("GoPay");
+  const items = cart.length ? cart : [PRODUCTS.find((p) => p.id === "bundle") || PRODUCTS[PRODUCTS.length - 1]];
+  const item = items[0];
+  const total = 149000;
   const [contact, setContact] = React.useState({ name: "", email: "", phone: "" });
-  const [promo, setPromo] = React.useState("");
-  const [promoApplied, setPromoApplied] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [payError, setPayError] = React.useState("");
 
-  const items = cart.length ? cart : [PRODUCTS[1]]; // fallback for direct nav
-  const subtotal = items.reduce((s, i) => s + i.price, 0);
-  const discount = promoApplied ? Math.round(subtotal * 0.15) : 0;
-  const taxBase = subtotal - discount;
-  const tax = Math.round(taxBase * 0.11);
-  const total = taxBase + tax;
-
-  if (step === "success") {
-    return <PaymentSuccess onNavigate={onNavigate} items={items} method={method} total={total} />;
-  }
-
-  if (step === "paying") {
-    return <PaymentProcessing method={method} bank={bank} wallet={wallet} total={total} onDone={() => { setStep("success"); onCompletePurchase(items); }} onCancel={() => setStep("checkout")} />;
+  async function handlePay() {
+    setPayError("");
+    if (!contact.name.trim() || !contact.email.trim() || !contact.phone.trim()) {
+      setPayError("Nama, email, dan nomor WhatsApp wajib diisi.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch("/api/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contact,
+          items: [{ id: "bundle", name_id: "Personal Wealth Planner", name_en: "Personal Wealth Planner", price: total }],
+          total,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Gagal membuat pembayaran.");
+      const paymentUrl = data.invoice_url || data.paymentLink || data.payment_link_url;
+      if (!paymentUrl) throw new Error("Link pembayaran Xendit belum tersedia.");
+      window.location.href = paymentUrl;
+    } catch (err) {
+      setPayError(err.message || "Gagal terhubung ke pembayaran.");
+      setLoading(false);
+    }
   }
 
   return (
     <Section style={{ paddingTop: 32 }}>
       <button
-        onClick={() => onNavigate({ name: "products" })}
-        style={{ background: "var(--chip)", border: 0, color: "var(--ink-2)", padding: "8px 14px", borderRadius: 999, font: "inherit", fontSize: 13, fontWeight: 500, cursor: "pointer", marginBottom: 24, display: "inline-flex", alignItems: "center", gap: 6 }}
+        onClick={() => onNavigate({ name: "home" })}
+        style={{ background: "var(--chip)", border: 0, color: "var(--ink-2)", padding: "8px 14px", borderRadius: 999, font: "inherit", fontSize: 13, fontWeight: 500, cursor: "pointer", marginBottom: 24 }}
       >
-        ← Lanjut belanja
+        ← Kembali
       </button>
-      <h1>{t.co_title}</h1>
+      <h1>Checkout Personal Wealth Planner</h1>
+      <p className="muted" style={{ marginTop: 10, maxWidth: 650 }}>
+        Lengkapi data di bawah. Setelah klik bayar, kamu akan diarahkan ke <b>Xendit Hosted Checkout</b> untuk memilih metode pembayaran yang tersedia.
+      </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(0, 1fr)", gap: 32, marginTop: 32 }} className="co-grid">
-        {/* LEFT */}
-        <div className="stack" style={{ gap: 20 }}>
-          {/* Contact */}
-          <div className="card">
-            <div className="row" style={{ gap: 10, marginBottom: 20 }}>
-              <Step number="1" label={t.co_contact} active />
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(300px, .8fr)", gap: 32, marginTop: 32 }} className="co-grid">
+        <div className="card">
+          <Step number="1" label="Data pembeli" active />
+          <div className="stack" style={{ gap: 14, marginTop: 22 }}>
+            <div>
+              <label className="label-sm">Nama lengkap</label>
+              <input className="input" placeholder="Nama lengkap" value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} />
             </div>
-            <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div style={{ gridColumn: "1 / -1" }}>
-                <label className="label-sm">{t.co_name}</label>
-                <input className="input" placeholder="Nama lengkap" value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} />
-              </div>
-              <div>
-                <label className="label-sm">{t.co_email}</label>
-                <input className="input" type="email" placeholder="kamu@email.com" value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} />
-              </div>
-              <div>
-                <label className="label-sm">{t.co_phone}</label>
-                <input className="input" placeholder="08xxxxxxx" value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} />
-              </div>
+            <div>
+              <label className="label-sm">Email</label>
+              <input className="input" type="email" placeholder="kamu@email.com" value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} />
             </div>
-          </div>
-
-          {/* Payment method */}
-          <div className="card">
-            <div className="row" style={{ gap: 10, marginBottom: 20 }}>
-              <Step number="2" label={t.co_method} active />
-            </div>
-            <div className="stack" style={{ gap: 10 }}>
-              {PAYMENT_METHODS.map((m) => (
-                <PaymentOption
-                  key={m.id}
-                  method={m}
-                  active={method === m.id}
-                  onClick={() => setMethod(m.id)}
-                  selectedBank={bank}
-                  onBank={setBank}
-                  selectedWallet={wallet}
-                  onWallet={setWallet}
-                />
-              ))}
+            <div>
+              <label className="label-sm">Nomor WhatsApp</label>
+              <input className="input" placeholder="08xxxxxxxxxx" value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} />
             </div>
           </div>
         </div>
 
-        {/* RIGHT — order summary */}
         <div>
           <div className="card" style={{ position: "sticky", top: 88 }}>
-            <h3 style={{ fontSize: 20, marginBottom: 20 }}>{t.co_summary}</h3>
-            <div className="stack" style={{ gap: 14 }}>
-              {items.map((it) => (
-                <div key={it.id} className="row" style={{ gap: 12, alignItems: "flex-start" }}>
-                  <div style={{ width: 48, height: 48, background: "var(--accent)", color: "var(--accent-ink)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    {window[it.icon] ? React.createElement(window[it.icon], { size: 20 }) : <Sparkle size={20} />}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600 }}>{it[`name_${lang}`] || it.name}</div>
-                    <div className="muted mono" style={{ fontSize: 11, marginTop: 2 }}>EXCEL · GSHEETS</div>
-                  </div>
-                  <div className="mono" style={{ fontSize: 14, fontWeight: 600 }}>{formatIDR(it.price)}</div>
-                </div>
-              ))}
+            <div className="mono muted" style={{ fontSize: 11, letterSpacing: ".08em" }}>ORDER SUMMARY</div>
+            <div className="row" style={{ gap: 12, marginTop: 16, alignItems: "flex-start" }}>
+              <div style={{ width: 48, height: 48, background: "var(--accent)", color: "var(--accent-ink)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Sparkle size={20} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700 }}>Personal Wealth Planner</div>
+                <div className="muted" style={{ fontSize: 12, marginTop: 3 }}>Lifetime access</div>
+              </div>
             </div>
-
             <div className="divider" style={{ margin: "20px 0" }} />
-
-            <div className="row" style={{ gap: 8 }}>
-              <input
-                className="input"
-                placeholder="Kode promo"
-                value={promo}
-                onChange={(e) => setPromo(e.target.value)}
-                style={{ flex: 1, fontSize: 13, padding: "10px 12px" }}
-              />
-              <Button variant="secondary" size="sm" onClick={() => setPromoApplied(promo.trim().length > 0)}>
-                Apply
-              </Button>
-            </div>
-            {promoApplied && <div className="row" style={{ marginTop: 10, color: "var(--positive)", fontSize: 12, gap: 6 }}><Check size={12} stroke={3} />Promo 15% diterapkan</div>}
-
-            <div className="divider" style={{ margin: "20px 0" }} />
-
-            <div className="stack" style={{ gap: 10 }}>
-              <SummaryRow label={t.co_subtotal} value={formatIDR(subtotal)} />
-              {discount > 0 && <SummaryRow label={t.co_discount} value={`-${formatIDR(discount)}`} color="var(--positive)" />}
-              <SummaryRow label={t.co_tax} value={formatIDR(tax)} />
-            </div>
-            <div className="row-between" style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
-              <span style={{ fontWeight: 700 }}>{t.co_total}</span>
+            <div className="row-between">
+              <span>Total</span>
               <span className="mono" style={{ fontSize: 22, fontWeight: 800 }}>{formatIDR(total)}</span>
             </div>
-            <Button variant="primary" size="lg" onClick={() => setStep("paying")} className="" iconRight={<ArrowRight size={18} />} style={{ marginTop: 20, width: "100%", justifyContent: "center" }}>
-              {t.co_pay} {formatIDR(total)}
+            {payError && <p style={{ color: "var(--negative, #e53)", fontSize: 13, marginTop: 14 }}>{payError}</p>}
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handlePay}
+              disabled={loading}
+              iconRight={loading ? null : <ArrowRight size={18} />}
+              style={{ marginTop: 20, width: "100%", justifyContent: "center", opacity: loading ? .7 : 1 }}
+            >
+              {loading ? "Menghubungkan ke Xendit..." : `Bayar ${formatIDR(total)}`}
             </Button>
-            <p className="muted" style={{ fontSize: 11, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>{t.co_terms}</p>
+            <p className="muted" style={{ fontSize: 11, marginTop: 12, lineHeight: 1.5, textAlign: "center" }}>
+              Pembayaran diproses melalui Xendit. Metode pembayaran yang muncul mengikuti channel yang aktif di akun merchant.
+            </p>
           </div>
         </div>
       </div>
