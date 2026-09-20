@@ -4,18 +4,14 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
   const { t, lang } = useT();
   const [step, setStep] = React.useState("checkout"); // checkout | success
   const [contact, setContact] = React.useState({ name: "", email: "", phone: "" });
-  const [promo, setPromo] = React.useState("");
-  const [promoApplied, setPromoApplied] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [payError, setPayError] = React.useState("");
 
-  const items = cart.length ? cart : [PRODUCTS[1]]; // fallback for direct nav
-  const subtotal = items.reduce((s, i) => s + i.price, 0);
-  const discount = promoApplied ? Math.round(subtotal * 0.15) : 0;
-  const taxBase = subtotal - discount;
-  const tax = 0;
-  const total = taxBase;
-  const isWealthTracker = items.length === 1 && items[0]?.id === "wealth-tracker-ai";
+  const items = cart.length
+    ? cart
+    : [PRODUCTS.find((p) => p.id === "bundle") || PRODUCTS[0]];
+  const subtotal = items.reduce((s, i) => s + Number(i.price || 0), 0);
+  const total = subtotal;
 
   async function handlePay() {
     if (!contact.name || !contact.email || !contact.phone) {
@@ -25,10 +21,8 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
     setLoading(true);
     setPayError("");
     try {
-      const endpoint = isWealthTracker ? "/api/wealth-tracker-payment" : "/api/create-payment";
-      const body = isWealthTracker
-        ? { name: contact.name, email: contact.email, phone: contact.phone }
-        : { contact, items, total };
+      const endpoint = "/api/create-payment";
+      const body = { contact, items, total };
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -41,7 +35,7 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
         setLoading(false);
         return;
       }
-      const paymentUrl = isWealthTracker ? data.paymentLink : data.invoice_url;
+      const paymentUrl = data.invoice_url || data.paymentLink;
       if (!paymentUrl) {
         setPayError("Link pembayaran belum tersedia. Coba lagi.");
         setLoading(false);
@@ -114,25 +108,8 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
 
             <div className="divider" style={{ margin: "20px 0" }} />
 
-            <div className="row" style={{ gap: 8 }}>
-              <input
-                className="input"
-                placeholder="Kode promo"
-                value={promo}
-                onChange={(e) => setPromo(e.target.value)}
-                style={{ flex: 1, fontSize: 13, padding: "10px 12px" }}
-              />
-              <Button variant="secondary" size="sm" onClick={() => setPromoApplied(promo.trim().length > 0)}>
-                Apply
-              </Button>
-            </div>
-            {promoApplied && <div className="row" style={{ marginTop: 10, color: "var(--positive)", fontSize: 12, gap: 6 }}><Check size={12} stroke={3} />Promo 15% diterapkan</div>}
-
-            <div className="divider" style={{ margin: "20px 0" }} />
-
             <div className="stack" style={{ gap: 10 }}>
               <SummaryRow label={t.co_subtotal} value={formatIDR(subtotal)} />
-              {discount > 0 && <SummaryRow label={t.co_discount} value={`-${formatIDR(discount)}`} color="var(--positive)" />}
             </div>
             <div className="row-between" style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
               <span style={{ fontWeight: 700 }}>{t.co_total}</span>
@@ -155,9 +132,7 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
               {loading ? "Memproses..." : `${t.co_pay} ${formatIDR(total)}`}
             </Button>
             <p className="muted" style={{ fontSize: 11, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
-              {isWealthTracker
-                ? "Setelah klik bayar, kamu akan diarahkan ke halaman pembayaran Xendit untuk memilih metode pembayaran yang tersedia."
-                : t.co_terms}
+              Setelah klik bayar, kamu akan diarahkan ke halaman pembayaran Xendit untuk menyelesaikan pembayaran.
             </p>
           </div>
         </div>
