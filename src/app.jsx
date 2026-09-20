@@ -30,7 +30,13 @@ function App() {
   const i18nValue = React.useMemo(() => ({ t: I18N[tweaks.lang] || I18N.id, lang: tweaks.lang }), [tweaks.lang]);
 
   // ── Router state ────────────────────────────────────────────────────
-  const [route, setRoute] = React.useState({ name: "home" });
+  const [route, setRoute] = React.useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("screen") === "checkout" && params.get("product") === "wealth-tracker-ai") {
+      return { name: "checkout", product: "wealth-tracker-ai" };
+    }
+    return { name: "home" };
+  });
 
   const navigate = (r) => {
     setRoute(r);
@@ -56,16 +62,6 @@ function App() {
     setCart([product]);
     navigate({ name: "checkout" });
   };
-
-  // ── Deep-link from external landing pages (?screen=checkout&product=ID) ──
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("screen") === "checkout" && params.get("product")) {
-      const product = (typeof PRODUCTS !== "undefined" ? PRODUCTS : []).find((p) => p.id === params.get("product"));
-      if (product) buyNow(product);
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-  }, []);
 
   const completePurchase = (items) => {
     setPurchases((p) => Array.from(new Set([...p, ...items.map((i) => i.id)])));
@@ -101,7 +97,7 @@ function App() {
       screen = <ProductDetailScreen id={route.id || "invest"} onNavigate={navigate} onAddToCart={addToCart} onBuyNow={buyNow} />;
       break;
     case "checkout":
-      screen = <CheckoutScreen cart={cart} onNavigate={navigate} onCompletePurchase={completePurchase} />;
+      screen = <CheckoutScreen cart={cart} onNavigate={navigate} onCompletePurchase={completePurchase} product={route.product} />;
       break;
     case "dashboard":
       // legacy route — Dashboard is now the home/landing hub (no login)
