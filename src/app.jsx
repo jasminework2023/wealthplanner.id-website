@@ -32,8 +32,9 @@ function App() {
   // ── Router state ────────────────────────────────────────────────────
   const [route, setRoute] = React.useState(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("screen") === "checkout" && params.get("product") === "wealth-tracker-ai") {
-      return { name: "checkout", product: "wealth-tracker-ai" };
+    if (params.get("screen") === "checkout") {
+      const product = params.get("product") || "bundle";
+      return { name: "checkout", product };
     }
     return { name: "home" };
   });
@@ -44,7 +45,15 @@ function App() {
   };
 
   // ── App-wide mock state ────────────────────────────────────────────
-  const [cart, setCart] = React.useState([]);
+  const [cart, setCart] = React.useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("screen") === "checkout") {
+      const productId = params.get("product") || "bundle";
+      const product = PRODUCTS.find((p) => p.id === productId);
+      if (product) return [product];
+    }
+    return [];
+  });
   const [purchases, setPurchases] = React.useState(["cashflow", "invest"]);
   const [savedResults, setSavedResults] = React.useState([]);
   const [bookings, setBookings] = React.useState([]);
