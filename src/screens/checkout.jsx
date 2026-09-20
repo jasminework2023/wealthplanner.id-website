@@ -1,53 +1,65 @@
 // checkout.jsx — Checkout & payment flow
 
-function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
+function CheckoutScreen({ cart, onNavigate, onCompletePurchase, product }) {
   const { t, lang } = useT();
-  const [step, setStep] = React.useState("checkout"); // checkout | success
+  const [step, setStep] = React.useState("checkout"); // checkout | paying | success
+  const [method, setMethod] = React.useState("qris");
+  const [bank, setBank] = React.useState("BCA");
+  const [wallet, setWallet] = React.useState("GoPay");
   const [contact, setContact] = React.useState({ name: "", email: "", phone: "" });
   const [promo, setPromo] = React.useState("");
   const [promoApplied, setPromoApplied] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [payError, setPayError] = React.useState("");
 
-  const items = cart.length ? cart : [PRODUCTS[1]]; // fallback for direct nav
+  const isWealthTracker = product === "wealth-tracker-ai";
+  const wealthTrackerItem = {
+    id: "wealth-tracker-ai",
+    name_id: "Wealth Tracker AI",
+    name_en: "Wealth Tracker AI",
+    price: 139000,
+    icon: "Sparkle",
+  };
+  const items = isWealthTracker ? [wealthTrackerItem] : (cart.length ? cart : [PRODUCTS[1]]);
   const subtotal = items.reduce((s, i) => s + i.price, 0);
-  const discount = promoApplied ? Math.round(subtotal * 0.15) : 0;
+  const discount = isWealthTracker ? 0 : (promoApplied ? Math.round(subtotal * 0.15) : 0);
   const taxBase = subtotal - discount;
-  const tax = 0;
-  const total = taxBase;
+  const tax = isWealthTracker ? 0 : Math.round(taxBase * 0.11);
+  const total = isWealthTracker ? 139000 : taxBase + tax;
 
-  async function handlePay() {
-    if (!contact.name || !contact.email || !contact.phone) {
-      setPayError("Lengkapi nama, email, dan nomor WhatsApp dulu ya.");
-      return;
-    }
-    setLoading(true);
-    setPayError("");
-    try {
-      const paymentEndpoint = items.some((item) => item.id === "wealth-tracker-ai")
-        ? "/api/create-wealth-tracker-payment"
-        : "/api/create-payment";
-
-      const res = await fetch(paymentEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contact, items, total }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setPayError(data.error || "Gagal membuat pembayaran. Coba lagi.");
-        setLoading(false);
+  async function startPayment() {
+    if (isWealthTracker) {
+      if (!contact.name.trim() || !/^\S+@\S+\.\S+$/.test(contact.email.trim())) {
+        alert("Nama dan email wajib diisi dengan benar.");
         return;
       }
-      window.location.href = data.invoice_url;
-    } catch (err) {
-      setPayError("Koneksi bermasalah. Periksa internet kamu.");
-      setLoading(false);
+      try {
+        const response = await fetch("/api/wealth-tracker-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: contact.name.trim(),
+            email: contact.email.trim(),
+            phone: contact.phone.trim(),
+          }),
+        });
+        const body = await response.json();
+        if (!response.ok || !body.paymentLink) {
+          throw new Error(body.error || "Gagal membuat pembayaran.");
+        }
+        window.location.href = body.paymentLink;
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "Gagal membuat pembayaran.");
+      }
+      return;
     }
+    setStep("paying");
   }
 
   if (step === "success") {
-    return <PaymentSuccess onNavigate={onNavigate} items={items} total={total} />;
+    return <PaymentSuccess onNavigate={onNavigate} items={items} method={method} total={total} />;
+  }
+
+  if (step === "paying") {
+    return <PaymentProcessing method={method} bank={bank} wallet={wallet} total={total} onDone={() => { setStep("success"); onCompletePurchase(items); }} onCancel={() => setStep("checkout")} />;
   }
 
   return (
@@ -83,6 +95,36 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
               </div>
             </div>
           </div>
+
+          {/* Payment method */}
+          <div className="card">
+            <div className="row" style={{ gap: 10, marginBottom: 20 }}>
+              <Step number="2" label={isWealthTracker ? "Pembayaran" : t.co_method} active />
+            </div>
+            {isWealthTracker ? (
+              <div style={{ padding: "6px 0" }}>
+                <div style={{ fontWeight: 700, fontSize: 16 }}>Bayar aman lewat Xendit</div>
+                <p className="muted" style={{ fontSize: 13, lineHeight: 1.6, marginTop: 6 }}>
+                  Setelah klik tombol bayar, kamu akan diarahkan ke halaman pembayaran Xendit untuk memilih metode yang tersedia, seperti QRIS, transfer bank, e-wallet, atau kartu.
+                </p>
+              </div>
+            ) : (
+              <div className="stack" style={{ gap: 10 }}>
+                {PAYMENT_METHODS.map((m) => (
+                  <PaymentOption
+                    key={m.id}
+                    method={m}
+                    active={method === m.id}
+                    onClick={() => setMethod(m.id)}
+                    selectedBank={bank}
+                    onBank={setBank}
+                    selectedWallet={wallet}
+                    onWallet={setWallet}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* RIGHT — order summary */}
@@ -106,49 +148,34 @@ function CheckoutScreen({ cart, onNavigate, onCompletePurchase }) {
 
             <div className="divider" style={{ margin: "20px 0" }} />
 
-            {!items.some((it) => it.id === "wealth-tracker-ai") && (
-              <>
-                <div className="row" style={{ gap: 8 }}>
-                  <input
-                    className="input"
-                    placeholder="Kode promo"
-                    value={promo}
-                    onChange={(e) => setPromo(e.target.value)}
-                    style={{ flex: 1, fontSize: 13, padding: "10px 12px" }}
-                  />
-                  <Button variant="secondary" size="sm" onClick={() => setPromoApplied(promo.trim().length > 0)}>
-                    Apply
-                  </Button>
-                </div>
-                {promoApplied && <div className="row" style={{ marginTop: 10, color: "var(--positive)", fontSize: 12, gap: 6 }}><Check size={12} stroke={3} />Promo 15% diterapkan</div>}
-              </>
-            )}
-
-            <div className="divider" style={{ margin: "20px 0" }} />
+            {!isWealthTracker && <>
+              <div className="row" style={{ gap: 8 }}>
+                <input
+                  className="input"
+                  placeholder="Kode promo"
+                  value={promo}
+                  onChange={(e) => setPromo(e.target.value)}
+                  style={{ flex: 1, fontSize: 13, padding: "10px 12px" }}
+                />
+                <Button variant="secondary" size="sm" onClick={() => setPromoApplied(promo.trim().length > 0)}>
+                  Apply
+                </Button>
+              </div>
+              {promoApplied && <div className="row" style={{ marginTop: 10, color: "var(--positive)", fontSize: 12, gap: 6 }}><Check size={12} stroke={3} />Promo 15% diterapkan</div>}
+              <div className="divider" style={{ margin: "20px 0" }} />
+            </>}
 
             <div className="stack" style={{ gap: 10 }}>
               <SummaryRow label={t.co_subtotal} value={formatIDR(subtotal)} />
               {discount > 0 && <SummaryRow label={t.co_discount} value={`-${formatIDR(discount)}`} color="var(--positive)" />}
+              <SummaryRow label={t.co_tax} value={formatIDR(tax)} />
             </div>
             <div className="row-between" style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
               <span style={{ fontWeight: 700 }}>{t.co_total}</span>
               <span className="mono" style={{ fontSize: 22, fontWeight: 800 }}>{formatIDR(total)}</span>
             </div>
-            {payError && (
-              <p style={{ color: "var(--negative, #e53)", fontSize: 13, marginTop: 12, textAlign: "center" }}>
-                {payError}
-              </p>
-            )}
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={handlePay}
-              disabled={loading}
-              className=""
-              iconRight={loading ? null : <ArrowRight size={18} />}
-              style={{ marginTop: 20, width: "100%", justifyContent: "center", opacity: loading ? 0.7 : 1 }}
-            >
-              {loading ? "Memproses..." : `${t.co_pay} ${formatIDR(total)}`}
+            <Button variant="primary" size="lg" onClick={startPayment} className="" iconRight={<ArrowRight size={18} />} style={{ marginTop: 20, width: "100%", justifyContent: "center" }}>
+              {isWealthTracker ? "Bayar sekarang" : t.co_pay} {formatIDR(total)}
             </Button>
             <p className="muted" style={{ fontSize: 11, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>{t.co_terms}</p>
           </div>
@@ -175,12 +202,173 @@ function Step({ number, label, active }) {
   );
 }
 
+function PaymentOption({ method, active, onClick, selectedBank, onBank, selectedWallet, onWallet }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: active ? "var(--surface-2)" : "transparent",
+        border: active ? "1.5px solid var(--accent)" : "1px solid var(--border)",
+        borderRadius: 18,
+        padding: 18,
+        cursor: "pointer",
+        transition: "all .15s ease",
+      }}
+    >
+      <div className="row-between">
+        <div className="row" style={{ gap: 12 }}>
+          <span style={{
+            width: 20, height: 20, borderRadius: 999,
+            border: `2px solid ${active ? "var(--accent)" : "var(--border-strong)"}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            {active && <span style={{ width: 10, height: 10, borderRadius: 999, background: "var(--accent)" }} />}
+          </span>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 15 }}>{method.name}</div>
+            <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{method.sub}</div>
+          </div>
+        </div>
+        <PaymentBadge name={method.id} />
+      </div>
+
+      {/* Sub options */}
+      {active && method.banks && (
+        <div className="row" style={{ gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+          {method.banks.map((b) => (
+            <button key={b} onClick={(e) => { e.stopPropagation(); onBank(b); }} style={{
+              background: selectedBank === b ? "var(--accent)" : "var(--chip)",
+              color: selectedBank === b ? "var(--accent-ink)" : "var(--ink)",
+              border: 0, padding: "8px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600,
+              cursor: "pointer", fontFamily: "JetBrains Mono, monospace",
+            }}>{b}</button>
+          ))}
+        </div>
+      )}
+      {active && method.wallets && (
+        <div className="row" style={{ gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+          {method.wallets.map((b) => (
+            <button key={b} onClick={(e) => { e.stopPropagation(); onWallet(b); }} style={{
+              background: selectedWallet === b ? "var(--accent)" : "var(--chip)",
+              color: selectedWallet === b ? "var(--accent-ink)" : "var(--ink)",
+              border: 0, padding: "8px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600,
+              cursor: "pointer", fontFamily: "JetBrains Mono, monospace",
+            }}>{b}</button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PaymentBadge({ name }) {
+  const bg = name === "qris" ? "#E5202B" : name === "bank" ? "var(--ink)" : "#5EE5B0";
+  const fg = name === "qris" ? "#fff" : name === "bank" ? "var(--bg)" : "#0a0a0a";
+  const label = name === "qris" ? "QRIS" : name === "bank" ? "BANK" : "E-WALLET";
+  return (
+    <span style={{
+      background: bg, color: fg, padding: "4px 10px", borderRadius: 6,
+      fontSize: 10, fontWeight: 700, fontFamily: "JetBrains Mono, monospace", letterSpacing: "0.1em",
+    }}>{label}</span>
+  );
+}
+
 function SummaryRow({ label, value, color }) {
   return (
     <div className="row-between">
       <span style={{ fontSize: 14, color: "var(--ink-2)" }}>{label}</span>
       <span className="mono" style={{ fontWeight: 600, color: color || "var(--ink)" }}>{value}</span>
     </div>
+  );
+}
+
+function PaymentProcessing({ method, bank, wallet, total, onDone, onCancel }) {
+  const [seconds, setSeconds] = React.useState(0);
+  React.useEffect(() => {
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <Section style={{ paddingTop: 64 }}>
+      <div className="card" style={{ maxWidth: 540, marginInline: "auto", textAlign: "center", padding: 40 }}>
+        {method === "qris" ? <QRDisplay total={total} /> : method === "bank" ? <BankInstructions bank={bank} total={total} /> : <WalletInstructions wallet={wallet} total={total} />}
+        <div className="muted mono" style={{ fontSize: 12, marginTop: 24 }}>MENUNGGU PEMBAYARAN · {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</div>
+        <div className="row" style={{ gap: 8, marginTop: 24, justifyContent: "center" }}>
+          <Button variant="primary" onClick={onDone}>Saya sudah bayar</Button>
+          <Button variant="ghost" onClick={onCancel}>Batal</Button>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function QRDisplay({ total }) {
+  return (
+    <>
+      <div className="mono muted" style={{ fontSize: 12, letterSpacing: "0.1em" }}>SCAN QR DENGAN APP E-WALLET</div>
+      <div style={{ margin: "24px auto", width: 220, height: 220, background: "#fff", borderRadius: 16, padding: 16 }}>
+        <FakeQR />
+      </div>
+      <div className="mono" style={{ fontSize: 24, fontWeight: 700 }}>{formatIDR(total)}</div>
+    </>
+  );
+}
+
+function FakeQR() {
+  // Generate a deterministic 25x25 pixel matrix to look like QR
+  const N = 25;
+  const cells = [];
+  let seed = 13;
+  const rng = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const corner = (x < 7 && y < 7) || (x >= N - 7 && y < 7) || (x < 7 && y >= N - 7);
+      const cornerInner = (x >= 2 && x < 5 && y >= 2 && y < 5) || (x >= N - 5 && x < N - 2 && y >= 2 && y < 5) || (x >= 2 && x < 5 && y >= N - 5 && y < N - 2);
+      const cornerBorder = (x < 7 && y < 7) || (x >= N - 7 && y < 7) || (x < 7 && y >= N - 7);
+      let dark = rng() < 0.45;
+      if (cornerBorder) {
+        dark = (x === 0 || y === 0 || x === 6 || y === 6 || x === N - 1 || x === N - 7 || y === N - 1 || y === N - 7);
+        if (cornerInner) dark = true;
+      }
+      if (dark) cells.push({ x, y });
+    }
+  }
+  const cell = 100 / N;
+  return (
+    <svg viewBox="0 0 100 100" style={{ width: "100%", height: "100%" }}>
+      {cells.map((c, i) => (
+        <rect key={i} x={c.x * cell} y={c.y * cell} width={cell + 0.5} height={cell + 0.5} fill="#0a0a0a" />
+      ))}
+    </svg>
+  );
+}
+
+function BankInstructions({ bank, total }) {
+  const account = bank === "BCA" ? "8810 5523 9988" : bank === "Mandiri" ? "1234 5678 9012 345" : "0123 4567 8910";
+  return (
+    <>
+      <div className="mono muted" style={{ fontSize: 12, letterSpacing: "0.1em" }}>TRANSFER KE</div>
+      <div style={{ fontFamily: "Bricolage Grotesque", fontSize: 36, fontWeight: 700, marginTop: 8 }}>{bank}</div>
+      <div className="mono" style={{ fontSize: 22, fontWeight: 700, letterSpacing: "0.05em", marginTop: 12 }}>{account}</div>
+      <div className="muted" style={{ fontSize: 13, marginTop: 4 }}>a.n. PT Wealth Planner Indonesia</div>
+      <div className="divider" style={{ margin: "20px 0" }} />
+      <div className="mono muted" style={{ fontSize: 12 }}>NOMINAL TRANSFER</div>
+      <div className="mono" style={{ fontSize: 24, fontWeight: 700 }}>{formatIDR(total)}</div>
+      <p className="muted" style={{ fontSize: 12, marginTop: 12, lineHeight: 1.5 }}>Transfer nominal pas. Konfirmasi otomatis setelah dana masuk (max 5 menit).</p>
+    </>
+  );
+}
+
+function WalletInstructions({ wallet, total }) {
+  return (
+    <>
+      <div className="mono muted" style={{ fontSize: 12, letterSpacing: "0.1em" }}>BAYAR DENGAN</div>
+      <div style={{ fontFamily: "Bricolage Grotesque", fontSize: 36, fontWeight: 700, marginTop: 8 }}>{wallet}</div>
+      <p className="muted" style={{ fontSize: 13, marginTop: 12, lineHeight: 1.5 }}>Buka app {wallet} kamu — konfirmasi pembayaran muncul otomatis.</p>
+      <div className="divider" style={{ margin: "20px 0" }} />
+      <div className="mono muted" style={{ fontSize: 12 }}>NOMINAL</div>
+      <div className="mono" style={{ fontSize: 24, fontWeight: 700 }}>{formatIDR(total)}</div>
+    </>
   );
 }
 
