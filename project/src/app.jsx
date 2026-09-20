@@ -30,7 +30,15 @@ function App() {
   const i18nValue = React.useMemo(() => ({ t: I18N[tweaks.lang] || I18N.id, lang: tweaks.lang }), [tweaks.lang]);
 
   // ── Router state ────────────────────────────────────────────────────
-  const [route, setRoute] = React.useState({ name: "home" });
+  // Support direct links such as /?screen=checkout&product=bundle.
+  const initialParams = React.useMemo(() => new URLSearchParams(window.location.search), []);
+  const initialProductId = initialParams.get("product");
+  const initialScreen = initialParams.get("screen");
+  const initialProduct = initialProductId ? PRODUCTS.find((p) => p.id === initialProductId) : null;
+  const initialRoute = initialScreen === "checkout" && initialProduct
+    ? { name: "checkout" }
+    : { name: "home" };
+  const [route, setRoute] = React.useState(initialRoute);
 
   const navigate = (r) => {
     setRoute(r);
@@ -38,7 +46,7 @@ function App() {
   };
 
   // ── App-wide mock state ────────────────────────────────────────────
-  const [cart, setCart] = React.useState([]);
+  const [cart, setCart] = React.useState(initialRoute.name === "checkout" && initialProduct ? [initialProduct] : []);
   const [purchases, setPurchases] = React.useState(["cashflow", "invest"]);
   const [savedResults, setSavedResults] = React.useState([]);
   const [bookings, setBookings] = React.useState([]);
