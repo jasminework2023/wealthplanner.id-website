@@ -13,13 +13,12 @@ function ProductsScreen({ onNavigate, cart, onAddToCart }) {
       </Section>
 
       <Section style={{ paddingTop: 16 }}>
-        {/* Featured top products */}
-        <WealthTrackerSection onNavigate={onNavigate} lang={lang} />
+        {/* Featured product */}
         <BundleSection onAddToCart={onAddToCart} lang={lang} />
 
-        {/* Individual products grid — exclude bundle & wealth-tracker-ai (shown above) */}
+        {/* Individual products grid — bundle is shown above */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20, marginTop: 48 }}>
-          {PRODUCTS.filter(p => p.id !== "bundle" && p.id !== "wealth-tracker-ai").map((p, i) => (
+          {PRODUCTS.filter(p => p.id !== "bundle").map((p, i) => (
             <ProductGridCard key={p.id} product={p} onClick={() => onNavigate({ name: "product", id: p.id })} variant={i % 3} />
           ))}
         </div>
@@ -29,102 +28,22 @@ function ProductsScreen({ onNavigate, cart, onAddToCart }) {
 }
 
 // ──────────────────────────────────────────────────────────────
-// WEALTH TRACKER AI — featured wide card
-// ──────────────────────────────────────────────────────────────
-function WealthTrackerSection({ onNavigate, lang }) {
-  const product = PRODUCTS.find(p => p.id === "wealth-tracker-ai");
-  if (!product) return null;
-
-  const features = lang === "id" ? product.features_id : product.features_en;
-
-  return (
-    <div style={{
-      background: "#0d1117",
-      color: "#ffffff",
-      borderRadius: 28,
-      overflow: "hidden",
-      display: "grid",
-      gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-      gap: 0,
-      marginBottom: 20,
-    }} className="bundle-grid">
-
-      {/* Left — product image */}
-      <div style={{ position: "relative", background: "#161b22", minHeight: 420 }}>
-        <img
-          src={`/${product.image}`}
-          alt={product[`name_${lang}`]}
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", minHeight: 420 }}
-        />
-      </div>
-
-      {/* Right — copy + CTA */}
-      <div style={{ padding: "40px 40px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 20 }}>
-        <div>
-          <Tag variant="accent">✦ {lang === "id" ? "BARU · AI POWERED · TERLARIS" : "NEW · AI POWERED · BEST SELLER"}</Tag>
-          <h2 style={{ color: "#ffffff", marginTop: 16, fontSize: "clamp(22px, 3vw, 32px)", lineHeight: 1.15 }}>
-            {lang === "id"
-              ? <>Wealth Tracker<br /><span style={{ color: "var(--accent)" }}>AI Template</span></>
-              : <>Wealth Tracker<br /><span style={{ color: "var(--accent)" }}>AI Template</span></>}
-          </h2>
-          <p style={{ marginTop: 10, color: "rgba(255,255,255,0.65)", fontSize: 14, lineHeight: 1.6 }}>
-            {lang === "id"
-              ? "Catat keuangan cukup lewat chat Telegram. AI otomatis membacanya dan mencatat ke Google Sheets-mu."
-              : "Track your finances just by chatting on Telegram. AI reads and logs it to your Google Sheets automatically."}
-          </p>
-        </div>
-
-        {/* Features */}
-        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-          {features.map((f, i) => (
-            <li key={i} className="row" style={{ gap: 10, fontSize: 13, color: "rgba(255,255,255,0.75)", alignItems: "flex-start" }}>
-              <span style={{
-                width: 18, height: 18, minWidth: 18, borderRadius: "50%",
-                background: "var(--accent)", color: "var(--accent-ink)",
-                display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1,
-              }}>
-                <Check size={11} stroke={3} />
-              </span>
-              <span style={{ lineHeight: 1.5 }}>{f}</span>
-            </li>
-          ))}
-        </ul>
-
-        {/* Note */}
-        {product[`note_${lang}`] && (
-          <div style={{ background: "rgba(255,184,0,0.12)", border: "1px solid rgba(255,184,0,0.3)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "var(--accent)" }}>
-            ✦ {product[`note_${lang}`]}
-          </div>
-        )}
-
-        {/* Price + CTA */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 20 }}>
-          <div className="mono" style={{ fontSize: 11, opacity: 0.5, marginBottom: 4, letterSpacing: "0.1em" }}>SEKALI BAYAR · AKSES SELAMANYA</div>
-          <div className="row" style={{ gap: 10, alignItems: "baseline", marginBottom: 16 }}>
-            <span className="mono" style={{ fontSize: 30, fontWeight: 700, color: "var(--accent)" }}>Rp 99.000</span>
-            <span className="mono" style={{ fontSize: 15, fontWeight: 600, textDecoration: "line-through", opacity: 0.4, color: "#fff" }}>Rp 149.000</span>
-          </div>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => onNavigate({ name: "product", id: "wealth-tracker-ai" })}
-            iconRight={<ArrowRight size={18} />}
-            style={{ width: "100%" }}
-          >
-            {lang === "id" ? "Lihat & Beli Sekarang" : "View & Buy Now"}
-          </Button>
-        </div>
-      </div>
-
-      <style>{`@media (max-width: 820px) { .bundle-grid { grid-template-columns: 1fr !important; } }`}</style>
-    </div>
-  );
-}
-
-// ──────────────────────────────────────────────────────────────
-// BUNDLE SECTION with image slider catalog
+// PERSONAL WEALTH PLANNER — featured bundle
 // ──────────────────────────────────────────────────────────────
 function BundleSection({ onAddToCart, lang }) {
+  const [remaining, setRemaining] = React.useState(0);
+  const deadline = new Date("2026-09-30T23:59:59+07:00").getTime();
+  React.useEffect(() => {
+    const tick = () => setRemaining(Math.max(0, deadline - Date.now()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor((remaining % 86400000) / 3600000);
+  const mins = Math.floor((remaining % 3600000) / 60000);
+  const secs = Math.floor((remaining % 60000) / 1000);
+  const countdown = `${days}h ${String(hours).padStart(2,"0")}j ${String(mins).padStart(2,"0")}m ${String(secs).padStart(2,"0")}d`;
   const BUNDLE_IMAGES = [
     { src: "/assets/products/1.png", label: lang === "id" ? "Paket Lengkap" : "Complete Package" },
     { src: "/assets/products/2.png", label: lang === "id" ? "6 Template Keuangan" : "6 Finance Templates" },
@@ -213,16 +132,16 @@ function BundleSection({ onAddToCart, lang }) {
       {/* Right — copy + CTA */}
       <div style={{ padding: "40px 40px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 20 }}>
         <div>
-          <Tag variant="accent">★ {lang === "id" ? "HEMAT 41% · TERLARIS" : "SAVE 41% · BEST SELLER"}</Tag>
+          <Tag variant="accent">✦ {lang === "id" ? "SOFT LAUNCH · HARGA SPESIAL" : "SOFT LAUNCH · SPECIAL PRICE"}</Tag>
           <h2 style={{ color: "inherit", marginTop: 16, fontSize: "clamp(22px, 3vw, 32px)", lineHeight: 1.15 }}>
             {lang === "id"
-              ? <>Financial Planning<br /><span style={{ color: "var(--accent)" }}>'Seumur Hidup'</span></>
-              : <>Financial Planning<br /><span style={{ color: "var(--accent)" }}>'For Life'</span></>}
+              ? <>Personal Wealth<br /><span style={{ color: "var(--accent)" }}>Planner</span></>
+              : <>Personal Wealth<br /><span style={{ color: "var(--accent)" }}>Planner</span></>}
           </h2>
           <p style={{ marginTop: 10, opacity: 0.65, fontSize: 14, lineHeight: 1.6 }}>
             {lang === "id"
-              ? "Bantu keuanganmu lebih terarah dengan mudah — 6 template + mini guide + konsultasi gratis."
-              : "Help manage your finances with ease — 6 templates + mini guide + free consultation."}
+              ? "Satu tempat untuk memahami, merencanakan, dan mengelola keuanganmu — 6 template + mini guide + konsultasi gratis."
+              : "One place to understand, plan, and manage your finances — 6 templates + mini guide + free consultation."}
           </p>
         </div>
 
@@ -244,19 +163,22 @@ function BundleSection({ onAddToCart, lang }) {
 
         {/* Price + CTA */}
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 20 }}>
-          <div className="mono muted" style={{ fontSize: 11, opacity: 0.5, marginBottom: 4 }}>SEKALI BAYAR</div>
-          <div className="row" style={{ gap: 10, alignItems: "baseline", marginBottom: 16 }}>
+          <div className="mono muted" style={{ fontSize: 11, opacity: 0.5, marginBottom: 4 }}>HARGA SPESIAL SOFT LAUNCH</div>
+          <div className="row" style={{ gap: 10, alignItems: "baseline", marginBottom: 10, flexWrap: "wrap" }}>
             <span className="mono" style={{ fontSize: 30, fontWeight: 700, color: "var(--accent)" }}>Rp 149.000</span>
-            <span className="mono" style={{ fontSize: 15, fontWeight: 600, textDecoration: "line-through", opacity: 0.4, color: "#fff" }}>Rp 254.000</span>
+            <span className="mono" style={{ fontSize: 15, fontWeight: 600, textDecoration: "line-through", opacity: 0.4, color: "#fff" }}>Rp 249.000</span>
+          </div>
+          <div style={{ fontSize: 12, color: "var(--accent)", marginBottom: 16 }}>
+            ⏳ Soft launch berakhir 30 September 2026 · {remaining > 0 ? `tersisa ${countdown}` : "periode soft launch selesai"}
           </div>
           <Button
             variant="primary"
             size="lg"
-            onClick={() => onAddToCart({ id: "bundle", name: "Financial Planning Seumur Hidup", price: 149000, priceOld: 254000 })}
+            onClick={() => onAddToCart(PRODUCTS.find(p => p.id === "bundle"))}
             iconRight={<ArrowRight size={18} />}
             style={{ width: "100%" }}
           >
-            {lang === "id" ? "Dapatkan Paket Lengkap" : "Get Complete Package"}
+            {lang === "id" ? "Dapatkan Personal Wealth Planner" : "Get Personal Wealth Planner"}
           </Button>
         </div>
       </div>
