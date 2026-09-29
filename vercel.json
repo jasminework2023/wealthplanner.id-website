@@ -37,6 +37,38 @@
       "destination": "https://personal-wealthplanner.vercel.app/api/update-asset-target"
     },
     {
+      "source": "/api/access",
+      "destination": "https://personal-wealthplanner.vercel.app/api/access"
+    },
+    {
+      "source": "/api/add-asset-item",
+      "destination": "https://personal-wealthplanner.vercel.app/api/add-asset-item"
+    },
+    {
+      "source": "/api/connect-sheet",
+      "destination": "https://personal-wealthplanner.vercel.app/api/connect-sheet"
+    },
+    {
+      "source": "/api/delete-asset-item",
+      "destination": "https://personal-wealthplanner.vercel.app/api/delete-asset-item"
+    },
+    {
+      "source": "/api/delete-transaction",
+      "destination": "https://personal-wealthplanner.vercel.app/api/delete-transaction"
+    },
+    {
+      "source": "/api/receipt-ai",
+      "destination": "https://personal-wealthplanner.vercel.app/api/receipt-ai"
+    },
+    {
+      "source": "/api/update-asset",
+      "destination": "https://personal-wealthplanner.vercel.app/api/update-asset"
+    },
+    {
+      "source": "/api/update-transaction",
+      "destination": "https://personal-wealthplanner.vercel.app/api/update-transaction"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
