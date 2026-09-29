@@ -69,6 +69,14 @@
       "destination": "https://personal-wealthplanner.vercel.app/api/update-transaction"
     },
     {
+      "source": "/api/telegram-webhook",
+      "destination": "https://personal-wealthplanner.vercel.app/api/telegram-webhook"
+    },
+    {
+      "source": "/api/telegram-link",
+      "destination": "https://personal-wealthplanner.vercel.app/api/telegram-link"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
