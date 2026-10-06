@@ -51,7 +51,16 @@ h2{font-size:21px;margin-bottom:14px;color:var(--brown)}
 .opt.sel{border-color:var(--green);background:var(--green-l)}
 .opt small{display:block;color:var(--sub);font-size:12px}.opt b{font-size:16px}
 .opt .st{font-size:12.5px;font-weight:600;max-width:42%;text-align:right}
-.sum{background:var(--green-l);border-radius:16px;padding:22px;margin-bottom:18px;animation:in .5s ease both}
+.sum{background:var(--green-l);border-radius:16px;padding:22px;margin-bottom:18px}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 1s ease,transform 1s ease}
+.reveal.in{opacity:1;transform:none}
+#c2{transition-delay:.3s}
+.num{font-size:clamp(28px,8vw,40px);font-weight:800;color:var(--green-d);line-height:1.1;margin:4px 0 14px}
+.sum .sm{font-size:12.5px;color:var(--sub);font-style:italic}
+.tl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 14px}
+.tl div{background:#fff;border-radius:12px;padding:14px;border-top:3px solid var(--brown)}
+.tl small{display:block;color:var(--sub);font-size:12px;font-weight:700}.tl b{font-size:16px;color:var(--green-d)}
+@media(prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;transform:none}}
 .sum h3{font-size:19px;color:var(--green-d);margin-bottom:8px}
 .sum p{margin-bottom:12px;font-size:14.5px}
 .sum h4{font-size:15px;margin:16px 0 6px;color:var(--brown)}
@@ -67,7 +76,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
 <div class="app">
   <header><a href="https://wealthplannerindonesia.vercel.app" aria-label="Kembali">‹</a><span>Kalkulator Proteksi</span><span style="width:32px"></span></header>
 
-  <div class="quote">Hitung dulu kebutuhan Uang Pertanggungan-mu. Gratis, estimasi awal, dan tidak mengikat.</div>
+  <div class="quote"><div style="font-size:17px;font-weight:800">Hitung kebutuhan proteksi sesuai tujuan keuanganmu.</div><div style="margin-top:6px"><b>Gratis.</b> Angka hanya bersifat simulasi dan tidak menjadi komitmen pembelian.</div><div style="margin-top:8px;font-size:13px;font-weight:600">🔒 Data kamu aman dan hanya digunakan untuk kebutuhan simulasi.</div></div>
   <div class="say">
     <img src="/assets/jasmine-profile.jpeg" alt="Jasmine" onerror="this.style.display='none'" />
     <div class="bubble" id="bub">Hi, aku Jasmine — Sharia Life Planner. Kita mulai dari informasi dasar yuk.</div>
@@ -91,8 +100,8 @@ footer b{display:block;color:var(--brown);font-size:15px}
 
     <div class="step" id="s-need" hidden><div class="q"><i></i>Kebutuhan proteksi yang ingin kamu siapkan</div>
       <div class="body"><div class="chips" data-group="need">
-        <button class="chip" data-val="income">Income Pengganti</button><button class="chip" data-val="warisan">Warisan</button>
-        <button class="chip" data-val="edu">Dana Pendidikan</button><button class="chip" data-val="debt">Pelunasan Utang</button></div></div></div>
+        <button class="chip" data-val="income">Proteksi Income</button><button class="chip" data-val="warisan">Warisan</button>
+        <button class="chip" data-val="edu">Dana Pendidikan</button><button class="chip" data-val="debt">Pelunasan Utang</button><button class="chip" data-val="wakaf">Wakaf</button></div></div></div>
 
     <div class="step" id="s-exp" hidden><div class="q"><i></i>Pengeluaran tahunan</div>
       <div class="body"><input type="text" class="idr" id="exp" data-v="idr" data-next="s-dur" inputmode="numeric" placeholder="Rp60.000.000" />
@@ -110,6 +119,10 @@ footer b{display:block;color:var(--brown);font-size:15px}
       <div class="body"><input type="text" class="idr" id="db" data-v="idr" data-next="s-go" inputmode="numeric" placeholder="Rp800.000.000" />
       <div class="tip">Total kewajiban yang ingin dilindungi agar tidak menjadi beban keluarga.</div></div></div>
 
+    <div class="step" id="s-wk" hidden><div class="q"><i></i>Target wakaf</div>
+      <div class="body"><input type="text" class="idr" id="wk" data-v="idr" data-next="s-go" inputmode="numeric" placeholder="Rp500.000.000" />
+      <div class="tip">Jumlah dana yang ingin disiapkan untuk tujuan wakaf.</div></div></div>
+
     <div class="step" id="s-go" hidden><div class="body" style="border:0;padding-left:0">
       <button class="btn" id="go" type="button">Hitung Kebutuhan Proteksi →</button>
       <div class="err" id="err"></div><div class="micro">Gratis • Estimasi awal • Tidak mengikat</div></div></div>
@@ -125,7 +138,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
     </div>
 
     <div class="box" id="prod"></div>
-    <div class="sum" id="sum" hidden></div>
+    <div id="sumwrap" hidden><h2 style="margin:6px 0 12px">Ringkasan Produk</h2><div class="sum reveal" id="c1"></div><div class="sum reveal" id="c2"></div></div>
 
     <div class="box">
       <h2 style="font-size:19px">Mau tahu apakah solusi ini sesuai dengan kebutuhanmu?</h2>
@@ -158,15 +171,11 @@ const CONFIG = {
   waNumber: '6285890065850',
   coverageAge: 110
 };
-const GOALS = {
-  income: 'kebutuhan finansial keluarga',
-  warisan: 'rencana warisanmu',
-  edu: 'dana pendidikan anak',
-  debt: 'kewajiban utangmu agar tidak membebani keluarga'
-};
-const NEED_STEPS = {income: 's-exp', warisan: 's-wr', edu: 's-ed', debt: 's-db'};
-const DYN = ['s-exp', 's-dur', 's-wr', 's-ed', 's-db', 's-go'];
+const GOALS = {income: 'income keluarga', warisan: 'warisan', edu: 'dana pendidikan', debt: 'pelunasan utang', wakaf: 'wakaf'};
+const NEED_STEPS = {income: 's-exp', warisan: 's-wr', edu: 's-ed', debt: 's-db', wakaf: 's-wk'};
+const DYN = ['s-exp', 's-dur', 's-wr', 's-ed', 's-db', 's-wk', 's-go'];
 const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rp = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
 const num = el => parseInt((el.value || '').replace(/\D/g, ''), 10) || 0;
 const state = {gender: '', need: '', ppt: null};
@@ -191,7 +200,7 @@ document.querySelectorAll('input[data-v]').forEach(el => {
     if (el.id === 'nama') {
       const n = firstName();
       document.querySelectorAll('.nm').forEach(x => x.textContent = n || 'kamu');
-      $('bub').textContent = n ? 'Hi, ' + n + '! Seru, lanjut yuk.' : 'Hi, aku Jasmine — Sharia Life Planner. Kita mulai dari informasi dasar yuk.';
+      $('bub').innerHTML = n ? '<b>Hi, ' + esc(n) + '! 👋</b><br>Yuk, lanjut isi datanya.' : 'Hi, aku Jasmine — Sharia Life Planner. Kita mulai dari informasi dasar yuk.';
     }
     clearTimeout(timers[el.id]);
     timers[el.id] = setTimeout(() => { if (valid[el.dataset.v](el.value)) reveal(el.dataset.next); }, 700);
@@ -216,7 +225,7 @@ async function loadRates() {
 function idealUP() {
   const n = state.need;
   if (n === 'income') return num($('exp')) * num($('dur'));
-  return num($({warisan: 'wr', edu: 'ed', debt: 'db'}[n]));
+  return num($({warisan: 'wr', edu: 'ed', debt: 'db', wakaf: 'wk'}[n]));
 }
 const toMonthly = c => CONFIG.contributionFrequency === 'annual' ? c / 12 : null;
 function match(rows, g, age, up) {
@@ -230,12 +239,14 @@ function match(rows, g, age, up) {
 }
 const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' miliar' : (n / 1e6).toLocaleString('id-ID') + ' juta';
 
+const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), {threshold: .15});
+function armReveal() { ['c1', 'c2'].forEach(id => { $(id).classList.remove('in'); io.observe($(id)); }); }
 let CTX = null;
 function render() {
   const {m, up, budget, nama, age, g} = CTX;
   const o = m.opts.find(x => x.ppt === state.ppt) || m.opts[0];
   const mo = toMonthly(o.annual), total = o.annual * o.ppt;
-  let h = '<span class="badge">Salah Satu Solusi yang Dapat Dipertimbangkan</span><h2 style="margin-bottom:6px">Flexi Berkah</h2>' +
+  let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk Unggulan</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">Flexi Berkah</div>' +
     '<p class="note" style="margin-bottom:14px">Asuransi jiwa syariah dengan perlindungan jiwa dan manfaat sesuai ketentuan polis.</p>' +
     '<div class="lbl">Kebutuhan Uang Pertanggungan</div><b>' + rp(up) + '</b>' +
     '<div class="lbl" style="margin-top:10px">Uang Pertanggungan Flexi Berkah</div><b>' + rp(m.sa) + '</b>';
@@ -252,21 +263,23 @@ function render() {
   $('prod').querySelectorAll('.opt').forEach(b => b.onclick = () => { state.ppt = +b.dataset.ppt; render(); });
 
   const U = rp(m.sa), P = o.ppt, A = CONFIG.coverageAge;
-  $('sum').hidden = false;
-  $('sum').innerHTML = '<h3>Hi, ' + nama + ' 👋</h3>' +
-    '<p>Dengan kontribusi sebesar <b>' + rp(mo) + '/bulan</b>, Flexi Berkah membantu menjaga ' + GOALS[state.need] + ' dengan Uang Pertanggungan sebesar <b>' + U + '</b>, dengan perlindungan sesuai ketentuan polis.</p>' +
-    '<h4>Bagaimana cara kerjanya?</h4>' +
-    '<p>Kamu membayar kontribusi selama <b>' + P + ' tahun</b> dengan total kontribusi sebesar <b>' + rp(total) + '</b>.</p>' +
-    '<p>Selama masa tersebut, kamu tetap memiliki perlindungan dengan Uang Pertanggungan ' + U + ' hingga usia ' + A + ' tahun, sesuai ketentuan polis.</p>' +
-    '<h4>Jika meninggal dunia sebelum masa pembayaran selesai:</h4><p>Uang Pertanggungan sebesar ' + U + ' tetap diberikan sesuai ketentuan polis.</p>' +
-    '<h4>Jika meninggal dunia setelah masa pembayaran selesai:</h4><p>Perlindungan tetap berjalan dan Uang Pertanggungan sebesar ' + U + ' tetap tersedia sesuai ketentuan polis.</p>' +
+  $('sumwrap').hidden = false;
+  const goal = GOALS[state.need];
+  $('c1').innerHTML = '<h3>Hi, ' + esc(nama) + ' 👋</h3><p>Dengan kontribusi sebesar</p><div class="num">' + rp(mo) + ' / bulan</div>' +
+    '<p>Flexi Berkah membantu menjaga <b>' + goal + '</b> dengan Uang Pertanggungan senilai</p><div class="num">' + U + '</div>' +
+    '<p>Dengan masa bayar selama <b>' + P + ' tahun</b>, total kontribusi yang dibayarkan:</p><div class="num" style="font-size:clamp(22px,6vw,28px)">' + rp(total) + '</div>' +
+    '<p style="margin-bottom:0">Dan perlindungan jiwa hingga usia:</p><div class="num" style="margin-bottom:0">' + A + ' TAHUN</div><p style="margin-bottom:10px"><i>(seumur hidup)</i></p>' +
+    '<div class="sm">Manfaat dan perlindungan mengikuti ketentuan polis.</div>';
+  $('c2').innerHTML = '<h3>Ketentuan Umum</h3>' +
+    '<h4>Jika meninggal dunia sebelum masa pembayaran selesai</h4><p>Uang Pertanggungan sebesar <b>' + U + '</b> tetap diberikan sesuai ketentuan polis.</p>' +
+    '<h4>Jika meninggal dunia setelah masa pembayaran selesai</h4><p>Perlindungan tetap berjalan dan Uang Pertanggungan sebesar <b>' + U + '</b> tetap tersedia sesuai ketentuan polis.</p>' +
     '<h4>Selain perlindungan jiwa, terdapat manfaat pengembalian premi sesuai ketentuan produk:</h4>' +
-    '<ul><li>Tahun ke-20, manfaat pengembalian sebesar 20% dari iuran yang dibayarkan</li><li>Tahun ke-30, pengembalian premi sebesar 100%</li></ul>' +
-    '<p>Jadi, dengan masa bayar selama <b>' + P + ' tahun</b>, kamu bisa mendapat perlindungan ' + A + ' tahun, dengan manfaat pengembalian premi *sesuai ketentuan produk.</p>';
+    '<div class="tl"><div><small>Tahun ke-20</small><b>20% dari iuran yang dibayarkan</b></div><div><small>Tahun ke-30</small><b>100% pengembalian premi</b></div></div>' +
+    '<p style="margin-bottom:0"><b>Jadi, dengan masa bayar selama ' + P + ' tahun, kamu bisa mendapatkan perlindungan hingga ' + A + ' tahun, dengan manfaat pengembalian premi sesuai ketentuan produk.</b></p>';
 
   const msg = 'Halo Jasmine, aku ' + nama + ' (' + age + ' tahun, ' + (g === 'm' ? 'laki-laki' : 'perempuan') + ').\n' +
     'Aku sudah coba kalkulator proteksi di wealthplanner.id, ini hasilnya:\n' +
-    '• Tujuan proteksi: ' + {income: 'Income Pengganti', warisan: 'Warisan', edu: 'Dana Pendidikan', debt: 'Pelunasan Utang'}[state.need] + '\n' +
+    '• Tujuan proteksi: ' + {income: 'Proteksi Income', warisan: 'Warisan', edu: 'Dana Pendidikan', debt: 'Pelunasan Utang', wakaf: 'Wakaf'}[state.need] + '\n' +
     '• Kebutuhan UP ideal: ' + rp(up) + '\n• Budget premi ideal: ' + rp(budget) + '/bulan\n' +
     '• Simulasi Flexi Berkah: UP ' + U + ', masa bayar ' + P + ' tahun, kontribusi ' + rp(mo) + '/bulan (total ' + rp(total) + ')\n\n' +
     'Aku mau konsultasi untuk membahas hasil ini.';
@@ -281,7 +294,7 @@ $('go').addEventListener('click', async () => {
   const budget = income * CONFIG.budgetPct / 12;
   document.querySelector('.nmv').textContent = nama;
   $('r-up').textContent = rp(up); $('r-bud').textContent = rp(budget);
-  $('sum').hidden = true;
+  $('sumwrap').hidden = true; armReveal();
   try {
     const m = match(await loadRates(), g, age, up);
     if (!m || !m.opts.length) throw 0;
