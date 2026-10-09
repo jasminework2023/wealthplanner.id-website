@@ -32,6 +32,8 @@ input::placeholder{color:#b9ad9f;font-weight:500}
 .unit{display:inline-block;font-weight:600;margin-left:8px;color:var(--sub)}
 .tip{font-size:12.5px;color:var(--sub);margin-top:8px;max-width:420px}
 .chips{display:flex;flex-wrap:wrap;gap:10px}
+select.term-select{width:100%;max-width:340px;border:0;border-bottom:2px solid var(--line);background:transparent;padding:10px 4px;font:700 16px 'Plus Jakarta Sans',sans-serif;color:var(--ink)}
+select.term-select:focus{outline:0;border-bottom-color:var(--green)}
 .chip{border:2px solid var(--line);background:#fff;color:var(--ink);padding:10px 18px;border-radius:999px;font:600 14.5px 'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:.15s}
 .chip:hover{border-color:var(--green)}
 .chip.on{background:var(--green);border-color:var(--green);color:#fff}
@@ -132,6 +134,10 @@ footer b{display:block;color:var(--brown);font-size:15px}
       <div class="body"><input type="text" class="idr" id="wk" data-v="idr" data-next="s-go" inputmode="numeric" placeholder="Rp500.000.000" />
       <div class="tip">Jumlah dana yang ingin disiapkan untuk tujuan wakaf.</div></div></div>
 
+    <div class="step" id="s-term" hidden><div class="q"><i></i>Pilih Masa Asuransi</div>
+      <div class="body"><label for="insurance-term" style="display:block;font-weight:700">Masa asuransi Flexi Cermat</label>
+      <select class="term-select" id="insurance-term"><option value="">Pilih masa asuransi</option><option value="15">15 tahun</option><option value="25">25 tahun</option><option value="35">35 tahun</option></select>
+      <div class="tip">Pilih masa asuransi yang ingin kamu bandingkan. Kontribusi simulasi akan mengikuti tabel untuk pilihan ini.</div></div></div>
     <div class="step" id="s-go" hidden><div class="body" style="border:0;padding-left:0">
       <button class="btn" id="go" type="button">Hitung Kebutuhan Proteksi →</button>
       <div class="err" id="err"></div><div class="micro">Gratis • Estimasi awal • Tidak mengikat</div></div></div>
@@ -185,12 +191,12 @@ const NEED_STEPS = {income: 's-exp', warisan: 's-wr', edu: 's-ed', haji: 's-hj',
 const PRODUCT_MAP = {income: 'B', warisan: 'B', edu: 'C', haji: 'C', pensiun: 'C', debt: 'A', wakaf: 'B'};
 const PRODUCT_NAMES = {A: 'Flexi Amanah', B: 'Flexi Berkah', C: 'Flexi Cermat'};
 const NEED_NAMES = {income: 'Proteksi Income', warisan: 'Warisan', edu: 'Dana Pendidikan', haji: 'Pelunasan Haji', pensiun: 'Dana Pensiun', debt: 'Pelunasan Utang', wakaf: 'Wakaf'};
-const DYN = ['s-exp', 's-dur', 's-wr', 's-ed', 's-hj', 's-dp', 's-db', 's-wk', 's-go'];
+const DYN = ['s-exp', 's-dur', 's-wr', 's-ed', 's-hj', 's-dp', 's-db', 's-wk', 's-term', 's-go'];
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rp = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
 const num = el => parseInt((el.value || '').replace(/\D/g, ''), 10) || 0;
-const state = {gender: '', need: '', ppt: null};
+const state = {gender: '', need: '', ppt: null, insuranceTerm: ''};
 
 function firstName() { return $('nama').value.trim().split(/\s+/)[0] || ''; }
 function reveal(id) {
@@ -216,9 +222,14 @@ document.querySelectorAll('input[data-v]').forEach(el => {
       $('bub').innerHTML = n ? '<b>Hi, ' + esc(n) + '! 👋</b><br>Yuk, lanjut isi datanya.' : 'Hi, aku Jasmine — Sharia Life Planner. Kita mulai dari informasi dasar yuk.';
     }
     clearTimeout(timers[el.id]);
-    timers[el.id] = setTimeout(() => { if (valid[el.dataset.v](el.value)) reveal(el.dataset.next); }, 700);
+    timers[el.id] = setTimeout(() => { if (valid[el.dataset.v](el.value)) reveal(el.dataset.next === 's-go' && PRODUCT_MAP[state.need] === 'C' ? 's-term' : el.dataset.next); }, 700);
   });
-  el.addEventListener('keydown', e => { if (e.key === 'Enter' && valid[el.dataset.v](el.value)) { clearTimeout(timers[el.id]); reveal(el.dataset.next); } });
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' && valid[el.dataset.v](el.value)) { clearTimeout(timers[el.id]); reveal(el.dataset.next === 's-go' && PRODUCT_MAP[state.need] === 'C' ? 's-term' : el.dataset.next); } });
+});
+$('insurance-term').addEventListener('change', () => {
+  state.insuranceTerm = $('insurance-term').value;
+  if (state.insuranceTerm) reveal('s-go');
+  else $('s-go').hidden = true;
 });
 document.querySelectorAll('.chips').forEach(g => g.addEventListener('click', e => {
   const b = e.target.closest('.chip'); if (!b) return;
@@ -257,13 +268,17 @@ function idealUP() {
   return num($({warisan: 'wr', edu: 'ed', pensiun: 'dp', debt: 'db', wakaf: 'wk'}[n]));
 }
 const toMonthly = c => CONFIG.contributionFrequency === 'annual' ? c / 12 : null;
-function match(rows, product, g, age, up) {
-  const pool = rows.filter(r => r[0] === product && r[1] === g && r[2] === age);
-  const sas = [...new Set(pool.map(r => r[4]))].sort((a, b) => a - b);
+function match(rows, product, g, age, up, insuranceTerm) {
+  const pool = rows.filter(r => r[0] === product && r[1] === g && r[2] === age &&
+    (r.length >= 7 ? (product !== 'C' || r[3] === insuranceTerm) : true));
+  const termIdx = 3, pptIdx = 4, saIdx = 5, contributionIdx = 6;
+  const legacy = pool.length && pool[0].length < 7;
+  const actualPptIdx = legacy ? 3 : pptIdx, actualSaIdx = legacy ? 4 : saIdx, actualContributionIdx = legacy ? 5 : contributionIdx;
+  const sas = [...new Set(pool.map(r => r[actualSaIdx]))].sort((a, b) => a - b);
   if (!sas.length) return null;
   let sa = sas.find(s => s >= up), note = '';
   if (!sa) { sa = sas[sas.length - 1]; note = 'max'; } else if (up < sas[0]) note = 'min';
-  const opts = CONFIG.ppts.map(p => { const r = pool.find(x => x[3] === p && x[4] === sa); return r ? {ppt: p, annual: r[5]} : null; }).filter(Boolean);
+  const opts = CONFIG.ppts.map(p => { const r = pool.find(x => x[actualPptIdx] === p && x[actualSaIdx] === sa); return r ? {ppt: p, annual: r[actualContributionIdx]} : null; }).filter(Boolean);
   return {sa, note, opts};
 }
 const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' miliar' : (n / 1e6).toLocaleString('id-ID') + ' juta';
@@ -279,7 +294,8 @@ function render() {
   let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk Unggulan</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">' + productName + '</div>' +
     '<p class="note" style="margin-bottom:14px">Asuransi jiwa syariah dengan perlindungan jiwa dan manfaat sesuai ketentuan polis.</p>' +
     '<div class="lbl">Kebutuhan Uang Pertanggungan</div><b>' + rp(up) + '</b>' +
-    '<div class="lbl" style="margin-top:10px">Uang Pertanggungan Flexi Berkah</div><b>' + rp(m.sa) + '</b>';
+    '<div class="lbl" style="margin-top:10px">Uang Pertanggungan ' + productName + '</div><b>' + rp(m.sa) + '</b>' +
+    (CTX.product === 'C' ? '<div class="lbl" style="margin-top:10px">Masa Asuransi</div><b>' + CTX.insuranceTerm + ' tahun</b>' : '');
   if (m.note === 'min') h += '<div class="note">UP minimum pada tabel produk ini adalah ' + short(m.sa) + '.</div>';
   if (m.note === 'max') h += '<div class="note">UP maksimum pada tabel produk ini adalah ' + short(m.sa) + ', belum menutup seluruh kebutuhanmu.</div>';
   h += '<div class="lbl" style="margin-top:14px">Pilih Masa Bayar</div>';
@@ -311,7 +327,7 @@ function render() {
     'Aku sudah coba kalkulator proteksi di wealthplanner.id, ini hasilnya:\n' +
     '• Tujuan proteksi: ' + NEED_NAMES[state.need] + '\n' +
     '• Kebutuhan UP ideal: ' + rp(up) + '\n• Budget premi ideal: ' + rp(budget) + '/bulan\n' +
-    '• Simulasi ' + productName + ': UP ' + U + ', masa bayar ' + P + ' tahun, kontribusi ' + rp(mo) + '/bulan (total ' + rp(total) + ')\n\n' +
+    '• Simulasi ' + productName + ': UP ' + U + (CTX.product === 'C' ? ', masa asuransi ' + CTX.insuranceTerm + ' tahun' : '') + ', masa bayar ' + P + ' tahun, kontribusi ' + rp(mo) + '/bulan (total ' + rp(total) + ')\n\n' +
     'Aku mau konsultasi untuk membahas hasil ini.';
   $('wa').href = 'https://wa.me/' + CONFIG.waNumber + '?text=' + encodeURIComponent(msg);
 }
@@ -320,7 +336,8 @@ $('go').addEventListener('click', async () => {
   const nama = firstName(), age = parseInt($('usia').value, 10), g = state.gender, income = num($('income')), up = idealUP();
   const e = $('err');
   const hajiIncomplete = state.need === 'haji' && (!num($('hj')) || !valid.yrs($('hj-years').value) || !valid.pct($('hj-inflation').value));
-  if (!nama || isNaN(age) || !g || !income || !state.need || !up || hajiIncomplete) { e.textContent = 'Lengkapi semua data dulu ya, termasuk target, waktu, dan asumsi inflasi haji jika memilih Pelunasan Haji.'; e.style.display = 'block'; return; }
+  const termIncomplete = PRODUCT_MAP[state.need] === 'C' && ![15, 25, 35].includes(+state.insuranceTerm);
+  if (!nama || isNaN(age) || !g || !income || !state.need || !up || hajiIncomplete || termIncomplete) { e.textContent = termIncomplete ? 'Pilih masa asuransi Flexi Cermat terlebih dahulu ya.' : 'Lengkapi semua data dulu ya, termasuk target, waktu, dan asumsi inflasi haji jika memilih Pelunasan Haji.'; e.style.display = 'block'; return; }
   e.style.display = 'none';
   const budget = income * CONFIG.budgetPct / 12;
   document.querySelector('.nmv').textContent = nama;
@@ -328,14 +345,14 @@ $('go').addEventListener('click', async () => {
   $('sumwrap').hidden = true; armReveal();
   try {
     const product = PRODUCT_MAP[state.need];
-    const m = match(await loadRates(), product, g, age, up);
+    const m = match(await loadRates(), product, g, age, up, +state.insuranceTerm);
     if (!m || !m.opts.length) throw new Error('NO_PRODUCT_RATES');
-    CTX = {m, up, budget, nama, age, g, product};
+    CTX = {m, up, budget, nama, age, g, product, insuranceTerm: +state.insuranceTerm};
     state.ppt = (m.opts.find(x => toMonthly(x.annual) <= budget) || m.opts[m.opts.length - 1]).ppt;
     render();
   } catch (x) {
     const productName = PRODUCT_NAMES[PRODUCT_MAP[state.need]];
-    $('prod').innerHTML = '<p class="note">Pemetaan tujuan kamu adalah <b>' + productName + '</b>, tetapi data kontribusi produk ini belum tersedia pada file tarif yang dipublikasikan. Kami tidak menampilkan angka perkiraan. Konsultasikan dengan Jasmine untuk ilustrasi yang sesuai.</p>';
+    $('prod').innerHTML = '<p class="note">Pemetaan tujuan kamu adalah <b>' + productName + '</b>' + (PRODUCT_MAP[state.need] === 'C' ? ' dengan masa asuransi ' + state.insuranceTerm + ' tahun' : '') + ', tetapi data kontribusi untuk kombinasi ini belum tersedia. Kami tidak menampilkan angka perkiraan. Konsultasikan dengan Jasmine untuk ilustrasi yang sesuai.</p>';
     $('wa').href = 'https://wa.me/' + CONFIG.waNumber + '?text=' + encodeURIComponent('Halo Jasmine, aku ' + nama + '. Aku sudah coba kalkulator proteksi: kebutuhan UP ideal ' + rp(up) + ', budget premi ' + rp(budget) + '/bulan. Aku mau konsultasi.');
   }
   $('result').hidden = false;
