@@ -285,7 +285,8 @@ function match(rows, product, g, age, up, insuranceTerm) {
       // The 15-year insurance option has no 15-year payment term in the source table.
       const termOrder = p === 15 ? [25, 35] : [15, 25, 35];
       const idx = termOrder.indexOf(insuranceTerm);
-      r = idx >= 0 ? candidates[idx] : null;
+      // Missing rows in the legacy export make the term ambiguous; never guess a contribution.
+      r = candidates.length === termOrder.length && idx >= 0 ? candidates[idx] : null;
     } else {
       r = candidates[0];
     }
