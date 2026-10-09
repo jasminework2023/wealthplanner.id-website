@@ -271,14 +271,26 @@ const toMonthly = c => CONFIG.contributionFrequency === 'annual' ? c / 12 : null
 function match(rows, product, g, age, up, insuranceTerm) {
   const pool = rows.filter(r => r[0] === product && r[1] === g && r[2] === age &&
     (r.length >= 7 ? (product !== 'C' || r[3] === insuranceTerm) : true));
-  const termIdx = 3, pptIdx = 4, saIdx = 5, contributionIdx = 6;
   const legacy = pool.length && pool[0].length < 7;
-  const actualPptIdx = legacy ? 3 : pptIdx, actualSaIdx = legacy ? 4 : saIdx, actualContributionIdx = legacy ? 5 : contributionIdx;
-  const sas = [...new Set(pool.map(r => r[actualSaIdx]))].sort((a, b) => a - b);
+  const pptIdx = legacy ? 3 : 4, saIdx = legacy ? 4 : 5, contributionIdx = legacy ? 5 : 6;
+  const sas = [...new Set(pool.map(r => r[saIdx]))].sort((a, b) => a - b);
   if (!sas.length) return null;
   let sa = sas.find(s => s >= up), note = '';
   if (!sa) { sa = sas[sas.length - 1]; note = 'max'; } else if (up < sas[0]) note = 'min';
-  const opts = CONFIG.ppts.map(p => { const r = pool.find(x => x[actualPptIdx] === p && x[actualSaIdx] === sa); return r ? {ppt: p, annual: r[actualContributionIdx]} : null; }).filter(Boolean);
+  const opts = CONFIG.ppts.map(p => {
+    const candidates = pool.filter(x => x[pptIdx] === p && x[saIdx] === sa);
+    let r;
+    if (product === 'C' && legacy) {
+      // Legacy JSON lacks insurance_term_years. Its duplicate C rows retain workbook order: 15, 25, 35.
+      // The 15-year insurance option has no 15-year payment term in the source table.
+      const termOrder = p === 15 ? [25, 35] : [15, 25, 35];
+      const idx = termOrder.indexOf(insuranceTerm);
+      r = idx >= 0 ? candidates[idx] : null;
+    } else {
+      r = candidates[0];
+    }
+    return r ? {ppt: p, annual: r[contributionIdx]} : null;
+  }).filter(Boolean);
   return {sa, note, opts};
 }
 const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' miliar' : (n / 1e6).toLocaleString('id-ID') + ' juta';
