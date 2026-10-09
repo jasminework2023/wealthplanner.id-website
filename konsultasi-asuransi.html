@@ -305,8 +305,11 @@ function render() {
   const o = m.opts.find(x => x.ppt === state.ppt) || m.opts[0];
   const mo = toMonthly(o.annual), total = o.annual * o.ppt;
   const productName = PRODUCT_NAMES[CTX.product];
+  const productDescription = state.need === 'income'
+    ? 'Asuransi jiwa tradisional yang memberikan perlindungan seumur hidup, sebagai income replacement bagi keluarga apabila peserta meninggal dunia, dengan manfaat pengembalian premi sesuai ketentuan polis.'
+    : 'Asuransi jiwa syariah dengan perlindungan jiwa dan manfaat sesuai ketentuan polis.';
   let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">' + productName + '</div>' +
-    '<p class="note" style="margin-bottom:14px">Asuransi jiwa tradisional yang memberikan perlindungan seumur hidup, sebagai income replacement bagi keluarga apabila peserta meninggal dunia, dengan manfaat pengembalian premi sesuai ketentuan polis.</p>' +
+    '<p class="note" style="margin-bottom:14px">' + productDescription + '</p>' +
     '<div class="lbl">Kebutuhan Uang Pertanggungan</div><b>' + rp(up) + '</b>' +
     '<div class="lbl" style="margin-top:10px">Uang Pertanggungan ' + productName + '</div><b>' + rp(m.sa) + '</b>' +
     (CTX.product === 'C' ? '<div class="lbl" style="margin-top:10px">Masa Asuransi</div><b>' + CTX.insuranceTerm + ' tahun</b>' : '');
