@@ -183,6 +183,7 @@ const CONFIG = {
   contributionFrequency: 'annual',   // kontribusi di tabel = tahunan, dibagi 12 jadi bulanan
   budgetPct: 0.10,
   ppts: [5, 10, 15],
+  productPpts: {A: [5, 10], B: [5, 10, 15], C: [5, 10, 15]},
   waNumber: '6285890065850',
   coverageAge: 110
 };
@@ -277,7 +278,7 @@ function match(rows, product, g, age, up, insuranceTerm) {
   if (!sas.length) return null;
   let sa = sas.find(s => s >= up), note = '';
   if (!sa) { sa = sas[sas.length - 1]; note = 'max'; } else if (up < sas[0]) note = 'min';
-  const opts = CONFIG.ppts.map(p => {
+  const opts = (CONFIG.productPpts[product] || CONFIG.ppts).map(p => {
     const candidates = pool.filter(x => x[pptIdx] === p && x[saIdx] === sa);
     let r;
     if (product === 'C' && legacy) {
@@ -324,17 +325,25 @@ function render() {
   const U = rp(m.sa), P = o.ppt, A = CONFIG.coverageAge;
   $('sumwrap').hidden = false;
   const goal = GOALS[state.need];
-  $('c1').innerHTML = '<h3>Hi, ' + esc(nama) + ' 👋</h3><p>Dengan kontribusi sebesar</p><div class="num">' + rp(mo) + ' / bulan</div>' +
-    '<p>Flexi Berkah membantu menjaga <b>' + goal + '</b> dengan Uang Pertanggungan senilai</p><div class="num">' + U + '</div>' +
-    '<p>Dengan masa bayar selama <b>' + P + ' tahun</b>, total kontribusi yang dibayarkan:</p><div class="num" style="font-size:clamp(22px,6vw,28px)">' + rp(total) + '</div>' +
-    '<p style="margin-bottom:0">Dan perlindungan jiwa hingga usia:</p><div class="num" style="margin-bottom:0">' + A + ' TAHUN</div><p style="margin-bottom:10px"><i>(seumur hidup)</i></p>' +
-    '<div class="sm">Manfaat dan perlindungan mengikuti ketentuan polis.</div>';
-  $('c2').innerHTML = '<h3>Ketentuan Umum</h3>' +
-    '<h4>Jika meninggal dunia sebelum masa pembayaran selesai</h4><p>Uang Pertanggungan sebesar <b>' + U + '</b> tetap diberikan sesuai ketentuan polis.</p>' +
-    '<h4>Jika meninggal dunia setelah masa pembayaran selesai</h4><p>Perlindungan tetap berjalan dan Uang Pertanggungan sebesar <b>' + U + '</b> tetap tersedia sesuai ketentuan polis.</p>' +
-    '<h4>Selain perlindungan jiwa, terdapat manfaat pengembalian premi sesuai ketentuan produk:</h4>' +
-    '<div class="tl"><div><small>Tahun ke-20</small><b>20% dari iuran yang dibayarkan</b></div><div><small>Tahun ke-30</small><b>100% pengembalian premi</b></div></div>' +
-    '<p style="margin-bottom:0"><b>Jadi, dengan masa bayar selama ' + P + ' tahun, kamu bisa mendapatkan perlindungan hingga ' + A + ' tahun, dengan manfaat pengembalian premi sesuai ketentuan produk.</b></p>';
+  let productNarrative = '';
+  let productDetails = '';
+  if (CTX.product === 'B') {
+    productNarrative = 'Flexi Berkah dirancang untuk membantu menjaga <b>' + goal + '</b> dengan perlindungan jiwa hingga usia ' + A + ' tahun (seumur hidup).';
+    productDetails = '<h4>Masa perlindungan</h4><p>Perlindungan jiwa berlangsung hingga usia ' + A + ' tahun, meskipun masa pembayaran kontribusi sudah selesai, sesuai ketentuan polis.</p>';
+  } else if (CTX.product === 'A') {
+    productNarrative = 'Flexi Amanah membantu menyiapkan perlindungan untuk <b>' + goal + '</b> selama masa pembayaran yang dipilih.';
+    productDetails = '<h4>Masa perlindungan</h4><p>Perlindungan mengikuti masa pembayaran yang dipilih, yaitu ' + P + ' tahun. Setelah masa tersebut berakhir, perlindungan mengikuti ketentuan produk dan polis.</p>';
+  } else {
+    productNarrative = 'Flexi Cermat membantu merencanakan <b>' + goal + '</b> dengan masa asuransi ' + CTX.insuranceTerm + ' tahun.';
+    productDetails = '<h4>Manfaat pada akhir masa asuransi</h4><p>Uang Pertanggungan direncanakan cair pada akhir masa asuransi ' + CTX.insuranceTerm + ' tahun sesuai ketentuan produk, baik peserta masih hidup maupun telah meninggal dunia.</p><p>Masa bayar kontribusi (' + P + ' tahun) berbeda dari masa asuransi (' + CTX.insuranceTerm + ' tahun).</p>';
+  }
+  $('c1').innerHTML = '<h3>Hi, ' + esc(nama) + ' 👋</h3><p>Dengan estimasi kontribusi sebesar</p><div class="num">' + rp(mo) + ' / bulan</div>' +
+    '<p>' + productNarrative + '</p><div class="lbl">Uang Pertanggungan pada tabel</div><div class="num">' + U + '</div>' +
+    '<p>Jika masa bayar ' + P + ' tahun, total kontribusi berdasarkan estimasi tahunan:</p><div class="num" style="font-size:clamp(22px,6vw,28px)">' + rp(total) + '</div>' +
+    '<div class="sm">Simulasi awal, bukan ilustrasi resmi. Manfaat aktual mengikuti ketentuan produk dan polis.</div>';
+  $('c2').innerHTML = '<h3>Gambaran Produk</h3>' + productDetails +
+    '<h4>Tujuan proteksi yang dipilih</h4><p>' + NEED_NAMES[state.need] + '</p>' +
+    '<p style="margin-bottom:0">Besaran manfaat, masa perlindungan, dan ketentuan pembayaran harus dikonfirmasi melalui ilustrasi resmi produk.</p>';
 
   const msg = 'Halo Jasmine, aku ' + nama + ' (' + age + ' tahun, ' + (g === 'm' ? 'laki-laki' : 'perempuan') + ').\n' +
     'Aku sudah coba kalkulator proteksi di wealthplanner.id, ini hasilnya:\n' +
