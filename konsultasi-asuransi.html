@@ -101,7 +101,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
     <div class="step" id="s-need" hidden><div class="q"><i></i>Kebutuhan proteksi yang ingin kamu siapkan</div>
       <div class="body"><div class="chips" data-group="need">
         <button class="chip" data-val="income">Proteksi Income</button><button class="chip" data-val="warisan">Warisan</button>
-        <button class="chip" data-val="edu">Dana Pendidikan</button><button class="chip" data-val="debt">Pelunasan Utang</button><button class="chip" data-val="wakaf">Wakaf</button></div></div></div>
+        <button class="chip" data-val="edu">Dana Pendidikan</button><button class="chip" data-val="haji">Pelunasan Haji</button><button class="chip" data-val="pensiun">Dana Pensiun</button><button class="chip" data-val="debt">Pelunasan Utang</button><button class="chip" data-val="wakaf">Wakaf</button></div></div></div>
 
     <div class="step" id="s-exp" hidden><div class="q"><i></i>Pengeluaran tahunan</div>
       <div class="body"><input type="text" class="idr" id="exp" data-v="idr" data-next="s-dur" inputmode="numeric" placeholder="Rp60.000.000" />
@@ -119,6 +119,15 @@ footer b{display:block;color:var(--brown);font-size:15px}
       <div class="body"><input type="text" class="idr" id="db" data-v="idr" data-next="s-go" inputmode="numeric" placeholder="Rp800.000.000" />
       <div class="tip">Total kewajiban yang ingin dilindungi agar tidak menjadi beban keluarga.</div></div></div>
 
+    <div class="step" id="s-hj" hidden><div class="q"><i></i>Target dana pelunasan haji</div>
+      <div class="body"><input type="text" class="idr" id="hj" data-v="idr" data-next="s-go" inputmode="numeric" placeholder="Rp50.000.000" />
+      <div class="tip">Masukkan estimasi biaya haji saat ini. Kalkulator akan memperkirakan target berdasarkan waktu keberangkatan dan inflasi yang kamu isi.</div>
+      <label for="hj-years" style="display:block;margin-top:12px;font-weight:700">Rencana berangkat dalam</label><input type="number" id="hj-years" data-v="yrs" data-next="s-go" inputmode="numeric" style="width:90px" placeholder="10" /><span class="unit">tahun</span>
+      <label for="hj-inflation" style="display:block;margin-top:12px;font-weight:700">Asumsi inflasi biaya haji</label><input type="number" id="hj-inflation" data-v="pct" data-next="s-go" inputmode="numeric" style="width:90px" placeholder="5" /><span class="unit">% per tahun</span>
+      <div class="tip">Gunakan asumsi inflasi pilihanmu; ini bukan proyeksi biaya haji resmi.</div></div></div>
+    <div class="step" id="s-dp" hidden><div class="q"><i></i>Target dana pensiun</div>
+      <div class="body"><input type="text" class="idr" id="dp" data-v="idr" data-next="s-go" inputmode="numeric" placeholder="Rp1.000.000.000" />
+      <div class="tip">Estimasi dana yang ingin dipersiapkan untuk mendukung kebutuhan saat pensiun.</div></div></div>
     <div class="step" id="s-wk" hidden><div class="q"><i></i>Target wakaf</div>
       <div class="body"><input type="text" class="idr" id="wk" data-v="idr" data-next="s-go" inputmode="numeric" placeholder="Rp500.000.000" />
       <div class="tip">Jumlah dana yang ingin disiapkan untuk tujuan wakaf.</div></div></div>
@@ -158,7 +167,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
 
   <footer><b>Jannatul Jasmine</b>Sharia Life Planner
     <p style="margin:6px 0 14px">Membantu kamu merencanakan proteksi finansial sesuai kebutuhan dan kemampuan.</p>
-    <p>Perhitungan di atas merupakan estimasi awal dan bukan merupakan ilustrasi resmi produk. Manfaat, kontribusi/premi, ketentuan produk, dan hasil underwriting mengikuti ketentuan yang berlaku.</p></footer>
+    <p>Hasil perhitungan merupakan simulasi awal untuk membantu perencanaan proteksi, bukan ilustrasi premi resmi atau penawaran final. Besaran kontribusi dan manfaat aktual mengikuti hasil ilustrasi resmi serta ketentuan produk yang berlaku.</p></footer>
 </div>
 
 <script>
@@ -171,9 +180,12 @@ const CONFIG = {
   waNumber: '6285890065850',
   coverageAge: 110
 };
-const GOALS = {income: 'income keluarga', warisan: 'warisan', edu: 'dana pendidikan', debt: 'pelunasan utang', wakaf: 'wakaf'};
-const NEED_STEPS = {income: 's-exp', warisan: 's-wr', edu: 's-ed', debt: 's-db', wakaf: 's-wk'};
-const DYN = ['s-exp', 's-dur', 's-wr', 's-ed', 's-db', 's-wk', 's-go'];
+const GOALS = {income: 'income keluarga', warisan: 'warisan', edu: 'dana pendidikan', haji: 'target pelunasan haji', pensiun: 'dana pensiun', debt: 'pelunasan utang', wakaf: 'wakaf'};
+const NEED_STEPS = {income: 's-exp', warisan: 's-wr', edu: 's-ed', haji: 's-hj', pensiun: 's-dp', debt: 's-db', wakaf: 's-wk'};
+const PRODUCT_MAP = {income: 'B', warisan: 'B', edu: 'C', haji: 'C', pensiun: 'C', debt: 'A', wakaf: 'B'};
+const PRODUCT_NAMES = {A: 'Flexi Amanah', B: 'Flexi Berkah', C: 'Flexi Cermat'};
+const NEED_NAMES = {income: 'Proteksi Income', warisan: 'Warisan', edu: 'Dana Pendidikan', haji: 'Pelunasan Haji', pensiun: 'Dana Pensiun', debt: 'Pelunasan Utang', wakaf: 'Wakaf'};
+const DYN = ['s-exp', 's-dur', 's-wr', 's-ed', 's-hj', 's-dp', 's-db', 's-wk', 's-go'];
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rp = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
@@ -191,7 +203,8 @@ const valid = {
   text: v => v.trim().length >= 2,
   age: v => v !== '' && +v >= 0 && +v <= 70,
   idr: v => (parseInt(v.replace(/\D/g, ''), 10) || 0) >= 1000000,
-  yrs: v => +v >= 1 && +v <= 60
+  yrs: v => +v >= 1 && +v <= 60,
+  pct: v => v !== '' && +v >= 0 && +v <= 20
 };
 let timers = {};
 document.querySelectorAll('input[data-v]').forEach(el => {
@@ -220,21 +233,29 @@ let RATES = null;
 async function loadRates() {
   if (RATES) return RATES;
   const r = await fetch(CONFIG.ratesUrl); if (!r.ok) throw new Error('rates');
-  RATES = (await r.json()).rows; return RATES; // [gender, age, ppt, sumAssured, annualContribution]
+  const data = await r.json();
+  // Existing public table contains Flexi Berkah rows only; legacy row format is tagged B.
+  RATES = data.rows.map(row => row.length === 6 ? row : ['B', ...row]);
+  return RATES; // [productCode, gender, age, ppt, sumAssured, annualContribution]
 }
 function idealUP() {
   const n = state.need;
   if (n === 'income') return num($('exp')) * num($('dur'));
-  return num($({warisan: 'wr', edu: 'ed', debt: 'db', wakaf: 'wk'}[n]));
+  if (n === 'haji') {
+    const targetNow = num($('hj')), years = parseInt($('hj-years').value, 10) || 0;
+    const inflation = parseInt($('hj-inflation').value, 10) || 0;
+    return Math.round(targetNow * Math.pow(1 + inflation / 100, years));
+  }
+  return num($({warisan: 'wr', edu: 'ed', pensiun: 'dp', debt: 'db', wakaf: 'wk'}[n]));
 }
 const toMonthly = c => CONFIG.contributionFrequency === 'annual' ? c / 12 : null;
-function match(rows, g, age, up) {
-  const pool = rows.filter(r => r[0] === g && r[1] === age);
-  const sas = [...new Set(pool.map(r => r[3]))].sort((a, b) => a - b);
+function match(rows, product, g, age, up) {
+  const pool = rows.filter(r => r[0] === product && r[1] === g && r[2] === age);
+  const sas = [...new Set(pool.map(r => r[4]))].sort((a, b) => a - b);
   if (!sas.length) return null;
   let sa = sas.find(s => s >= up), note = '';
   if (!sa) { sa = sas[sas.length - 1]; note = 'max'; } else if (up < sas[0]) note = 'min';
-  const opts = CONFIG.ppts.map(p => { const r = pool.find(x => x[2] === p && x[3] === sa); return r ? {ppt: p, annual: r[4]} : null; }).filter(Boolean);
+  const opts = CONFIG.ppts.map(p => { const r = pool.find(x => x[3] === p && x[4] === sa); return r ? {ppt: p, annual: r[5]} : null; }).filter(Boolean);
   return {sa, note, opts};
 }
 const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' miliar' : (n / 1e6).toLocaleString('id-ID') + ' juta';
@@ -246,7 +267,8 @@ function render() {
   const {m, up, budget, nama, age, g} = CTX;
   const o = m.opts.find(x => x.ppt === state.ppt) || m.opts[0];
   const mo = toMonthly(o.annual), total = o.annual * o.ppt;
-  let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk Unggulan</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">Flexi Berkah</div>' +
+  const productName = PRODUCT_NAMES[CTX.product];
+  let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk Unggulan</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">' + productName + '</div>' +
     '<p class="note" style="margin-bottom:14px">Asuransi jiwa syariah dengan perlindungan jiwa dan manfaat sesuai ketentuan polis.</p>' +
     '<div class="lbl">Kebutuhan Uang Pertanggungan</div><b>' + rp(up) + '</b>' +
     '<div class="lbl" style="margin-top:10px">Uang Pertanggungan Flexi Berkah</div><b>' + rp(m.sa) + '</b>';
@@ -279,9 +301,9 @@ function render() {
 
   const msg = 'Halo Jasmine, aku ' + nama + ' (' + age + ' tahun, ' + (g === 'm' ? 'laki-laki' : 'perempuan') + ').\n' +
     'Aku sudah coba kalkulator proteksi di wealthplanner.id, ini hasilnya:\n' +
-    '• Tujuan proteksi: ' + {income: 'Proteksi Income', warisan: 'Warisan', edu: 'Dana Pendidikan', debt: 'Pelunasan Utang', wakaf: 'Wakaf'}[state.need] + '\n' +
+    '• Tujuan proteksi: ' + NEED_NAMES[state.need] + '\n' +
     '• Kebutuhan UP ideal: ' + rp(up) + '\n• Budget premi ideal: ' + rp(budget) + '/bulan\n' +
-    '• Simulasi Flexi Berkah: UP ' + U + ', masa bayar ' + P + ' tahun, kontribusi ' + rp(mo) + '/bulan (total ' + rp(total) + ')\n\n' +
+    '• Simulasi ' + productName + ': UP ' + U + ', masa bayar ' + P + ' tahun, kontribusi ' + rp(mo) + '/bulan (total ' + rp(total) + ')\n\n' +
     'Aku mau konsultasi untuk membahas hasil ini.';
   $('wa').href = 'https://wa.me/' + CONFIG.waNumber + '?text=' + encodeURIComponent(msg);
 }
@@ -289,20 +311,23 @@ function render() {
 $('go').addEventListener('click', async () => {
   const nama = firstName(), age = parseInt($('usia').value, 10), g = state.gender, income = num($('income')), up = idealUP();
   const e = $('err');
-  if (!nama || isNaN(age) || !g || !income || !state.need || !up) { e.textContent = 'Lengkapi semua data dulu ya.'; e.style.display = 'block'; return; }
+  const hajiIncomplete = state.need === 'haji' && (!num($('hj')) || !valid.yrs($('hj-years').value) || !valid.pct($('hj-inflation').value));
+  if (!nama || isNaN(age) || !g || !income || !state.need || !up || hajiIncomplete) { e.textContent = 'Lengkapi semua data dulu ya, termasuk target, waktu, dan asumsi inflasi haji jika memilih Pelunasan Haji.'; e.style.display = 'block'; return; }
   e.style.display = 'none';
   const budget = income * CONFIG.budgetPct / 12;
   document.querySelector('.nmv').textContent = nama;
   $('r-up').textContent = rp(up); $('r-bud').textContent = rp(budget);
   $('sumwrap').hidden = true; armReveal();
   try {
-    const m = match(await loadRates(), g, age, up);
-    if (!m || !m.opts.length) throw 0;
-    CTX = {m, up, budget, nama, age, g};
+    const product = PRODUCT_MAP[state.need];
+    const m = match(await loadRates(), product, g, age, up);
+    if (!m || !m.opts.length) throw new Error('NO_PRODUCT_RATES');
+    CTX = {m, up, budget, nama, age, g, product};
     state.ppt = (m.opts.find(x => toMonthly(x.annual) <= budget) || m.opts[m.opts.length - 1]).ppt;
     render();
   } catch (x) {
-    $('prod').innerHTML = '<p class="note">Simulasi produk untuk data ini belum tersedia. Konsultasikan dengan Jasmine untuk opsi lainnya.</p>';
+    const productName = PRODUCT_NAMES[PRODUCT_MAP[state.need]];
+    $('prod').innerHTML = '<p class="note">Pemetaan tujuan kamu adalah <b>' + productName + '</b>, tetapi data kontribusi produk ini belum tersedia pada file tarif yang dipublikasikan. Kami tidak menampilkan angka perkiraan. Konsultasikan dengan Jasmine untuk ilustrasi yang sesuai.</p>';
     $('wa').href = 'https://wa.me/' + CONFIG.waNumber + '?text=' + encodeURIComponent('Halo Jasmine, aku ' + nama + '. Aku sudah coba kalkulator proteksi: kebutuhan UP ideal ' + rp(up) + ', budget premi ' + rp(budget) + '/bulan. Aku mau konsultasi.');
   }
   $('result').hidden = false;
