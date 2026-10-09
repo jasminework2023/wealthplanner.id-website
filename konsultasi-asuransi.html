@@ -232,9 +232,17 @@ document.querySelectorAll('.chips').forEach(g => g.addEventListener('click', e =
 let RATES = null;
 async function loadRates() {
   if (RATES) return RATES;
-  const r = await fetch(CONFIG.ratesUrl); if (!r.ok) throw new Error('rates');
-  const data = await r.json();
-  // Existing public table contains Flexi Berkah rows only; legacy row format is tagged B.
+  // Prefer the complete workbook-derived table; keep the existing Berkah table as a safe fallback.
+  let data, response;
+  response = await fetch('/flexi-product-rates.json');
+  if (response.ok) {
+    data = await response.json();
+  } else {
+    response = await fetch(CONFIG.ratesUrl);
+    if (!response.ok) throw new Error('rates');
+    data = await response.json();
+  }
+  // Legacy table contains only Berkah rows; tag those as product B.
   RATES = data.rows.map(row => row.length === 6 ? row : ['B', ...row]);
   return RATES; // [productCode, gender, age, ppt, sumAssured, annualContribution]
 }
