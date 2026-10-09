@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hitung Kebutuhan Proteksi — Jasmine, Sharia Life Planner</title>
-<meta name="description" content="Hitung estimasi kebutuhan Uang Pertanggungan dan budget premi ideal. Gratis, tidak mengikat." />
+<title>Kalkulator Finansial — Jasmine, Sharia Life Planner</title>
+<meta name="description" content="Hitung kebutuhan proteksi sesuai tujuan finansialmu." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -76,9 +76,9 @@ footer b{display:block;color:var(--brown);font-size:15px}
 </head>
 <body>
 <div class="app">
-  <header><a href="https://wealthplannerindonesia.vercel.app" aria-label="Kembali">‹</a><span>Kalkulator Proteksi</span><span style="width:32px"></span></header>
+  <header><a href="https://wealthplannerindonesia.vercel.app" aria-label="Kembali">‹</a><span>Kalkulator Finansial</span><span style="width:32px"></span></header>
 
-  <div class="quote"><div style="font-size:17px;font-weight:800">Hitung kebutuhan proteksi sesuai tujuan keuanganmu.</div><div style="margin-top:6px"><b>Gratis.</b> Angka hanya bersifat simulasi dan tidak menjadi komitmen pembelian.</div><div style="margin-top:8px;font-size:13px;font-weight:600">🔒 Data kamu aman dan hanya digunakan untuk kebutuhan simulasi.</div></div>
+  <div class="quote"><div style="font-size:17px;font-weight:800">Hitung kebutuhan proteksi sesuai tujuan finansialmu.</div></div>
   <div class="say">
     <img src="/assets/jasmine-profile.jpeg" alt="Jasmine" onerror="this.style.display='none'" />
     <div class="bubble" id="bub">Hi, aku Jasmine — Sharia Life Planner. Kita mulai dari informasi dasar yuk.</div>
@@ -100,7 +100,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
       <div class="body"><input type="text" class="idr" id="income" data-v="idr" data-next="s-need" inputmode="numeric" placeholder="Rp120.000.000" />
       <div class="tip">Dipakai untuk menghitung budget premi ideal.</div></div></div>
 
-    <div class="step" id="s-need" hidden><div class="q"><i></i>Kebutuhan proteksi yang ingin kamu siapkan</div>
+    <div class="step" id="s-need" hidden><div class="q"><i></i>Kebutuhan finansial yang lagi kamu siapkan</div>
       <div class="body"><div class="chips" data-group="need">
         <button class="chip" data-val="income">Proteksi Income</button><button class="chip" data-val="warisan">Warisan</button>
         <button class="chip" data-val="edu">Dana Pendidikan</button><button class="chip" data-val="haji">Pelunasan Haji</button><button class="chip" data-val="pensiun">Dana Pensiun</button><button class="chip" data-val="debt">Pelunasan Utang</button><button class="chip" data-val="wakaf">Wakaf</button></div></div></div>
@@ -149,7 +149,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
       <div class="lbl">Kebutuhan Uang Pertanggungan Ideal</div><div class="big" id="r-up"></div>
       <div class="note">Estimasi Uang Pertanggungan yang dibutuhkan berdasarkan tujuan proteksi yang dipilih.</div>
       <div class="lbl" style="margin-top:18px">Budget Premi Ideal</div><div class="big" id="r-bud"></div>
-      <div class="note">per bulan • Panduan awal 10% dari pendapatan tahunan, bukan jaminan premi produk.</div>
+      <div class="note">per bulan. Menghitung dari 10% pendapatan tahunan.</div>
     </div>
 
     <div class="box" id="prod"></div>
@@ -305,12 +305,12 @@ function render() {
   const o = m.opts.find(x => x.ppt === state.ppt) || m.opts[0];
   const mo = toMonthly(o.annual), total = o.annual * o.ppt;
   const productName = PRODUCT_NAMES[CTX.product];
-  let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk Unggulan</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">' + productName + '</div>' +
-    '<p class="note" style="margin-bottom:14px">Asuransi jiwa syariah dengan perlindungan jiwa dan manfaat sesuai ketentuan polis.</p>' +
+  let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">' + productName + '</div>' +
+    '<p class="note" style="margin-bottom:14px">Asuransi jiwa tradisional yang memberikan perlindungan seumur hidup, sebagai income replacement bagi keluarga apabila peserta meninggal dunia, dengan manfaat pengembalian premi sesuai ketentuan polis.</p>' +
     '<div class="lbl">Kebutuhan Uang Pertanggungan</div><b>' + rp(up) + '</b>' +
     '<div class="lbl" style="margin-top:10px">Uang Pertanggungan ' + productName + '</div><b>' + rp(m.sa) + '</b>' +
     (CTX.product === 'C' ? '<div class="lbl" style="margin-top:10px">Masa Asuransi</div><b>' + CTX.insuranceTerm + ' tahun</b>' : '');
-  if (m.note === 'min') h += '<div class="note">UP minimum pada tabel produk ini adalah ' + short(m.sa) + '.</div>';
+  if (m.note === 'min') h += '<div class="note">UP minimum pada simulasi ini adalah ' + short(m.sa) + '.</div>';
   if (m.note === 'max') h += '<div class="note">UP maksimum pada tabel produk ini adalah ' + short(m.sa) + ', belum menutup seluruh kebutuhanmu.</div>';
   h += '<div class="lbl" style="margin-top:14px">Pilih Masa Bayar</div>';
   m.opts.forEach(x => {
@@ -337,10 +337,14 @@ function render() {
     productNarrative = 'Flexi Cermat membantu merencanakan <b>' + goal + '</b> dengan masa asuransi ' + CTX.insuranceTerm + ' tahun.';
     productDetails = '<h4>Manfaat pada akhir masa asuransi</h4><p>Uang Pertanggungan direncanakan cair pada akhir masa asuransi ' + CTX.insuranceTerm + ' tahun sesuai ketentuan produk, baik peserta masih hidup maupun telah meninggal dunia.</p><p>Masa bayar kontribusi (' + P + ' tahun) berbeda dari masa asuransi (' + CTX.insuranceTerm + ' tahun).</p>';
   }
-  $('c1').innerHTML = '<h3>Hi, ' + esc(nama) + ' 👋</h3><p>Dengan estimasi kontribusi sebesar</p><div class="num">' + rp(mo) + ' / bulan</div>' +
-    '<p>' + productNarrative + '</p><div class="lbl">Uang Pertanggungan pada tabel</div><div class="num">' + U + '</div>' +
-    '<p>Jika masa bayar ' + P + ' tahun, total kontribusi berdasarkan estimasi tahunan:</p><div class="num" style="font-size:clamp(22px,6vw,28px)">' + rp(total) + '</div>' +
-    '<div class="sm">Simulasi awal, bukan ilustrasi resmi. Manfaat aktual mengikuti ketentuan produk dan polis.</div>';
+  const multiple = total > 0 ? (m.sa / total).toLocaleString('id-ID', {minimumFractionDigits:1, maximumFractionDigits:1}) : '—';
+  $('c1').innerHTML = '<h3>Hi, ' + esc(nama) + ' 👋</h3>' +
+    '<div class="lbl">Premi</div><p>Dengan estimasi kontribusi sebesar</p><div class="num">' + rp(mo) + ' / bulan</div>' +
+    '<p>yang kamu bayar selama ' + P + ' tahun.</p>' +
+    '<div class="lbl" style="margin-top:14px">Total Bayar</div><div class="num" style="font-size:clamp(22px,6vw,28px)">' + rp(total) + '</div>' +
+    '<div class="lbl" style="margin-top:14px">Uang Pertanggungan</div><div class="num">' + U + '</div>' +
+    '<p>Nilainya ' + multiple + 'x dari total iuran yang kamu bayar.' + (CTX.product === 'B' ? ' Bahkan, kontribusi dikembalikan hingga 120%* sesuai ketentuan polis.' : '') + '</p>' +
+    '<p>' + productNarrative + '</p><div class="sm">*Simulasi awal, bukan ilustrasi resmi. Manfaat aktual mengikuti ketentuan produk dan polis.</div>';
   $('c2').innerHTML = '<h3>Gambaran Produk</h3>' + productDetails +
     '<h4>Tujuan proteksi yang dipilih</h4><p>' + NEED_NAMES[state.need] + '</p>' +
     '<p style="margin-bottom:0">Besaran manfaat, masa perlindungan, dan ketentuan pembayaran harus dikonfirmasi melalui ilustrasi resmi produk.</p>';
