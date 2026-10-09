@@ -253,9 +253,9 @@ async function loadRates() {
     if (!response.ok) throw new Error('rates');
     data = await response.json();
   }
-  // Legacy table contains only Berkah rows; tag those as product B.
-  RATES = data.rows.map(row => row.length === 6 ? row : ['B', ...row]);
-  return RATES; // [productCode, gender, age, ppt, sumAssured, annualContribution]
+  // Current workbook export already contains product codes; legacy Berkah-only rows have 5 fields.
+  RATES = data.rows.map(row => row.length === 5 ? ['B', ...row] : row);
+  return RATES; // current: [productCode, gender, age, insuranceTerm, ppt, sumAssured, annualContribution]; legacy: [productCode, gender, age, ppt, sumAssured, annualContribution]
 }
 function idealUP() {
   const n = state.need;
