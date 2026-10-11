@@ -129,6 +129,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
         <label for="wr" style="display:block;font-weight:700;margin-top:14px">Target nilai warisan</label>
         <input type="text" class="idr wr-stage1" id="wr" inputmode="numeric" placeholder="Rp1.000.000.000" />
         <div class="box" style="margin-top:18px;margin-bottom:14px;padding:14px">
+          <h2 style="font-size:18px;margin-bottom:12px">Hasil Simulasi Kebutuhan Warisan</h2>
           <div class="lbl">Total aset</div><div id="wr-assets-total" style="font-size:20px;font-weight:800;color:var(--green-d)">Rp0</div>
           <div class="lbl" style="margin-top:10px">Total kewajiban + biaya</div><div id="wr-liabilities-total" style="font-size:20px;font-weight:800;color:var(--brown)">Rp0</div>
           <div class="lbl" style="margin-top:10px">Estimasi kekayaan bersih</div><div id="wr-net-worth" style="font-size:24px;font-weight:800;color:var(--green-d)">Rp0</div>
@@ -445,7 +446,7 @@ function render() {
   let productNarrative = '';
   let productDetails = '';
   if (CTX.product === 'B') {
-    productNarrative = 'Flexi Berkah dirancang untuk membantu menjaga <b>' + goal + '</b> dengan perlindungan jiwa hingga usia ' + A + ' tahun (seumur hidup).';
+    productNarrative = 'Flexi Berkah dirancang untuk membantu menjaga <b>' + goal + '</b> dengan perlindungan jiwa hingga usia ' + A + ' tahun, sesuai ketentuan produk.';
     productDetails = '<h4>Masa perlindungan</h4><p>Perlindungan jiwa berlangsung hingga usia ' + A + ' tahun, meskipun masa pembayaran kontribusi sudah selesai, sesuai ketentuan polis.</p>';
   } else if (CTX.product === 'A') {
     productNarrative = 'Flexi Amanah membantu menyiapkan perlindungan untuk <b>' + goal + '</b> selama masa pembayaran yang dipilih.';
@@ -460,7 +461,7 @@ function render() {
     '<p>yang kamu bayar selama ' + P + ' tahun.</p>' +
     '<div class="lbl" style="margin-top:14px">Total Bayar</div><div class="num" style="font-size:clamp(22px,6vw,28px)">' + rp(total) + '</div>' +
     '<div class="lbl" style="margin-top:14px">Uang Pertanggungan</div><div class="num">' + U + '</div>' +
-    '<p>Nilainya ' + multiple + 'x dari total iuran yang kamu bayar.' + (CTX.product === 'B' ? ' Bahkan, kontribusi dikembalikan hingga 120%* sesuai ketentuan polis.' : '') + '</p>' +
+    '<p>Nilainya ' + multiple + 'x dari total iuran yang kamu bayar.' + (CTX.product === 'B' ? ' Manfaat pengembalian kontribusi mengikuti ketentuan polis.' : '') + '</p>' +
     '<p>' + productNarrative + '</p><div class="sm">*Simulasi awal, bukan ilustrasi resmi. Manfaat aktual mengikuti ketentuan produk dan polis.</div>';
   $('c2').innerHTML = '<h3>Gambaran Produk</h3>' + productDetails +
     '<h4>Tujuan proteksi yang dipilih</h4><p>' + NEED_NAMES[state.need] + '</p>' +
