@@ -401,7 +401,7 @@ $('wr-next').addEventListener('click', () => {
 });
 $('wr-calc-stage2').addEventListener('click', () => {
   const err = $('wr-stage2-err');
-  if (!wrNum('wr-cash-target')) { err.textContent = 'Target warisan tunai belum tersedia. Periksa kembali target warisan.'; err.style.display = 'block'; return; }
+  if (!$('wr-cash-target').value.trim()) { err.textContent = 'Target warisan tunai belum tersedia. Periksa kembali target warisan.'; err.style.display = 'block'; return; }
   err.style.display = 'none';
   updateWarisan();
   $('wr-stage2-result').hidden = false;
@@ -481,7 +481,7 @@ $('go').addEventListener('click', async () => {
   const e = $('err');
   const hajiIncomplete = state.need === 'haji' && (!num($('hj')) || !valid.yrs($('hj-years').value) || !valid.pct($('hj-inflation').value));
   const termIncomplete = PRODUCT_MAP[state.need] === 'C' && ![15, 25, 35].includes(+state.insuranceTerm);
-  const warisanIncomplete = state.need === 'warisan' && (!wrNum('wr') || !wrNum('wr-cash-target') || $('wr-stage1-result').hidden || $('wr-stage2-result').hidden);
+  const warisanIncomplete = state.need === 'warisan' && (!wrNum('wr') || !$('wr-cash-target').value.trim() || $('wr-stage1-result').hidden || $('wr-stage2-result').hidden);
   if (!nama || isNaN(age) || !g || !income || !state.need || (!up && state.need !== 'warisan') || hajiIncomplete || termIncomplete || warisanIncomplete) { e.textContent = termIncomplete ? 'Pilih masa asuransi Flexi Cermat terlebih dahulu ya.' : warisanIncomplete ? 'Selesaikan kalkulator warisan dan simulasi warisan likuid terlebih dahulu ya.' : 'Lengkapi semua data dulu ya, termasuk target, waktu, dan asumsi inflasi haji jika memilih Pelunasan Haji.'; e.style.display = 'block'; return; }
   if (state.need === 'warisan' && up <= 0) { e.textContent = 'Estimasi kekayaan bersih sudah mencapai atau melebihi target warisan. Tidak ada gap kebutuhan warisan untuk dicocokkan ke UP Flexi Berkah.'; e.style.display = 'block'; return; }
   e.style.display = 'none';
