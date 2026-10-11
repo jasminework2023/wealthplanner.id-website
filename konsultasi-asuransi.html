@@ -259,7 +259,7 @@ document.querySelectorAll('.chips').forEach(g => g.addEventListener('click', e =
   g.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); b.classList.add('on');
   state[g.dataset.group] = b.dataset.val;
   if (g.dataset.group === 'gender') reveal(g.dataset.next);
-  else { DYN.forEach(id => $(id).hidden = true); $('result').hidden = true; const oldSummary = $('wr-summary'); if (oldSummary) oldSummary.remove(); reveal(NEED_STEPS[b.dataset.val]); if (b.dataset.val === 'warisan') { $('wr-stage1-result').hidden = true; $('wr-stage2-result').hidden = true; $('s-go').hidden = true; } }
+  else { DYN.forEach(id => $(id).hidden = true); $('result').hidden = true; const oldSummary = $('wr-summary'); if (oldSummary) oldSummary.remove(); reveal(NEED_STEPS[b.dataset.val]); if (b.dataset.val === 'warisan') { $('s-go').hidden = true; } }
 }));
 
 // ===== Rate table =====
@@ -409,8 +409,8 @@ $('go').addEventListener('click', async () => {
   const e = $('err');
   const hajiIncomplete = state.need === 'haji' && (!num($('hj')) || !valid.yrs($('hj-years').value) || !valid.pct($('hj-inflation').value));
   const termIncomplete = PRODUCT_MAP[state.need] === 'C' && ![15, 25, 35].includes(+state.insuranceTerm);
-  const warisanIncomplete = state.need === 'warisan' && (!wrNum('wr') || !$('wr-cash-target').value.trim() || $('wr-stage1-result').hidden || $('wr-stage2-result').hidden);
-  if (!nama || isNaN(age) || !g || !income || !state.need || (!up && state.need !== 'warisan') || hajiIncomplete || termIncomplete || warisanIncomplete) { e.textContent = termIncomplete ? 'Pilih masa asuransi Flexi Cermat terlebih dahulu ya.' : warisanIncomplete ? 'Selesaikan kalkulator warisan dan simulasi warisan likuid terlebih dahulu ya.' : 'Lengkapi semua data dulu ya, termasuk target, waktu, dan asumsi inflasi haji jika memilih Pelunasan Haji.'; e.style.display = 'block'; return; }
+  const warisanIncomplete = state.need === 'warisan' && !wrNum('wr');
+  if (!nama || isNaN(age) || !g || !income || !state.need || (!up && state.need !== 'warisan') || hajiIncomplete || termIncomplete || warisanIncomplete) { e.textContent = termIncomplete ? 'Pilih masa asuransi Flexi Cermat terlebih dahulu ya.' : warisanIncomplete ? 'Isi target nilai warisan terlebih dahulu ya.' : 'Lengkapi semua data dulu ya, termasuk target, waktu, dan asumsi inflasi haji jika memilih Pelunasan Haji.'; e.style.display = 'block'; return; }
   if (state.need === 'warisan' && up <= 0) { e.textContent = 'Estimasi kekayaan bersih sudah mencapai atau melebihi target warisan. Tidak ada gap kebutuhan warisan untuk dicocokkan ke UP Flexi Berkah.'; e.style.display = 'block'; return; }
   e.style.display = 'none';
   const budget = income * CONFIG.budgetPct / 12;
@@ -428,21 +428,6 @@ $('go').addEventListener('click', async () => {
     const productName = PRODUCT_NAMES[PRODUCT_MAP[state.need]];
     $('prod').innerHTML = '<p class="note">Pemetaan tujuan kamu adalah <b>' + productName + '</b>' + (PRODUCT_MAP[state.need] === 'C' ? ' dengan masa asuransi ' + state.insuranceTerm + ' tahun' : '') + ', tetapi data kontribusi untuk kombinasi ini belum tersedia. Kami tidak menampilkan angka perkiraan. Konsultasikan dengan Jasmine untuk ilustrasi yang sesuai.</p>';
     $('wa').href = 'https://wa.me/' + CONFIG.waNumber + '?text=' + encodeURIComponent('Halo Jasmine, aku ' + nama + '. Aku sudah coba kalkulator proteksi: kebutuhan UP ideal ' + rp(up) + ', budget premi ' + rp(budget) + '/bulan. Aku mau konsultasi.');
-  }
-  if (state.need === 'warisan') {
-    const w = updateWarisan();
-    const oldSummary = $('wr-summary'); if (oldSummary) oldSummary.remove();
-    const summary = '<div class="box" id="wr-summary"><h2>Hasil Simulasi Kebutuhan Warisan</h2>' +
-      '<div class="lbl">Total aset</div><div class="big">' + wrRp(w.assets) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Total kewajiban dan biaya pengurusan</div><div style="font-size:20px;font-weight:800">' + wrRp(w.liabilities) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Estimasi kekayaan bersih</div><div class="big">' + (w.net < 0 ? '−' : '') + wrRp(w.net) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Target warisan</div><div style="font-size:20px;font-weight:800">' + wrRp(w.target) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Estimasi Gap Kebutuhan Warisan</div><div class="big">' + wrRp(w.gap) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Dana likuid tersedia</div><div style="font-size:20px;font-weight:800">' + wrRp(w.available) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Kebutuhan dana likuid termasuk cadangan 10%</div><div style="font-size:20px;font-weight:800">' + wrRp(w.needed) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Estimasi Gap Kebutuhan Dana Likuid</div><div class="big">' + wrRp(w.liquidGap) + '</div>' +
-      '<p>Dalam menyiapkan warisan, ada biaya pencairan warisan yang perlu disiapkan untuk BPHTB, pajak waris, maupun uang tunai yang dipakai untuk biaya hidup keluarga yang ditinggalkan. Salah satu cara untuk menyiapkan warisan tunai bagi keluarga adalah melalui program asuransi jiwa, dengan manfaat uang pertanggungan yang dapat diwariskan kepada keluarga.</p></div>';
-    $('result').insertAdjacentHTML('afterbegin', summary);
   }
   $('result').hidden = false;
   $('result').scrollIntoView({behavior: 'smooth', block: 'start'});
