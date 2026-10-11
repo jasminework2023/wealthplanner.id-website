@@ -344,6 +344,7 @@ function updateWarisan() {
 }
 document.querySelectorAll('.wr-stage1').forEach(el => el.addEventListener('input', () => {
   const digits = el.value.replace(/\D/g, ''); el.value = digits ? wrRp(+digits) : '';
+  updateWarisan();
 }));
 $('wr-next').addEventListener('click', () => {
   const err = $('wr-stage1-err'), w = updateWarisan();
