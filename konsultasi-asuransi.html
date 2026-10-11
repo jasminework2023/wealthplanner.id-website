@@ -340,7 +340,7 @@ function match(rows, product, g, age, up, insuranceTerm) {
 const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' miliar' : (n / 1e6).toLocaleString('id-ID') + ' juta';
 
 // ===== Kalkulator Warisan: Tahap 01 & Tahap 02 =====
-const wrNum = id => parseInt(($ (id).value || '').replace(/\\D/g, ''), 10) || 0;
+const wrNum = id => parseInt(($(id).value || '').replace(/\\D/g, ''), 10) || 0;
 const wrRp = n => 'Rp' + Math.round(Math.max(0, n)).toLocaleString('id-ID');
 function updateWarisan() {
   const assets = wrNum('wr-property') + wrNum('wr-investment') + wrNum('wr-savings');
@@ -475,7 +475,8 @@ $('go').addEventListener('click', async () => {
   }
   if (state.need === 'warisan') {
     const w = updateWarisan();
-    const summary = '<div class="box"><h2>Hasil Simulasi Warisan Likuid</h2>' +
+    const oldSummary = $('wr-summary'); if (oldSummary) oldSummary.remove();
+    const summary = '<div class="box" id="wr-summary"><h2>Hasil Simulasi Warisan Likuid</h2>' +
       '<div class="lbl">Kekayaan bersih saat ini</div><div class="big">' + (w.net < 0 ? '-' : '') + wrRp(Math.abs(w.net)) + '</div>' +
       '<div class="lbl" style="margin-top:14px">Target warisan tunai</div><div class="big">' + wrRp(w.target) + '</div>' +
       '<div class="lbl" style="margin-top:14px">Cadangan likuiditas (10%)</div><div style="font-size:20px;font-weight:800">' + wrRp(w.reserve) + '</div>' +
