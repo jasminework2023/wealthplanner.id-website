@@ -128,6 +128,15 @@ footer b{display:block;color:var(--brown);font-size:15px}
         <input type="text" class="idr wr-stage1" id="wr-costs" inputmode="numeric" placeholder="Jika diketahui" />
         <label for="wr" style="display:block;font-weight:700;margin-top:14px">Target nilai warisan</label>
         <input type="text" class="idr wr-stage1" id="wr" inputmode="numeric" placeholder="Rp1.000.000.000" />
+        <div class="box" style="margin-top:18px;padding:14px">
+          <h2 style="font-size:18px;margin-bottom:12px">Hasil Ringkasan</h2>
+          <div class="lbl">Total Aset Bersih (total aset dikurangi kewajiban dan biaya lainnya)</div>
+          <div id="wr-summary-net" style="font-size:22px;font-weight:800;color:var(--green-d)">Rp0</div>
+          <div class="lbl" style="margin-top:12px">Target Nilai Warisan</div>
+          <div id="wr-summary-target" style="font-size:20px;font-weight:800">Rp0</div>
+          <div class="lbl" style="margin-top:12px">Gap Kebutuhan Warisan</div>
+          <div id="wr-summary-gap" style="font-size:22px;font-weight:800;color:var(--brown)">Rp0</div>
+        </div>
         <div style="margin-top:18px">
           <p style="margin-bottom:12px">Dalam menyiapkan warisan, ada biaya pencairan warisan yang perlu disiapkan untuk BPHTB, pajak waris, maupun uang tunai yang dipakai untuk biaya hidup keluarga yang ditinggalkan.</p>
           <p style="margin-bottom:16px">Salah satu cara untuk menyiapkan warisan tunai bagi keluarga adalah melalui program asuransi jiwa, dengan manfaat uang pertanggungan yang dapat diwariskan kepada keluarga.</p>
@@ -167,7 +176,7 @@ footer b{display:block;color:var(--brown);font-size:15px}
 
   <div id="result" hidden>
     <div class="box">
-      <h2>Hasil Perhitungan <span class="nmv"></span></h2>
+      <h2 id="result-heading">Kebutuhan Proteksi <span class="nmv"></span></h2>
       <div class="lbl">Kebutuhan Uang Pertanggungan Ideal</div><div class="big" id="r-up"></div>
       <div class="note">Estimasi Uang Pertanggungan yang dibutuhkan berdasarkan tujuan proteksi yang dipilih.</div>
       <div class="lbl" style="margin-top:18px">Budget Premi Ideal</div><div class="big" id="r-bud"></div>
@@ -326,8 +335,12 @@ const wrRp = n => 'Rp' + Math.round(Math.abs(n)).toLocaleString('id-ID');
 function updateWarisan() {
   const assets = wrNum('wr-property') + wrNum('wr-investment') + wrNum('wr-savings') + wrNum('wr-cash');
   const liabilities = wrNum('wr-liabilities') + wrNum('wr-costs');
-  const net = assets - liabilities, target = wrNum('wr');
-  return {assets, liabilities, net, target, gap: Math.max(0, target - net)};
+  const net = assets - liabilities, target = wrNum('wr'), gap = Math.max(0, target - net);
+  const netEl = $('wr-summary-net'), targetEl = $('wr-summary-target'), gapEl = $('wr-summary-gap');
+  if (netEl) netEl.textContent = (net < 0 ? '−' : '') + wrRp(net);
+  if (targetEl) targetEl.textContent = wrRp(target);
+  if (gapEl) gapEl.textContent = wrRp(gap);
+  return {assets, liabilities, net, target, gap};
 }
 document.querySelectorAll('.wr-stage1').forEach(el => el.addEventListener('input', () => {
   const digits = el.value.replace(/\D/g, ''); el.value = digits ? wrRp(+digits) : '';
@@ -415,6 +428,7 @@ $('go').addEventListener('click', async () => {
   e.style.display = 'none';
   const budget = income * CONFIG.budgetPct / 12;
   document.querySelector('.nmv').textContent = nama;
+  const resultHeading = $('result-heading'); if (resultHeading) resultHeading.textContent = 'Kebutuhan Proteksi ' + nama;
   $('r-up').textContent = rp(up); $('r-bud').textContent = rp(budget);
   $('sumwrap').hidden = true; armReveal();
   try {
