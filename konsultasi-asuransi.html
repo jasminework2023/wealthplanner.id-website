@@ -321,63 +321,21 @@ function match(rows, product, g, age, up, insuranceTerm) {
 const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' miliar' : (n / 1e6).toLocaleString('id-ID') + ' juta';
 
 // ===== Kalkulator Warisan =====
-const wrNum = id => parseInt(($(id).value || '').replace(/\D/g, ''), 10) || 0;
+const wrNum = id => parseInt((($(id) || {}).value || '').replace(/\D/g, ''), 10) || 0;
 const wrRp = n => 'Rp' + Math.round(Math.abs(n)).toLocaleString('id-ID');
 function updateWarisan() {
   const assets = wrNum('wr-property') + wrNum('wr-investment') + wrNum('wr-savings') + wrNum('wr-cash');
   const liabilities = wrNum('wr-liabilities') + wrNum('wr-costs');
-  const net = assets - liabilities;
-  const target = wrNum('wr');
-  const gap = Math.max(0, target - net);
-  const liquidTarget = wrNum('wr-cash-target');
-  const reserve = Math.round(liquidTarget * 0.10);
-  const available = wrNum('wr-savings') + wrNum('wr-cash');
-  const needed = liquidTarget + reserve;
-  const liquidGap = Math.max(0, needed - available);
-  $('wr-assets-total').textContent = wrRp(assets);
-  $('wr-liabilities-total').textContent = wrRp(liabilities);
-  $('wr-net-worth').textContent = (net < 0 ? '−' : '') + wrRp(net);
-  $('wr-target-total').textContent = wrRp(target);
-  $('wr-inheritance-gap').textContent = wrRp(gap);
-  $('wr-reserve').textContent = wrRp(reserve);
-  $('wr-liquid-total').textContent = wrRp(available);
-  $('wr-liquid-needed').textContent = wrRp(needed);
-  $('wr-shortfall').textContent = wrRp(liquidGap);
-  return {assets, liabilities, net, target, gap, liquidTarget, reserve, available, needed, liquidGap};
+  const net = assets - liabilities, target = wrNum('wr');
+  return {assets, liabilities, net, target, gap: Math.max(0, target - net)};
 }
-document.querySelectorAll('.wr-stage1, #wr-cash-target').forEach(el => {
-  el.addEventListener('input', () => {
-    if (el.classList.contains('idr')) { const d = el.value.replace(/\D/g, ''); el.value = d ? wrRp(+d) : ''; }
-    updateWarisan();
-    if (el.classList.contains('wr-stage1')) { $('wr-stage1-result').hidden = true; $('s-wr2').hidden = true; $('wr-stage2-result').hidden = true; }
-    if (el.id === 'wr-cash-target') $('wr-stage2-result').hidden = true;
-  });
-});
-$('wr-calc').addEventListener('click', () => {
-  const err = $('wr-stage1-err');
-  const target = wrNum('wr');
-  if (!target) { err.textContent = 'Isi target nilai warisan terlebih dahulu ya.'; err.style.display = 'block'; return; }
-  err.style.display = 'none';
-  updateWarisan();
-  $('wr-stage1-result').hidden = false;
-  $('wr-stage2-result').hidden = true;
-});
+document.querySelectorAll('.wr-stage1').forEach(el => el.addEventListener('input', () => {
+  const digits = el.value.replace(/\D/g, ''); el.value = digits ? wrRp(+digits) : '';
+}));
 $('wr-next').addEventListener('click', () => {
-  const w = updateWarisan();
-  $('wr-cash-target').value = wrRp(w.gap);
-  updateWarisan();
-  $('wr-stage2-result').hidden = true;
-  reveal('s-wr2');
-});
-$('wr-calc-stage2').addEventListener('click', () => {
-  const err = $('wr-stage2-err');
-  if (!$('wr-cash-target').value.trim()) { err.textContent = 'Target warisan tunai belum tersedia. Periksa kembali target warisan.'; err.style.display = 'block'; return; }
+  const err = $('wr-stage1-err'), w = updateWarisan();
+  if (!w.target) { err.textContent = 'Isi target nilai warisan terlebih dahulu ya.'; err.style.display = 'block'; return; }
   err.style.display = 'none';
-  updateWarisan();
-  $('wr-stage2-result').hidden = false;
-});
-$('wr-next-result').addEventListener('click', () => {
-  $('go').textContent = 'Lihat Strategi Perencanaan Warisan →';
   $('go').click();
 });
 const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), {threshold: .15});
