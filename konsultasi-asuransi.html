@@ -340,7 +340,7 @@ function match(rows, product, g, age, up, insuranceTerm) {
 const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' miliar' : (n / 1e6).toLocaleString('id-ID') + ' juta';
 
 // ===== Kalkulator Warisan: Tahap 01 & Tahap 02 =====
-const wrNum = id => parseInt(($(id).value || '').replace(/\\D/g, ''), 10) || 0;
+const wrNum = id => parseInt(($(id).value || '').replace(/\D/g, ''), 10) || 0;
 const wrRp = n => 'Rp' + Math.round(Math.max(0, n)).toLocaleString('id-ID');
 function updateWarisan() {
   const assets = wrNum('wr-property') + wrNum('wr-investment') + wrNum('wr-savings');
@@ -360,7 +360,7 @@ function updateWarisan() {
 }
 document.querySelectorAll('.wr-stage1, #wr, #wr-cash-target, #wr-cash').forEach(el => {
   el.addEventListener('input', () => {
-    if (el.classList.contains('idr')) { const d = el.value.replace(/\\D/g, ''); el.value = d ? wrRp(+d) : ''; }
+    if (el.classList.contains('idr')) { const d = el.value.replace(/\D/g, ''); el.value = d ? wrRp(+d) : ''; }
     updateWarisan();
   });
 });
