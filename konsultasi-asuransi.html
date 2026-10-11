@@ -421,7 +421,7 @@ function render() {
   const productDescription = state.need === 'income'
     ? 'Asuransi jiwa tradisional yang memberikan perlindungan seumur hidup, sebagai income replacement bagi keluarga apabila peserta meninggal dunia, dengan manfaat pengembalian premi sesuai ketentuan polis.'
     : state.need === 'warisan'
-      ? 'Lengkapi perencanaan warisanmu dengan asuransi jiwa syariah yang memberikan perlindungan seumur hidup dan dapat membantu menyediakan dana tunai bagi keluarga sesuai ketentuan polis.'
+      ? 'Lengkapi perencanaan warisanmu dengan asuransi jiwa syariah yang memberikan perlindungan jiwa hingga usia 110 tahun dan dapat membantu menyediakan dana tunai bagi keluarga sesuai ketentuan polis.'
       : 'Asuransi jiwa syariah dengan perlindungan jiwa dan manfaat sesuai ketentuan polis.';
   let h = '<h2 style="margin-bottom:6px">Rekomendasi Produk</h2><div style="font-weight:800;font-size:18px;color:var(--green-d)">' + productName + '</div>' +
     '<p class="note" style="margin-bottom:14px">' + productDescription + '</p>' +
@@ -506,7 +506,7 @@ $('go').addEventListener('click', async () => {
     const oldSummary = $('wr-summary'); if (oldSummary) oldSummary.remove();
     const summary = '<div class="box" id="wr-summary"><h2>Hasil Simulasi Kebutuhan Warisan</h2>' +
       '<div class="lbl">Total aset</div><div class="big">' + wrRp(w.assets) + '</div>' +
-      '<div class="lbl" style="margin-top:14px">Total kewajiban</div><div style="font-size:20px;font-weight:800">' + wrRp(w.liabilities) + '</div>' +
+      '<div class="lbl" style="margin-top:14px">Total kewajiban dan biaya pengurusan</div><div style="font-size:20px;font-weight:800">' + wrRp(w.liabilities) + '</div>' +
       '<div class="lbl" style="margin-top:14px">Estimasi kekayaan bersih</div><div class="big">' + (w.net < 0 ? '−' : '') + wrRp(w.net) + '</div>' +
       '<div class="lbl" style="margin-top:14px">Target warisan</div><div style="font-size:20px;font-weight:800">' + wrRp(w.target) + '</div>' +
       '<div class="lbl" style="margin-top:14px">Estimasi Gap Kebutuhan Warisan</div><div class="big">' + wrRp(w.gap) + '</div>' +
