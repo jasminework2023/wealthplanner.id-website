@@ -128,42 +128,12 @@ footer b{display:block;color:var(--brown);font-size:15px}
         <input type="text" class="idr wr-stage1" id="wr-costs" inputmode="numeric" placeholder="Jika diketahui" />
         <label for="wr" style="display:block;font-weight:700;margin-top:14px">Target nilai warisan</label>
         <input type="text" class="idr wr-stage1" id="wr" inputmode="numeric" placeholder="Rp1.000.000.000" />
-        <div class="box" style="margin-top:18px;margin-bottom:14px;padding:14px">
-          <h2 style="font-size:18px;margin-bottom:12px">Hasil Simulasi Kebutuhan Warisan</h2>
-          <div class="lbl">Total aset</div><div id="wr-assets-total" style="font-size:20px;font-weight:800;color:var(--green-d)">Rp0</div>
-          <div class="lbl" style="margin-top:10px">Total kewajiban + biaya</div><div id="wr-liabilities-total" style="font-size:20px;font-weight:800;color:var(--brown)">Rp0</div>
-          <div class="lbl" style="margin-top:10px">Estimasi kekayaan bersih</div><div id="wr-net-worth" style="font-size:24px;font-weight:800;color:var(--green-d)">Rp0</div>
-          <div class="lbl" style="margin-top:10px">Target warisan</div><div id="wr-target-total" style="font-size:20px;font-weight:800;color:var(--green-d)">Rp0</div>
-          <div class="lbl" style="margin-top:10px">Estimasi Gap Kebutuhan Warisan</div><div id="wr-inheritance-gap" style="font-size:24px;font-weight:800;color:var(--brown)">Rp0</div>
+        <div style="margin-top:18px">
+          <p style="margin-bottom:12px">Dalam menyiapkan warisan, ada biaya pencairan warisan yang perlu disiapkan untuk BPHTB, pajak waris, maupun uang tunai yang dipakai untuk biaya hidup keluarga yang ditinggalkan.</p>
+          <p style="margin-bottom:16px">Salah satu cara untuk menyiapkan warisan tunai bagi keluarga adalah melalui program asuransi jiwa, dengan manfaat uang pertanggungan yang dapat diwariskan kepada keluarga.</p>
+          <button class="btn" type="button" id="wr-next">Lihat Strategi Perencanaan Warisan →</button>
+          <div class="err" id="wr-stage1-err"></div>
         </div>
-        <button class="btn" type="button" id="wr-calc">Hitung Kebutuhan Warisan</button>
-        <div id="wr-stage1-result" hidden>
-          <p style="margin:12px 0">Dalam menyiapkan warisan, ada biaya pencairan warisan yang perlu disiapkan untuk BPHTB, pajak waris, maupun uang tunai yang dipakai untuk biaya hidup keluarga yang ditinggalkan. Salah satu cara untuk menyiapkan warisan tunai bagi keluarga adalah melalui program asuransi jiwa, dengan manfaat uang pertanggungan yang dapat diwariskan kepada keluarga.</p>
-          <button class="btn" type="button" id="wr-next">Lihat Simulasi Warisan Likuid →</button>
-        </div>
-        <div class="err" id="wr-stage1-err"></div>
-      </div>
-    </div>
-    <div class="step" id="s-wr2" hidden>
-      <div class="q"><i></i>Simulasi Warisan Likuid</div>
-      <div class="body">
-        <p style="font-weight:700;margin-bottom:12px">Periksa kebutuhan dana tunai untuk mendukung warisan keluarga.</p>
-        <label for="wr-cash-target" style="display:block;font-weight:700">Target warisan tunai</label>
-        <input type="text" class="idr" id="wr-cash-target" inputmode="numeric" placeholder="Terisi otomatis dari gap kebutuhan warisan" />
-        <div class="tip">Mengikuti gap kebutuhan warisan dari perhitungan awal. Kamu tidak perlu memasukkan ulang nilai aset likuid.</div>
-        <div style="margin-top:14px;padding:12px 14px;background:var(--green-l);border-radius:12px">
-          <div class="lbl">Cadangan likuiditas (10%)</div><div id="wr-reserve" style="font-size:19px;font-weight:800;color:var(--green-d)">Rp0</div>
-        </div>
-        <div class="box" style="margin-top:18px;margin-bottom:14px;padding:14px">
-          <div class="lbl">Dana likuid tersedia (tabungan, deposito, uang tunai)</div><div id="wr-liquid-total" style="font-size:20px;font-weight:800;color:var(--green-d)">Rp0</div>
-          <div class="lbl" style="margin-top:10px">Kebutuhan dana likuid termasuk cadangan</div><div id="wr-liquid-needed" style="font-size:20px;font-weight:800;color:var(--green-d)">Rp0</div>
-          <div class="lbl" style="margin-top:10px">Estimasi Gap Kebutuhan Dana Likuid</div><div id="wr-shortfall" style="font-size:24px;font-weight:800;color:var(--brown)">Rp0</div>
-        </div>
-        <button class="btn" type="button" id="wr-calc-stage2">Hitung Simulasi Warisan Likuid</button>
-        <div id="wr-stage2-result" hidden>
-          <button class="btn" type="button" id="wr-next-result">Lihat Strategi Perencanaan Warisan →</button>
-        </div>
-        <div class="err" id="wr-stage2-err"></div>
       </div>
     </div>
     <div class="step" id="s-ed" hidden><div class="q"><i></i>Kebutuhan dana pendidikan anak</div>
@@ -244,7 +214,7 @@ const NEED_STEPS = {income: 's-exp', warisan: 's-wr', edu: 's-ed', haji: 's-hj',
 const PRODUCT_MAP = {income: 'B', warisan: 'B', edu: 'C', haji: 'C', pensiun: 'C', debt: 'A', wakaf: 'B'};
 const PRODUCT_NAMES = {A: 'Flexi Amanah', B: 'Flexi Berkah', C: 'Flexi Cermat'};
 const NEED_NAMES = {income: 'Proteksi Income', warisan: 'Warisan', edu: 'Dana Pendidikan', haji: 'Pelunasan Haji', pensiun: 'Dana Pensiun', debt: 'Pelunasan Utang', wakaf: 'Wakaf'};
-const DYN = ['s-exp', 's-dur', 's-wr', 's-wr2', 's-ed', 's-hj', 's-dp', 's-db', 's-wk', 's-term', 's-go'];
+const DYN = ['s-exp', 's-dur', 's-wr', 's-ed', 's-hj', 's-dp', 's-db', 's-wk', 's-term', 's-go'];
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rp = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
