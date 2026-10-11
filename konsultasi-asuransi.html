@@ -378,7 +378,7 @@ document.querySelectorAll('.wr-stage1, #wr-cash-target').forEach(el => {
   el.addEventListener('input', () => {
     if (el.classList.contains('idr')) { const d = el.value.replace(/\D/g, ''); el.value = d ? wrRp(+d) : ''; }
     updateWarisan();
-    if (el.classList.contains('wr-stage1')) $('wr-stage1-result').hidden = true;
+    if (el.classList.contains('wr-stage1')) { $('wr-stage1-result').hidden = true; $('s-wr2').hidden = true; $('wr-stage2-result').hidden = true; }
     if (el.id === 'wr-cash-target') $('wr-stage2-result').hidden = true;
   });
 });
@@ -514,6 +514,7 @@ $('go').addEventListener('click', async () => {
       '<div class="lbl" style="margin-top:14px">Estimasi Gap Kebutuhan Dana Likuid</div><div class="big">' + wrRp(w.liquidGap) + '</div>' +
       '<p>Dalam menyiapkan warisan, ada biaya pencairan warisan yang perlu disiapkan untuk BPHTB, pajak waris, maupun uang tunai yang dipakai untuk biaya hidup keluarga yang ditinggalkan. Salah satu cara untuk menyiapkan warisan tunai bagi keluarga adalah melalui program asuransi jiwa, dengan manfaat uang pertanggungan yang dapat diwariskan kepada keluarga.</p></div>';
     $('result').insertAdjacentHTML('afterbegin', summary);
+  }
   $('result').hidden = false;
   $('result').scrollIntoView({behavior: 'smooth', block: 'start'});
 });
