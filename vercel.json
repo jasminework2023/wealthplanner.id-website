@@ -1,80 +1,100 @@
 {
+  "redirects": [
+    {
+      "source": "/dashboard/api/:path*",
+      "destination": "https://app.wealthplanner.id/api/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/dashboard",
+      "destination": "https://app.wealthplanner.id/dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "https://app.wealthplanner.id/dashboard/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/api/dashboard",
+      "destination": "https://app.wealthplanner.id/api/dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/api/setup",
+      "destination": "https://app.wealthplanner.id/api/setup",
+      "permanent": true
+    },
+    {
+      "source": "/api/add-transaction",
+      "destination": "https://app.wealthplanner.id/api/add-transaction",
+      "permanent": true
+    },
+    {
+      "source": "/api/update-budget",
+      "destination": "https://app.wealthplanner.id/api/update-budget",
+      "permanent": true
+    },
+    {
+      "source": "/api/update-asset-target",
+      "destination": "https://app.wealthplanner.id/api/update-asset-target",
+      "permanent": true
+    },
+    {
+      "source": "/api/access",
+      "destination": "https://app.wealthplanner.id/api/access",
+      "permanent": true
+    },
+    {
+      "source": "/api/add-asset-item",
+      "destination": "https://app.wealthplanner.id/api/add-asset-item",
+      "permanent": true
+    },
+    {
+      "source": "/api/connect-sheet",
+      "destination": "https://app.wealthplanner.id/api/connect-sheet",
+      "permanent": true
+    },
+    {
+      "source": "/api/delete-asset-item",
+      "destination": "https://app.wealthplanner.id/api/delete-asset-item",
+      "permanent": true
+    },
+    {
+      "source": "/api/delete-transaction",
+      "destination": "https://app.wealthplanner.id/api/delete-transaction",
+      "permanent": true
+    },
+    {
+      "source": "/api/receipt-ai",
+      "destination": "https://app.wealthplanner.id/api/receipt-ai",
+      "permanent": true
+    },
+    {
+      "source": "/api/update-asset",
+      "destination": "https://app.wealthplanner.id/api/update-asset",
+      "permanent": true
+    },
+    {
+      "source": "/api/update-transaction",
+      "destination": "https://app.wealthplanner.id/api/update-transaction",
+      "permanent": true
+    },
+    {
+      "source": "/api/telegram-webhook",
+      "destination": "https://app.wealthplanner.id/api/telegram-webhook",
+      "permanent": true
+    },
+    {
+      "source": "/api/telegram-link",
+      "destination": "https://app.wealthplanner.id/api/telegram-link",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/konsultasiasuransi",
       "destination": "/konsultasi-asuransi.html"
-    },
-    {
-      "source": "/dashboard/api/:path*",
-      "destination": "https://personal-wealthplanner.vercel.app/api/:path*"
-    },
-    {
-      "source": "/dashboard",
-      "destination": "https://personal-wealthplanner.vercel.app/dashboard"
-    },
-    {
-      "source": "/dashboard/:path*",
-      "destination": "https://personal-wealthplanner.vercel.app/dashboard/:path*"
-    },
-    {
-      "source": "/api/dashboard",
-      "destination": "https://personal-wealthplanner.vercel.app/api/dashboard"
-    },
-    {
-      "source": "/api/setup",
-      "destination": "https://personal-wealthplanner.vercel.app/api/setup"
-    },
-    {
-      "source": "/api/add-transaction",
-      "destination": "https://personal-wealthplanner.vercel.app/api/add-transaction"
-    },
-    {
-      "source": "/api/update-budget",
-      "destination": "https://personal-wealthplanner.vercel.app/api/update-budget"
-    },
-    {
-      "source": "/api/update-asset-target",
-      "destination": "https://personal-wealthplanner.vercel.app/api/update-asset-target"
-    },
-    {
-      "source": "/api/access",
-      "destination": "https://personal-wealthplanner.vercel.app/api/access"
-    },
-    {
-      "source": "/api/add-asset-item",
-      "destination": "https://personal-wealthplanner.vercel.app/api/add-asset-item"
-    },
-    {
-      "source": "/api/connect-sheet",
-      "destination": "https://personal-wealthplanner.vercel.app/api/connect-sheet"
-    },
-    {
-      "source": "/api/delete-asset-item",
-      "destination": "https://personal-wealthplanner.vercel.app/api/delete-asset-item"
-    },
-    {
-      "source": "/api/delete-transaction",
-      "destination": "https://personal-wealthplanner.vercel.app/api/delete-transaction"
-    },
-    {
-      "source": "/api/receipt-ai",
-      "destination": "https://personal-wealthplanner.vercel.app/api/receipt-ai"
-    },
-    {
-      "source": "/api/update-asset",
-      "destination": "https://personal-wealthplanner.vercel.app/api/update-asset"
-    },
-    {
-      "source": "/api/update-transaction",
-      "destination": "https://personal-wealthplanner.vercel.app/api/update-transaction"
-    },
-    {
-      "source": "/api/telegram-webhook",
-      "destination": "https://personal-wealthplanner.vercel.app/api/telegram-webhook"
-    },
-    {
-      "source": "/api/telegram-link",
-      "destination": "https://personal-wealthplanner.vercel.app/api/telegram-link"
     },
     {
       "source": "/((?!api/).*)",
